@@ -1,0 +1,33 @@
+# Environment and secrets
+.env
+*.env
+*.local
+config.h
+credentials.h
+web/js/config.js
+config.js
+
+# Dependencies and build outputs
+node_modules/
+dist/
+build/
+*.o
+*.bin
+*.elf
+*.hex
+
+# Operating system artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs and scratch files
+*.log
+scratch/
+tmp/

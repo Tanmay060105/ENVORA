@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENVORA — Alerts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-sidebar-top">
+        <div class="app-sidebar-brand">
+          <div class="brand-icon">EV</div>
+          <div class="brand-info">
+            <span class="brand-title">ENVORA</span>
+            <span class="brand-subtitle">Campus Env. Intelligence</span>
+          </div>
+        </div>
+        <div data-envora-shell-nav></div>
+      </div>
+      <div class="app-sidebar-bottom">
+        <div class="station-node-card">
+          <div class="node-header">
+            <span>Threshold System</span>
+            <span class="node-status-online"><span class="pulse-dot"></span> Armed</span>
+          </div>
+          <div class="node-name">North Quad Eco-Station #01</div>
+          <div class="node-desc">5 Boundary Evaluators</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main-wrapper">
+      <header class="app-header">
+        <div class="header-left">
+          <div class="station-pill">
+            <span>North Quad Eco-Station #01</span>
+          </div>
+          <div class="ticker-text">Threshold Monitor · 0 Critical Alarms</div>
+        </div>
+        <div class="header-right">
+          <div class="hardware-pill">
+            <span class="pulse-dot"></span>
+            <span>ESP32 • ONLINE</span>
+          </div>
+          <div class="avatar-pill" title="System Operator">OP</div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <div class="hero-state-label">Threshold Compliance & Events</div>
+            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">Environmental Alerts</h1>
+            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
+              Threshold boundaries, active alarms, and historical breach audit logs for the five parameters.
+            </p>
+          </div>
+          <div class="segmented-control">
+            <button class="segmented-btn active" data-alert-filter="ALL">All Events</button>
+            <button class="segmented-btn" data-alert-filter="WARNING">Warnings</button>
+            <button class="segmented-btn" data-alert-filter="CRITICAL">Critical</button>
+          </div>
+        </div>
+
+        <!-- 5-PARAMETER THRESHOLD BOUNDARY GRID -->
+        <section>
+          <div class="metric-grid-5">
+            <div class="metric-card">
+              <div class="metric-card-header">Temperature Limit</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="thresh-temp-val">24.8°C</span>
+              </div>
+              <div class="metric-trend-pill" id="thresh-temp-limit">Threshold: &lt; 28.0°C</div>
+              <div class="metric-footer">
+                Status: <span id="thresh-temp-status" class="badge badge-normal">NORMAL</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">Humidity Limit</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="thresh-humidity-val">61.0%</span>
+              </div>
+              <div class="metric-trend-pill" id="thresh-humidity-limit">Threshold: &lt; 75.0%</div>
+              <div class="metric-footer">
+                Status: <span id="thresh-humidity-status" class="badge badge-normal">NORMAL</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">Pressure Limit</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="thresh-pressure-val">1013.2 hPa</span>
+              </div>
+              <div class="metric-trend-pill" id="thresh-pressure-limit">Range: 980 - 1030 hPa</div>
+              <div class="metric-footer">
+                Status: <span id="thresh-pressure-status" class="badge badge-normal">NORMAL</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">MQ-135 Gas Limit</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="thresh-gas-val">469 raw</span>
+              </div>
+              <div class="metric-trend-pill" id="thresh-gas-limit">Threshold: &lt; 650 raw</div>
+              <div class="metric-footer">
+                Status: <span id="thresh-gas-status" class="badge badge-normal">NORMAL</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">Noise Level Limit</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="thresh-noise-val">48.0 dB</span>
+              </div>
+              <div class="metric-trend-pill" id="thresh-noise-limit">Threshold: &lt; 70.0 dB</div>
+              <div class="metric-footer">
+                Status: <span id="thresh-noise-status" class="badge badge-normal">NORMAL</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORICAL AUDIT LOG TABLE -->
+        <section class="card-surface">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+            <h2 style="font-size: var(--text-xl);">Station Event Audit Log</h2>
+            <span class="badge badge-normal">Policy: Automated Log</span>
+          </div>
+
+          <div class="table-container">
+            <table class="envora-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Parameter</th>
+                  <th>Observed Reading</th>
+                  <th>Calibrated Limit</th>
+                  <th>Severity</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="alerts-table-body">
+                <!-- Dynamically populated by alerts.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app-shell.js"></script>
+  <script src="js/data-layer.js"></script>
+  <script src="js/intelligence.js"></script>
+  <script src="js/pages/alerts.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENVORA — Prediction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-sidebar-top">
+        <div class="app-sidebar-brand">
+          <div class="brand-icon">EV</div>
+          <div class="brand-info">
+            <span class="brand-title">ENVORA</span>
+            <span class="brand-subtitle">Campus Env. Intelligence</span>
+          </div>
+        </div>
+        <div data-envora-shell-nav></div>
+      </div>
+      <div class="app-sidebar-bottom">
+        <div class="station-node-card">
+          <div class="node-header">
+            <span>Prediction Pipeline</span>
+            <span class="node-status-online"><span class="pulse-dot"></span> Active</span>
+          </div>
+          <div class="node-name">MQ-135 OLS Trend</div>
+          <div class="node-desc">Explainable Linear Regression</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main-wrapper">
+      <header class="app-header">
+        <div class="header-left">
+          <div class="station-pill">
+            <span>North Quad Eco-Station #01</span>
+          </div>
+          <div class="ticker-text">Protocol OLS-04 · Method: Linear Regression</div>
+        </div>
+        <div class="header-right">
+          <div class="hardware-pill">
+            <span class="pulse-dot"></span>
+            <span>ESP32 • ONLINE</span>
+          </div>
+          <div class="avatar-pill" title="System Operator">OP</div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- SPECIMEN METADATA STRIP -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <div class="hero-state-label">Predictive Intelligence Model</div>
+            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">MQ-135 Sensor-Response Prediction</h1>
+            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
+              Estimate the next unitless MQ-135 sensor-response reading from recent observational data via an explainable linear regression trend line.
+            </p>
+          </div>
+          <div class="segmented-control">
+            <button class="segmented-btn" data-window-btn="6">6 Readings</button>
+            <button class="segmented-btn active" data-window-btn="12">12 Readings</button>
+            <button class="segmented-btn" data-window-btn="24">24 Readings</button>
+          </div>
+        </div>
+
+        <!-- 3 PREDICTION READOUT CARDS -->
+        <section>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+            <div class="metric-card">
+              <div class="metric-card-header">Current Response (Observed)</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="pred-cur-val">469</span>
+                <span class="metric-unit">raw unitless</span>
+              </div>
+              <div class="metric-trend-pill">Last observation point (t)</div>
+              <div class="metric-footer">MQ-135 Sensor Response</div>
+            </div>
+
+            <div class="metric-card" style="border-color: var(--color-primary);">
+              <div class="metric-card-header" style="color: var(--color-primary); font-weight: 600;">Predicted Next (t+1)</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="pred-forecast-val" style="color: var(--color-primary);">480</span>
+                <span class="metric-unit">estimated</span>
+              </div>
+              <div class="metric-trend-pill" id="pred-trend-pill">Next-interval projection (+30s)</div>
+              <div class="metric-footer" id="pred-horizon-footer">Target horizon (+30s)</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">Trend Classification</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="pred-slope-val">+2.1</span>
+                <span class="metric-unit">slope / interval</span>
+              </div>
+              <div class="metric-trend-pill">
+                <span class="badge badge-normal" id="pred-polarity-badge">RISING POLARITY</span>
+              </div>
+              <div class="metric-footer" id="pred-slope-desc">Recent readings drifting upward</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- OBSERVED -> REGRESSION -> FORECAST VISUALIZATION -->
+        <section class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <h2 class="chart-title">Observed → Regression → Forecast Progression</h2>
+              <p class="chart-subtitle">Linear trendline fitted across observational sequence (t-11 to t) projecting next interval (t+1).</p>
+            </div>
+            <div style="display: flex; gap: var(--space-md); font-family: var(--font-telemetry); font-size: var(--text-xs);">
+              <span style="color: var(--color-primary); font-weight: 600;">● Observed</span>
+              <span style="color: var(--color-accent-sage);">― Regression Fit</span>
+              <span id="forecast-legend-label" style="color: var(--color-secondary);">-- Forecast (+30s)</span>
+            </div>
+          </div>
+
+          <div class="chart-viewport" id="pred-chart-viewport" style="position: relative;">
+            <div class="chart-tooltip" id="pred-chart-tooltip" style="display: none; position: absolute;"></div>
+            <svg class="chart-svg" id="pred-chart-svg" preserveAspectRatio="none" viewBox="0 0 940 300">
+              <defs>
+                <linearGradient id="predGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#3F4D27" stop-opacity="0.2"></stop>
+                  <stop offset="100%" stop-color="#3F4D27" stop-opacity="0.01"></stop>
+                </linearGradient>
+              </defs>
+              <!-- Shaded Forecast Zone -->
+              <rect x="740" y="20" width="160" height="240" rx="4" fill="#EFEFD9" opacity="0.6"></rect>
+              <text id="forecast-zone-text" x="755" y="45" font-family="JetBrains Mono" font-size="11" fill="#667A3E" font-weight="600">FORECAST (+30s)</text>
+              <!-- Baseline Gridlines -->
+              <line x1="60" x2="900" y1="50" y2="50" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line x1="60" x2="900" y1="110" y2="110" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line x1="60" x2="900" y1="170" y2="170" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line x1="60" x2="900" y1="230" y2="230" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <!-- Present Division Marker -->
+              <line x1="740" x2="740" y1="30" y2="260" stroke="#3F4D27" stroke-dasharray="4 4" stroke-width="1.5"></line>
+              <text x="740" y="22" font-family="JetBrains Mono" font-size="11" fill="#3F4D27" font-weight="600" text-anchor="middle">PRESENT (t)</text>
+              <!-- Observed Path -->
+              <path id="pred-observed-line" fill="none" stroke="#292D22" stroke-width="2.5" d=""></path>
+              <!-- Regression Line -->
+              <line id="pred-regression-line" stroke="#9AA77A" stroke-width="2" x1="0" y1="0" x2="0" y2="0"></line>
+              <!-- Forecast Line -->
+              <line id="pred-forecast-line" stroke="#667A3E" stroke-dasharray="5 5" stroke-width="2.5" x1="0" y1="0" x2="0" y2="0"></line>
+              <!-- Observed Data Nodes -->
+              <g id="pred-observed-nodes"></g>
+              <!-- Forecast Target Node -->
+              <circle id="pred-forecast-node" cx="860" cy="88" r="6" fill="#3F4D27" stroke="#FAF8F2" stroke-width="2" style="cursor: pointer;"></circle>
+            </svg>
+          </div>
+        </section>
+
+        <!-- METHODOLOGY & AUDITABLE MODEL INFORMATION -->
+        <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-md);">
+          <div class="card-surface">
+            <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-md);">How the Prediction Works</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+              <div style="display: flex; gap: var(--space-md);">
+                <div class="brand-icon">01</div>
+                <div>
+                  <strong>Rolling Sensor Buffer</strong>
+                  <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-top: 2px;">
+                    Recent MQ-135 sensor-response readings are buffered locally from the telemetry stream.
+                  </p>
+                </div>
+              </div>
+              <div style="display: flex; gap: var(--space-md);">
+                <div class="brand-icon">02</div>
+                <div>
+                  <strong>Linear Regression (y = mx + b)</strong>
+                  <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-top: 2px;">
+                    Ordinary least squares fits a straight line across recent points to determine reading drift.
+                  </p>
+                </div>
+              </div>
+              <div style="display: flex; gap: var(--space-md);">
+                <div class="brand-icon">03</div>
+                <div>
+                  <strong>Next-Interval Extrapolation</strong>
+                  <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-top: 2px;">
+                    The line projects 30 seconds ahead to produce the next discrete target response value.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-surface">
+            <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-md);">Model Specification</h3>
+            <table class="envora-table">
+              <tr>
+                <td><strong>Method</strong></td>
+                <td>Linear Regression ($y = mx + b$)</td>
+              </tr>
+              <tr>
+                <td><strong>Monitored Input</strong></td>
+                <td>MQ-135 Gas Response (raw index)</td>
+              </tr>
+              <tr>
+                <td><strong>Sampling Cadence</strong></td>
+                <td>30 seconds</td>
+              </tr>
+              <tr>
+                <td><strong>Forecast Target</strong></td>
+                <td>Next interval ($t+1$, +30s)</td>
+              </tr>
+              <tr>
+                <td><strong>Scientific Intent</strong></td>
+                <td>Auditable baseline drift indicator</td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app-shell.js"></script>
+  <script src="js/data-layer.js"></script>
+  <script src="js/intelligence.js"></script>
+  <script src="js/pages/prediction.js"></script>
+</body>
+</html>

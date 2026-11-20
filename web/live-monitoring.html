@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENVORA — Live Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="app-sidebar">
+      <div class="app-sidebar-top">
+        <div class="app-sidebar-brand">
+          <div class="brand-icon">EV</div>
+          <div class="brand-info">
+            <span class="brand-title">ENVORA</span>
+            <span class="brand-subtitle">Campus Env. Intelligence</span>
+          </div>
+        </div>
+        <div data-envora-shell-nav></div>
+      </div>
+      <div class="app-sidebar-bottom">
+        <div class="station-node-card">
+          <div class="node-header">
+            <span>Telemetry Ingestion</span>
+            <span class="node-status-online"><span class="pulse-dot"></span> Streaming</span>
+          </div>
+          <div class="node-name">North Quad Eco-Station #01</div>
+          <div class="node-desc">ESP32 DevKit V1 • Telemetry v2.4.1</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN APPLICATION WRAPPER -->
+    <div class="app-main-wrapper">
+      <header class="app-header">
+        <div class="header-left">
+          <div class="station-pill">
+            <span>North Quad Eco-Station #01</span>
+          </div>
+          <div class="ticker-text" id="stream-timestamp">
+            Live Stream Connected
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="hardware-pill">
+            <span class="pulse-dot"></span>
+            <span id="stream-status-pill">ACTIVE STREAM</span>
+          </div>
+          <div class="avatar-pill" title="System Operator">OP</div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- TOP CONTROL BAR -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <div class="hero-state-label">Real-Time Telemetry Stream</div>
+            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">Live Sensor Ingestion</h1>
+            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
+              Continuous high-cadence environmental observations from ESP32 station sensors.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-sm);">
+            <div class="segmented-control">
+              <button class="segmented-btn" data-cadence-btn="5">5s</button>
+              <button class="segmented-btn active" data-cadence-btn="10">10s</button>
+              <button class="segmented-btn" data-cadence-btn="30">30s</button>
+            </div>
+            <button class="btn-secondary" id="btn-stream-pause">Pause Stream</button>
+          </div>
+        </div>
+
+        <!-- 5 LIVE PARAMETER READOUT CARDS -->
+        <section>
+          <div class="metric-grid-5">
+            <div class="metric-card">
+              <div class="metric-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Temperature</span>
+                <span class="pulse-dot"></span>
+              </div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="live-temp-val">24.8</span>
+                <span class="metric-unit">°C</span>
+              </div>
+              <div class="metric-trend-pill">BME280 Ambient</div>
+              <div class="metric-footer">Precision ±0.5°C</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Relative Humidity</span>
+                <span class="pulse-dot"></span>
+              </div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="live-humidity-val">61.0</span>
+                <span class="metric-unit">%</span>
+              </div>
+              <div class="metric-trend-pill">BME280 Hygrometer</div>
+              <div class="metric-footer">Precision ±3% RH</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Atmospheric Pressure</span>
+                <span class="pulse-dot"></span>
+              </div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="live-pressure-val">1013.2</span>
+                <span class="metric-unit">hPa</span>
+              </div>
+              <div class="metric-trend-pill">BME280 Barometer</div>
+              <div class="metric-footer">Precision ±1.0 hPa</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>MQ-135 Gas Response</span>
+                <span class="pulse-dot"></span>
+              </div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="live-gas-val">469</span>
+                <span class="metric-unit">raw</span>
+              </div>
+              <div class="metric-trend-pill">MQ-135 Air Sensor</div>
+              <div class="metric-footer">12-bit ADC (GPIO 34)</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Environmental Noise</span>
+                <span class="pulse-dot"></span>
+              </div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="live-noise-val">48.0</span>
+                <span class="metric-unit">dB SPL</span>
+              </div>
+              <div class="metric-trend-pill">INMP441 Microphone</div>
+              <div class="metric-footer">I2S Audio Pipeline</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LIVE WAVEFORM CANVAS -->
+        <section class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <h2 class="chart-title">Continuous Rolling Telemetry Stream</h2>
+              <p class="chart-subtitle">High-frequency observations entering from the right margin with fluid interpolation.</p>
+            </div>
+            <span class="badge badge-normal" id="stream-cadence-label">10s Sampling</span>
+          </div>
+
+          <div class="chart-viewport">
+            <svg class="chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 240">
+              <line x1="0" x2="1000" y1="60" y2="60" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line x1="0" x2="1000" y1="120" y2="120" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line x1="0" x2="1000" y1="180" y2="180" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <path id="live-waveform-path" fill="none" stroke="#667A3E" stroke-width="2.5" stroke-linecap="round" d=""></path>
+            </svg>
+          </div>
+        </section>
+
+        <!-- HARDWARE TELEMETRY PRESENCE GRID -->
+        <section class="card-surface">
+          <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-md);">Station Subsystem Diagnostics</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md);">
+            <div class="station-node-card">
+              <div class="node-header">
+                <span>MCU Controller</span>
+                <span class="badge badge-normal">OK</span>
+              </div>
+              <div class="node-name">ESP32 DevKit V1</div>
+              <div class="node-desc">Core dual-core 240MHz</div>
+            </div>
+
+            <div class="station-node-card">
+              <div class="node-header">
+                <span>I2C Bus</span>
+                <span class="badge badge-normal">OK</span>
+              </div>
+              <div class="node-name">BME280 (0x76)</div>
+              <div class="node-desc">SDA: GPIO21 · SCL: GPIO22</div>
+            </div>
+
+            <div class="station-node-card">
+              <div class="node-header">
+                <span>ADC1 Interface</span>
+                <span class="badge badge-normal">OK</span>
+              </div>
+              <div class="node-name">MQ-135 Gas Sensor</div>
+              <div class="node-desc">Analog pin GPIO34</div>
+            </div>
+
+            <div class="station-node-card">
+              <div class="node-header">
+                <span>I2S Digital Audio</span>
+                <span class="badge badge-normal">OK</span>
+              </div>
+              <div class="node-name">INMP441 Microphone</div>
+              <div class="node-desc">SCK: GPIO14 · WS: GPIO15 · SD: GPIO32</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app-shell.js"></script>
+  <script src="js/data-layer.js"></script>
+  <script src="js/intelligence.js"></script>
+  <script src="js/pages/live-monitoring.js"></script>
+</body>
+</html>

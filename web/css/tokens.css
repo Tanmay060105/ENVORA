@@ -1,0 +1,92 @@
+/* ==========================================================================
+   ENVORA — Canopy & Commons Design Tokens
+   Source of Truth: Stitch References & docs/16_VISUAL_REFERENCE_GUIDE.md
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------------
+     1. Color Palette (Locked Beige + Olive Green Theme)
+     ------------------------------------------------------------------------ */
+  /* Canvas & Ground Surfaces */
+  --color-canvas: #FBF9F2;             /* Soft Ivory root ground */
+  --color-surface: #F7F3E8;            /* Cream card containment surface */
+  --color-surface-dim: #EFEFD9;        /* Secondary/subtle surface container */
+  --color-surface-pure: #FFFFFF;       /* Pure white (modals/tooltips only) */
+
+  /* Structural Dividers & Borders */
+  --color-border: #E9E0CC;             /* Warm Beige 1px structural dividing lines */
+  --color-border-hover: #9AA77A;       /* Sage interactive outline */
+
+  /* Primary Brand Identity */
+  --color-primary: #3F4D27;            /* Deep Olive - headings & primary identity */
+  --color-primary-hover: #667A3E;      /* Olive - interactive controls & hover states */
+  --color-secondary: #667A3E;          /* Olive - primary telemetry curves */
+  --color-accent-sage: #9AA77A;        /* Sage - regression trendlines & supporting elements */
+
+  /* Typography Colors */
+  --color-text-primary: #292D22;       /* Dark Ink - titles, tabular readings */
+  --color-text-muted: #777866;         /* Muted Earth - labels, units, timestamps */
+  --color-text-inverse: #FBF9F2;       /* Soft Ivory on dark badges/buttons */
+
+  /* Semantic Telemetry States (Purposeful & Muted) */
+  --color-state-normal: #667A3E;       /* Olive - normal baseline conditions */
+  --color-state-warning: #C88A2E;      /* Muted Amber - attention/warning */
+  --color-state-critical: #B84A39;     /* Muted Red - action required/critical */
+
+  /* ------------------------------------------------------------------------
+     2. Typography Hierarchy
+     ------------------------------------------------------------------------ */
+  --font-narrative: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-telemetry: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Type Scale */
+  --text-xs: 0.6875rem;     /* 11px - label-data-sm */
+  --text-sm: 0.8125rem;     /* 13px - body-sm / card headers */
+  --text-base: 0.9375rem;   /* 15px - body-md */
+  --text-lg: 1.0625rem;     /* 17px - body-lg */
+  --text-xl: 1.125rem;      /* 18px - headline-sm */
+  --text-2xl: 1.375rem;     /* 22px - headline-md */
+  --text-3xl: 1.75rem;      /* 28px - scalar metrics */
+  --text-4xl: 2rem;         /* 32px - headline-lg */
+  --text-5xl: 2.5rem;       /* 40px - headline-xl */
+
+  /* ------------------------------------------------------------------------
+     3. Spacing System (8px Base Rhythm)
+     ------------------------------------------------------------------------ */
+  --space-2xs: 0.25rem;     /* 4px  - micro spacing */
+  --space-xs:  0.5rem;      /* 8px  - tight component spacing */
+  --space-sm:  0.75rem;     /* 12px - intermediate spacing */
+  --space-md:  1rem;        /* 16px - standard spacing */
+  --space-lg:  1.5rem;      /* 24px - card interior padding */
+  --space-xl:  2rem;        /* 32px - section separation */
+  --space-2xl: 2.5rem;      /* 40px - desktop page margins */
+  --space-3xl: 3.5rem;      /* 56px - major section separation */
+
+  /* ------------------------------------------------------------------------
+     4. Geometry & Elevation
+     ------------------------------------------------------------------------ */
+  --radius-sm: 0.25rem;     /* 4px - buttons, form fields, badges */
+  --radius-md: 0.375rem;    /* 6px - intermediate containers */
+  --radius-lg: 0.5rem;      /* 8px - metric cards, panels */
+  --radius-full: 9999px;    /* Circular indicators */
+
+  --shadow-none: none;
+  --shadow-subtle: 0 4px 12px -2px rgba(63, 77, 39, 0.06);
+  --shadow-modal: 0 8px 30px -4px rgba(41, 45, 34, 0.08);
+
+  /* ------------------------------------------------------------------------
+     5. Locked Motion Timings (docs/16_VISUAL_REFERENCE_GUIDE.md)
+     ------------------------------------------------------------------------ */
+  --timing-data-enter: 600ms;
+  --timing-param-switch: 500ms;
+  --timing-tooltip: 150ms;
+  --timing-prediction: 850ms;
+  --timing-graph-entrance: 500ms;
+  --ease-natural: cubic-bezier(0.25, 1, 0.5, 1);
+}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENVORA — Reports</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-sidebar-top">
+        <div class="app-sidebar-brand">
+          <div class="brand-icon">EV</div>
+          <div class="brand-info">
+            <span class="brand-title">ENVORA</span>
+            <span class="brand-subtitle">Campus Env. Intelligence</span>
+          </div>
+        </div>
+        <div data-envora-shell-nav></div>
+      </div>
+      <div class="app-sidebar-bottom">
+        <div class="station-node-card">
+          <div class="node-header">
+            <span>Report Generator</span>
+            <span class="node-status-online"><span class="pulse-dot"></span> Ready</span>
+          </div>
+          <div class="node-name">North Quad Eco-Station #01</div>
+          <div class="node-desc">Academic Summary Export</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main-wrapper">
+      <header class="app-header">
+        <div class="header-left">
+          <div class="station-pill">
+            <span>North Quad Eco-Station #01</span>
+          </div>
+          <div class="ticker-text">Academic Environmental Summary Sheet</div>
+        </div>
+        <div class="header-right">
+          <button class="btn-primary" id="btn-print-report">Print / Export PDF</button>
+          <div class="avatar-pill" title="System Operator">OP</div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <div class="hero-state-label">Academic Evaluation Document</div>
+            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">Environmental Report</h1>
+            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
+              Presentation-ready microclimatic observation sheet across the five monitored parameters.
+            </p>
+          </div>
+          <div class="segmented-control">
+            <button class="segmented-btn active" data-report-period="24H">24H Daily</button>
+            <button class="segmented-btn" data-report-period="7D">7D Weekly</button>
+            <button class="segmented-btn" data-report-period="Custom">Custom Range</button>
+          </div>
+        </div>
+
+        <!-- EXECUTIVE SUMMARY CARD -->
+        <section class="card-surface">
+          <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-xs);">Executive Environmental Summary</h2>
+          <p style="font-size: var(--text-sm); color: var(--color-text-primary); line-height: 1.6;">
+            During the monitored 24-hour window, the North Quad Eco-Station recorded steady baseline atmospheric conditions. 
+            Ambient temperature and relative humidity followed an expected diurnal curve without sudden microclimatic inversion. 
+            Atmospheric pressure remained stable around 1013 hPa, while MQ-135 sensor response exhibited nominal baseline air quality with zero sustained threshold excursions. 
+            Acoustic levels measured via INMP441 confirmed a quiet academic quad environment with occasional transient daytime activity.
+          </p>
+        </section>
+
+        <!-- 5-PARAMETER STATISTICAL MATRIX TABLE -->
+        <section class="card-surface">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+            <h2 style="font-size: var(--text-xl);">Five-Parameter Statistical Matrix</h2>
+            <span class="badge badge-normal">Calibrated Sensor Fixtures</span>
+          </div>
+
+          <div class="table-container">
+            <table class="envora-table">
+              <thead>
+                <tr>
+                  <th>Monitored Parameter</th>
+                  <th>Mean Reading</th>
+                  <th>Peak Value</th>
+                  <th>Minimum Value</th>
+                  <th>Std Deviation (±)</th>
+                </tr>
+              </thead>
+              <tbody id="report-matrix-body">
+                <!-- Dynamically populated by reports.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- DIURNAL VARIATION OBSERVATION (DAY VS NIGHT) -->
+        <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-md);">
+          <div class="card-surface">
+            <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-xs);">Daytime Microclimate (06:00 - 18:00)</h3>
+            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-sm);">
+              Moderate solar heating and elevated daytime foot traffic.
+            </p>
+            <div style="font-family: var(--font-telemetry); font-size: var(--text-xs); line-height: 1.8;">
+              <div>• Mean Temperature: 24.8°C (Peak: 25.0°C)</div>
+              <div>• Mean Humidity: 60.8%</div>
+              <div>• Mean Atmospheric Pressure: 1013.2 hPa</div>
+              <div>• Mean MQ-135 Response: 485 raw</div>
+              <div>• Mean Noise Level: 50.2 dB SPL</div>
+            </div>
+          </div>
+
+          <div class="card-surface">
+            <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-xs);">Nocturnal Microclimate (18:00 - 06:00)</h3>
+            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-sm);">
+              Radiative surface cooling and minimal ambient acoustic disturbance.
+            </p>
+            <div style="font-family: var(--font-telemetry); font-size: var(--text-xs); line-height: 1.8;">
+              <div>• Mean Temperature: 23.6°C (Min: 23.5°C)</div>
+              <div>• Mean Humidity: 63.8%</div>
+              <div>• Mean Atmospheric Pressure: 1013.0 hPa</div>
+              <div>• Mean MQ-135 Response: 425 raw</div>
+              <div>• Mean Noise Level: 46.5 dB SPL</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ACADEMIC SIGN-OFF AND CALIBRATION NOTICE -->
+        <section class="card-surface-dim">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+              <span class="badge badge-normal">Academic Evaluation Record</span>
+              <p style="margin-top: var(--space-xs); font-size: var(--text-xs); color: var(--color-text-muted); max-width: 600px;">
+                This summary document is generated from calibrated ESP32 station observations for student major project evaluation. 
+                Data contract strictly encompasses Temperature, Humidity, Atmospheric Pressure, MQ-135 Gas Response, and Environmental Noise.
+              </p>
+            </div>
+            <div style="font-family: var(--font-telemetry); font-size: var(--text-xs); color: var(--color-text-muted); text-align: right;">
+              <div>Node: ESP32-WROOM-32U</div>
+              <div>Status: Verified Ingest</div>
+              <div>Document ID: ENV-REP-2026-01</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app-shell.js"></script>
+  <script src="js/data-layer.js"></script>
+  <script src="js/intelligence.js"></script>
+  <script src="js/pages/reports.js"></script>
+</body>
+</html>

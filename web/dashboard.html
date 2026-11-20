@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENVORA — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="app-sidebar">
+      <div class="app-sidebar-top">
+        <div class="app-sidebar-brand">
+          <div class="brand-icon">EV</div>
+          <div class="brand-info">
+            <span class="brand-title">ENVORA</span>
+            <span class="brand-subtitle">Campus Env. Intelligence</span>
+          </div>
+        </div>
+        <!-- Shell Navigation Mount Point -->
+        <div data-envora-shell-nav></div>
+      </div>
+      <div class="app-sidebar-bottom">
+        <div class="station-node-card">
+          <div class="node-header">
+            <span>Active Station</span>
+            <span class="node-status-online"><span class="pulse-dot"></span> Online</span>
+          </div>
+          <div class="node-name">North Quad Eco-Station #01</div>
+          <div class="node-desc">ESP32 DevKit V1 • Telemetry v2.4.1</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN APPLICATION WRAPPER -->
+    <div class="app-main-wrapper">
+      <!-- TOP HEADER -->
+      <header class="app-header">
+        <div class="header-left">
+          <div class="station-pill">
+            <span>North Quad Eco-Station #01</span>
+          </div>
+          <div class="ticker-text" id="hero-last-updated">
+            Synchronized · 4s ago
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="hardware-pill">
+            <span class="pulse-dot"></span>
+            <span>ESP32 • ONLINE</span>
+          </div>
+          <div class="avatar-pill" title="System Operator">OP</div>
+        </div>
+      </header>
+
+      <!-- CONTENT AREA -->
+      <main class="app-content">
+        <!-- 1. ENVIRONMENTAL STATE HERO BANNER -->
+        <section class="hero-state-banner">
+          <div class="hero-state-content">
+            <div class="hero-state-eyebrow">
+              <span class="pulse-dot"></span>
+              <span class="hero-state-label">Ambient Ecological State</span>
+            </div>
+            <div class="hero-state-title-row">
+              <div class="hero-pulse-wrap">
+                <span class="hero-pulse-ring"></span>
+                <span class="hero-pulse-core"><span class="hero-pulse-dot"></span></span>
+              </div>
+              <h1 class="hero-state-title" id="ambient-state-title">NORMAL</h1>
+              <span class="badge badge-normal" id="ambient-state-badge">Baseline Stable</span>
+            </div>
+            <p class="hero-state-desc" id="ambient-state-desc">
+              Campus environmental conditions across North Quad are currently within nominal baseline parameters with balanced atmospheric pressure and quiet acoustic levels.
+            </p>
+          </div>
+          <!-- Hero Telemetry & Device Metadata -->
+          <div class="hero-meta-panel">
+            <div class="hero-meta-row">
+              <span class="hero-meta-key">Last Updated</span>
+              <span class="hero-meta-val" id="hero-last-updated-panel">14:32:08 EDT · 4s ago</span>
+            </div>
+            <div class="hero-meta-divider"></div>
+            <div class="hero-meta-row">
+              <span class="hero-meta-key">Freshness Flow</span>
+              <span class="hero-meta-val hero-meta-flow" id="hero-freshness">
+                <span class="pulse-dot"></span> 100% Active Stream
+              </span>
+            </div>
+            <div class="hero-meta-divider"></div>
+            <div class="hero-meta-row">
+              <span class="hero-meta-key">Hardware Node</span>
+              <span class="hero-meta-val">ESP32 DevKit V1 • ONLINE</span>
+            </div>
+            <div class="hero-meta-divider"></div>
+            <div class="hero-meta-row">
+              <span class="hero-meta-key">Field Quality</span>
+              <span class="hero-meta-val" style="color: var(--color-state-normal);">Nominal Living Lab</span>
+            </div>
+            <div class="hero-meta-divider"></div>
+            <div class="hero-meta-row">
+              <span class="hero-meta-key">Telemetry Stream</span>
+              <span class="hero-meta-val" id="hero-data-avail" style="color: var(--color-state-normal);">COMPLETE (5/5 Active)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. EXACT FIVE SENSOR METRIC CARDS -->
+        <section>
+          <div class="metric-grid-5">
+            <!-- Card 1: Temperature -->
+            <div class="metric-card">
+              <div class="metric-card-header">Temperature</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="temp-val">24.8</span>
+                <span class="metric-unit">°C</span>
+              </div>
+              <div class="metric-trend-pill">
+                <span class="material-symbols-outlined text-[15px]">trending_up</span>
+                <span id="temp-trend">+0.2°C/h</span>
+              </div>
+              <div class="metric-footer" id="temp-footer">BME280 · I2C 0x76</div>
+            </div>
+
+            <!-- Card 2: Relative Humidity -->
+            <div class="metric-card">
+              <div class="metric-card-header">Relative Humidity</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="humidity-val">61.0</span>
+                <span class="metric-unit">%</span>
+              </div>
+              <div class="metric-trend-pill">
+                <span class="material-symbols-outlined text-[15px]">trending_down</span>
+                <span id="humidity-trend">-1.4%/h</span>
+              </div>
+              <div class="metric-footer" id="humidity-footer">BME280 · I2C 0x76</div>
+            </div>
+
+            <!-- Card 3: Atmospheric Pressure -->
+            <div class="metric-card">
+              <div class="metric-card-header">Atmospheric Pressure</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="pressure-val">1013.2</span>
+                <span class="metric-unit">hPa</span>
+              </div>
+              <div class="metric-trend-pill">
+                <span class="material-symbols-outlined text-[15px]">trending_flat</span>
+                <span id="pressure-trend">Steady Barometer</span>
+              </div>
+              <div class="metric-footer" id="pressure-footer">BME280 · I2C 0x76</div>
+            </div>
+
+            <!-- Card 4: MQ-135 Gas Response -->
+            <div class="metric-card">
+              <div class="metric-card-header">MQ-135 Gas Response</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="gas-val">469</span>
+                <span class="metric-unit">raw</span>
+              </div>
+              <div class="metric-trend-pill">
+                <span class="material-symbols-outlined text-[15px]">air</span>
+                <span id="gas-trend">Nominal Baseline</span>
+              </div>
+              <div class="metric-footer" id="gas-footer">MQ-135 · ADC GPIO34</div>
+            </div>
+
+            <!-- Card 5: Environmental Noise -->
+            <div class="metric-card">
+              <div class="metric-card-header">Environmental Noise</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="noise-val">48.0</span>
+                <span class="metric-unit">dBA</span>
+              </div>
+              <div class="metric-trend-pill">
+                <span class="material-symbols-outlined text-[15px]">volume_down</span>
+                <span id="noise-trend">Quiet Quad</span>
+              </div>
+              <div class="metric-footer" id="noise-footer">INMP441 · I2S Audio</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. ENVIRONMENTAL FLOW ANALYSIS VISUALIZATION -->
+        <section class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <h2 class="chart-title">Environmental Flow Analysis</h2>
+                <span class="badge-model">Composite Model</span>
+              </div>
+              <p class="chart-subtitle">Continuous multi-sensor composite ecological baseline and diurnal drift.</p>
+            </div>
+            <div class="segmented-control">
+              <button class="segmented-btn active" data-range-btn="24H">24H</button>
+              <button class="segmented-btn" data-range-btn="7D">7D</button>
+              <button class="segmented-btn" data-range-btn="30D">30D</button>
+              <button class="segmented-btn" data-range-btn="Custom">Custom</button>
+            </div>
+          </div>
+
+          <div class="chart-viewport flow-chart-viewport" id="flow-chart-container">
+            <!-- Reference Lines -->
+            <div class="flow-ref-line flow-ref-upper">
+              <span class="flow-ref-label">Upper Range (80)</span>
+            </div>
+            <div class="flow-ref-line flow-ref-target">
+              <span class="flow-ref-label">Diurnal Target (50)</span>
+            </div>
+            <div class="flow-ref-line flow-ref-baseline">
+              <span class="flow-ref-label">Baseline Resting (20)</span>
+            </div>
+
+            <!-- SVG Curves Canvas -->
+            <svg class="chart-svg flow-chart-svg" id="flow-chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 300">
+              <defs>
+                <linearGradient id="flowGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#3f4d27" stop-opacity="0.25"></stop>
+                  <stop offset="100%" stop-color="#3f4d27" stop-opacity="0.01"></stop>
+                </linearGradient>
+                <linearGradient id="secondaryFlowGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#9AA77A" stop-opacity="0.18"></stop>
+                  <stop offset="100%" stop-color="#9AA77A" stop-opacity="0.0"></stop>
+                </linearGradient>
+              </defs>
+              <!-- Secondary Wash -->
+              <path id="flow-secondary-area" fill="url(#secondaryFlowGradient)" d=""></path>
+              <!-- Primary Wash -->
+              <path id="flow-area-path" fill="url(#flowGradient)" d=""></path>
+              <!-- Secondary Subtle Flow Line -->
+              <path id="flow-secondary-line" fill="none" stroke="#76786d" stroke-dasharray="5 5" stroke-opacity="0.5" stroke-width="1.75" d=""></path>
+              <!-- Primary Organic Flow Curve -->
+              <path id="flow-line-path" fill="none" stroke="#3f4d27" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d=""></path>
+              <!-- Dynamic Crosshair / Inspection Marker -->
+              <line id="flow-crosshair" stroke="#3f4d27" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1.5" x1="0" x2="0" y1="20" y2="280" style="display: none;"></line>
+              <circle id="flow-crosshair-outer" cx="0" cy="0" fill="#3f4d27" fill-opacity="0.2" r="9" style="display: none;"></circle>
+              <circle id="flow-crosshair-inner" cx="0" cy="0" fill="#fbfbe4" r="5" stroke="#3f4d27" stroke-width="3" style="display: none;"></circle>
+            </svg>
+
+            <!-- Floating Interactive Tooltip -->
+            <div class="flow-tooltip" id="chart-hover-tooltip" style="display: none;"></div>
+
+            <!-- X-Axis Labels -->
+            <div class="chart-xaxis-labels" id="flow-xaxis-labels">
+              <span>00:00</span>
+              <span>04:00</span>
+              <span>08:00</span>
+              <span>12:00</span>
+              <span class="xaxis-live-pill">14:00 (Live)</span>
+              <span>18:00</span>
+              <span>22:00</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. BOTTOM DUAL SECTION: SYSTEM TELEMETRY & FIELD LOGS / SUMMARY -->
+        <div class="dashboard-lower-grid">
+          <!-- LEFT COLUMN: SYSTEM SIGNALS & DEVICE STATUS -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+            <!-- System Signals -->
+            <div class="dashboard-submodule-card">
+              <div class="submodule-header">
+                <div class="submodule-title-wrap">
+                  <span class="material-symbols-outlined submodule-icon">hub</span>
+                  <h3 class="submodule-title">System Signals</h3>
+                </div>
+                <span class="badge-fidelity">High Fidelity</span>
+              </div>
+              <div class="signals-list">
+                <div class="signals-item">
+                  <span class="signals-label">Latest Ingestion</span>
+                  <span class="signals-val" id="signal-ingestion">1.2s avg (Nominal)</span>
+                </div>
+                <div class="signals-item">
+                  <span class="signals-label">Active Sensors</span>
+                  <span class="signals-val signals-val-online">
+                    <span class="pulse-dot"></span>
+                    <span id="signal-active-sensors">5 / 5 Online</span>
+                  </span>
+                </div>
+                <div class="signals-item">
+                  <span class="signals-label">Data Points Today</span>
+                  <span class="signals-val" id="signal-datapoints">24,192 records</span>
+                </div>
+                <div class="signals-item">
+                  <span class="signals-label">Hardware Node</span>
+                  <span class="signals-val">ESP32 DevKit V1 (v2.4.1)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Device Status Block -->
+            <div class="dashboard-submodule-card">
+              <div class="submodule-header">
+                <div class="submodule-title-wrap">
+                  <span class="material-symbols-outlined submodule-icon">memory</span>
+                  <h3 class="submodule-title">Device Status</h3>
+                </div>
+                <span class="badge-connected">
+                  <span class="pulse-dot"></span> Connected
+                </span>
+              </div>
+              <div class="device-banner">
+                <div class="device-banner-left">
+                  <span class="material-symbols-outlined device-banner-icon">router</span>
+                  <div>
+                    <div class="device-banner-name">ESP32 DevKit V1 • ONLINE</div>
+                    <div class="device-banner-hub">North Quad Mesh Hub</div>
+                  </div>
+                </div>
+                <div class="device-banner-right">
+                  <span class="device-banner-active" id="device-active-count">5/5 Sensors Active</span>
+                  <span class="device-banner-tx" id="device-last-tx">Last transmission: 4s ago</span>
+                </div>
+              </div>
+              <div class="device-specs-grid">
+                <div class="device-spec-box">
+                  <span class="device-spec-label">Power Reserve</span>
+                  <span class="device-spec-val">USB 5V / 98% LiPo</span>
+                </div>
+                <div class="device-spec-box">
+                  <span class="device-spec-label">Mesh Protocol</span>
+                  <span class="device-spec-val">WPA3-Enterprise</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: RECENT ALERTS & DAILY SUMMARY -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+            <!-- Recent Field Logs & Alerts -->
+            <div class="dashboard-submodule-card">
+              <div class="submodule-header">
+                <div class="submodule-title-wrap">
+                  <span class="material-symbols-outlined submodule-icon">notifications_none</span>
+                  <h3 class="submodule-title">Recent Field Logs &amp; Alerts</h3>
+                </div>
+                <span class="font-telemetry text-xs text-muted">Live Filter</span>
+              </div>
+              <div class="field-logs-list">
+                <!-- Log 1 -->
+                <div class="field-log-item">
+                  <div class="field-log-main">
+                    <span class="field-log-badge badge-log-normal">NORMAL</span>
+                    <div class="field-log-details">
+                      <span class="field-log-msg">Temperature stabilized within optimal seasonal baseline (24.8°C).</span>
+                      <span class="field-log-sub">Canopy microclimate equilibrium verified</span>
+                    </div>
+                  </div>
+                  <span class="field-log-time">14:15</span>
+                </div>
+                <!-- Log 2 -->
+                <div class="field-log-item">
+                  <div class="field-log-main">
+                    <span class="field-log-badge badge-log-warning">WARNING</span>
+                    <div class="field-log-details">
+                      <span class="field-log-msg">Atmospheric pressure transient variation (1004.8 hPa).</span>
+                      <span class="field-log-sub">Barometric variation detected across Quad barometer</span>
+                    </div>
+                  </div>
+                  <span class="field-log-time">12:40</span>
+                </div>
+                <!-- Log 3 -->
+                <div class="field-log-item">
+                  <div class="field-log-main">
+                    <span class="field-log-badge badge-log-normal">NORMAL</span>
+                    <div class="field-log-details">
+                      <span class="field-log-msg">Air quality restored to baseline (MQ-135 reading 452).</span>
+                      <span class="field-log-sub">Dissipation complete; no secondary pollutants detected</span>
+                    </div>
+                  </div>
+                  <span class="field-log-time">11:05</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Daily Environmental Summary: Clean Analytical Grid -->
+            <div class="dashboard-submodule-card">
+              <div class="submodule-header">
+                <div class="submodule-title-wrap">
+                  <span class="material-symbols-outlined submodule-icon">analytics</span>
+                  <h3 class="submodule-title">Daily Environmental Summary</h3>
+                </div>
+                <span class="font-telemetry text-xs text-muted">24h Quad Averages</span>
+              </div>
+              <div class="daily-summary-grid">
+                <div class="daily-summary-item">
+                  <span class="daily-summary-label">Avg Temp</span>
+                  <div class="daily-summary-val" id="summary-avg-temp">24.8 °C</div>
+                  <span class="daily-summary-note">Optimal Living</span>
+                </div>
+                <div class="daily-summary-item">
+                  <span class="daily-summary-label">Avg Humidity</span>
+                  <div class="daily-summary-val" id="summary-avg-humidity">61.0 %</div>
+                  <span class="daily-summary-note">Balanced Flora</span>
+                </div>
+                <div class="daily-summary-item">
+                  <span class="daily-summary-label">Avg Pressure</span>
+                  <div class="daily-summary-val" id="summary-avg-pressure">1013.2 hPa</div>
+                  <span class="daily-summary-note">Barometric Equilibrium</span>
+                </div>
+                <div class="daily-summary-item">
+                  <span class="daily-summary-label">Avg Sound</span>
+                  <div class="daily-summary-val" id="summary-avg-sound">48.0 dBA</div>
+                  <span class="daily-summary-note">Study Corridor</span>
+                </div>
+                <div class="daily-summary-item">
+                  <span class="daily-summary-label">MQ-135 Trace</span>
+                  <div class="daily-summary-val" id="summary-avg-gas">469 raw</div>
+                  <span class="daily-summary-note">Pure Quadrant Air</span>
+                </div>
+                <div class="daily-summary-item">
+                  <span class="daily-summary-label">Overall State</span>
+                  <div class="daily-summary-val daily-summary-state" id="summary-avg-state">Exemplary</div>
+                  <span class="daily-summary-note">Bio-baseline Verified</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app-shell.js"></script>
+  <script src="js/data-layer.js"></script>
+  <script src="js/intelligence.js"></script>
+  <script src="js/pages/dashboard.js"></script>
+</body>
+</html>

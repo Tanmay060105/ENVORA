@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENVORA — Historical Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-sidebar-top">
+        <div class="app-sidebar-brand">
+          <div class="brand-icon">EV</div>
+          <div class="brand-info">
+            <span class="brand-title">ENVORA</span>
+            <span class="brand-subtitle">Campus Env. Intelligence</span>
+          </div>
+        </div>
+        <div data-envora-shell-nav></div>
+      </div>
+      <div class="app-sidebar-bottom">
+        <div class="station-node-card">
+          <div class="node-header">
+            <span>Historical Ingestion</span>
+            <span class="node-status-online"><span class="pulse-dot"></span> Synced</span>
+          </div>
+          <div class="node-name">North Quad Eco-Station #01</div>
+          <div class="node-desc">Archive: Rolling Buffer</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main-wrapper">
+      <header class="app-header">
+        <div class="header-left">
+          <div class="station-pill">
+            <span>North Quad Eco-Station #01</span>
+          </div>
+          <div class="ticker-text">Historical Telemetry · Synced</div>
+        </div>
+        <div class="header-right">
+          <div class="hardware-pill">
+            <span class="pulse-dot"></span>
+            <span>ESP32 • ONLINE</span>
+          </div>
+          <div class="avatar-pill" title="System Operator">OP</div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <div class="hero-state-label">Analytical Workspace</div>
+            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">Historical Trend Analysis</h1>
+            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
+              Longitudinal multi-scale trend observations across calibrated campus sensor records.
+            </p>
+          </div>
+          <div class="segmented-control">
+            <button class="segmented-btn active" data-hist-range="24H">24H</button>
+            <button class="segmented-btn" data-hist-range="7D">7D</button>
+            <button class="segmented-btn" data-hist-range="30D">30D</button>
+            <button class="segmented-btn" data-hist-range="Custom">Custom</button>
+          </div>
+        </div>
+
+        <!-- 5-PARAMETER SWITCHER BAR -->
+        <section class="param-selector-bar">
+          <button class="param-btn active" data-analysis-param="temperature">
+            <span>Temperature</span>
+            <span class="param-unit-tag">°C</span>
+          </button>
+          <button class="param-btn" data-analysis-param="humidity">
+            <span>Humidity</span>
+            <span class="param-unit-tag">%</span>
+          </button>
+          <button class="param-btn" data-analysis-param="pressure">
+            <span>Atmospheric Pressure</span>
+            <span class="param-unit-tag">hPa</span>
+          </button>
+          <button class="param-btn" data-analysis-param="gas_response">
+            <span>MQ-135 Gas</span>
+            <span class="param-unit-tag">raw</span>
+          </button>
+          <button class="param-btn" data-analysis-param="noise">
+            <span>Environmental Noise</span>
+            <span class="param-unit-tag">dB SPL</span>
+          </button>
+        </section>
+
+        <!-- PRIMARY HISTORICAL GRAPH CENTERPIECE -->
+        <section class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <h2 class="chart-title" id="hist-chart-title">Environmental Trend: Temperature</h2>
+              <div style="display: flex; align-items: center; gap: var(--space-md); margin-top: 4px;">
+                <span class="badge badge-normal" id="hist-param-badge">Temperature (°C)</span>
+                <span class="ticker-text" id="hist-series-label">Observed Temperature (°C)</span>
+                <span class="ticker-text" id="hist-threshold-label" style="color: var(--color-state-warning);">Reference Limit: 28.0 °C</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-viewport" id="hist-chart-container" style="position: relative;">
+            <div class="chart-tooltip" id="hist-chart-tooltip" style="display: none; position: absolute;"></div>
+            <svg class="chart-svg" id="hist-chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 300">
+              <defs>
+                <linearGradient id="histGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#667A3E" stop-opacity="0.3"></stop>
+                  <stop offset="100%" stop-color="#667A3E" stop-opacity="0.02"></stop>
+                </linearGradient>
+              </defs>
+              <line x1="0" x2="1000" y1="60" y2="60" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line x1="0" x2="1000" y1="140" y2="140" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line x1="0" x2="1000" y1="220" y2="220" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
+              <line id="hist-thresh-upper-line" x1="0" x2="1000" y1="0" y2="0" stroke="#C88A2E" stroke-dasharray="4 4" stroke-width="1.5" style="display:none;"></line>
+              <text id="hist-thresh-upper-text" x="990" y="0" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#C88A2E" style="display:none;"></text>
+              <line id="hist-thresh-lower-line" x1="0" x2="1000" y1="0" y2="0" stroke="#C88A2E" stroke-dasharray="4 4" stroke-width="1.5" style="display:none;"></line>
+              <text id="hist-thresh-lower-text" x="990" y="0" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#C88A2E" style="display:none;"></text>
+              <path id="hist-area-path" fill="url(#histGrad)" d=""></path>
+              <path id="hist-line-path" fill="none" stroke="#667A3E" stroke-width="2.5" d=""></path>
+              <line id="hist-crosshair" class="chart-crosshair" x1="0" x2="0" y1="20" y2="280" style="display:none;"></line>
+              <circle id="hist-inspect-node" class="chart-inspect-node" cx="0" cy="0" r="4.5" style="display:none;"></circle>
+            </svg>
+          </div>
+        </section>
+
+        <!-- STATISTICAL SUMMARY MATRIX (4 METRICS) -->
+        <section>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md);">
+            <div class="metric-card">
+              <div class="metric-card-header">AVERAGE (WINDOW)</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="stat-avg-val">--</span>
+                <span class="metric-unit" id="stat-avg-val-unit"></span>
+              </div>
+              <div class="metric-trend-pill">Mean value calculation</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">MINIMUM</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="stat-min-val">--</span>
+                <span class="metric-unit" id="stat-min-val-unit"></span>
+              </div>
+              <div class="metric-trend-pill">Lowest observed point</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">MAXIMUM</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="stat-max-val">--</span>
+                <span class="metric-unit" id="stat-max-val-unit"></span>
+              </div>
+              <div class="metric-trend-pill" style="color: var(--color-state-warning);">Peak reading observed</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-card-header">CURRENT VALUE</div>
+              <div class="metric-reading-row">
+                <span class="metric-scalar" id="stat-cur-val">--</span>
+                <span class="metric-unit" id="stat-cur-val-unit"></span>
+              </div>
+              <div class="metric-trend-pill">Most recent fixture ingest</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TREND INTERPRETATION NARRATIVE -->
+        <section class="card-surface-dim">
+          <div style="display: flex; align-items: center; gap: var(--space-md);">
+            <span class="badge badge-normal">DIURNAL OBSERVATION</span>
+            <p id="hist-trend-narrative" style="font-size: var(--text-sm); color: var(--color-text-primary); margin: 0;">
+              Loading historical trend observations...
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app-shell.js"></script>
+  <script src="js/data-layer.js"></script>
+  <script src="js/intelligence.js"></script>
+  <script src="js/pages/historical-analysis.js"></script>
+</body>
+</html>

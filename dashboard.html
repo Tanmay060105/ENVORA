@@ -1,0 +1,472 @@
+﻿<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_dashboard" name="shell-type">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-container-low": "#f5f5df",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed": "#dbe8b7",
+            "on-surface-variant": "#45483e",
+            "tertiary-container": "#414c27",
+            "outline": "#76786d",
+            "on-primary-container": "#adbe8d",
+            "surface-variant": "#e4e4ce",
+            "on-tertiary-fixed": "#151f02",
+            "on-primary-fixed-variant": "#3d4b26",
+            "tertiary": "#2b3513",
+            "on-surface": "#1b1d0f",
+            "primary-fixed": "#d8e9b6",
+            "outline-variant": "#c6c8ba",
+            "surface-bright": "#fbfbe4",
+            "on-error": "#ffffff",
+            "background": "#fbfbe4",
+            "on-error-container": "#93000a",
+            "secondary-fixed-dim": "#b8cf8a",
+            "on-tertiary-container": "#afbc8e",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1b1d0f",
+            "primary": "#293613",
+            "tertiary-fixed-dim": "#bfcc9c",
+            "surface": "#fbfbe4",
+            "on-secondary-fixed-variant": "#3b4d16",
+            "primary-fixed-dim": "#bccd9c",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#404b26",
+            "secondary": "#52652b",
+            "secondary-fixed": "#d4eba3",
+            "surface-container-highest": "#e4e4ce",
+            "inverse-surface": "#303223",
+            "surface-container-lowest": "#ffffff",
+            "inverse-primary": "#bccd9c",
+            "inverse-on-surface": "#f2f2dc",
+            "surface-container": "#efefd9",
+            "error": "#ba1a1a",
+            "on-secondary-fixed": "#141f00",
+            "surface-dim": "#dbdbc6",
+            "on-primary-fixed": "#131f01",
+            "surface-tint": "#55633b",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#56692f",
+            "surface-container-high": "#eae9d4",
+            "secondary-container": "#d1e9a1",
+            "primary-container": "#3f4d27"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.375rem",
+            "xl": "0.625rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Hanken Grotesk", "sans-serif"],
+            "body": ["Hanken Grotesk", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#fbfbe4] font-body text-[#1b1d0f] antialiased">
+<!-- SIDEBAR NAVIGATION -->
+<aside class="fixed left-0 top-0 h-full w-72 bg-[#f5f5df] border-r border-[#e4e4ce]/60 z-50 flex flex-col justify-between py-8 px-6">
+<div class="flex flex-col gap-8">
+<!-- Brand Header -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-[#3f4d27] flex items-center justify-center text-white shadow-sm">
+<span class="material-symbols-outlined text-[22px]">potted_plant</span>
+</div>
+<div>
+<div class="font-headline font-semibold text-base tracking-tight text-[#293613]">CAMPUS ENVIRONMENT</div>
+<div class="font-mono text-xs text-[#76786d] uppercase tracking-wider">Env. Intelligence Platform</div>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-1.5">
+<div class="px-2 pb-2 font-mono text-xs text-[#76786d] uppercase tracking-wider">Telemetric Modules</div>
+<nav class="flex flex-col gap-1">
+<a aria-current="page" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-[#3f4d27] text-white font-medium shadow-sm transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#45483e] hover:bg-[#eae9d4] hover:text-[#1b1d0f] transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">sensors</span>
+<span class="text-sm">Live Monitoring</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#45483e] hover:bg-[#eae9d4] hover:text-[#1b1d0f] transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+<span class="text-sm">Historical Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#45483e] hover:bg-[#eae9d4] hover:text-[#1b1d0f] transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">model_training</span>
+<span class="text-sm">Prediction</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#45483e] hover:bg-[#eae9d4] hover:text-[#1b1d0f] transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications_active</span>
+<span class="text-sm">Alerts</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#45483e] hover:bg-[#eae9d4] hover:text-[#1b1d0f] transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">summarize</span>
+<span class="text-sm">Reports</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- Sidebar Bottom Status Footer -->
+<div class="flex flex-col gap-3 pt-6 border-t border-[#e4e4ce]/80">
+<div class="p-3.5 rounded-lg bg-[#efefd9]/80 flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="text-[#76786d]">Active Node</span>
+<span class="text-[#52652b] font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-[#52652b]"></span> Online
+          </span>
+</div>
+<div class="text-sm font-medium text-[#293613] truncate">North Quad Eco-Station #01</div>
+<div class="text-xs text-[#76786d] font-mono">Core Mesh Node V2</div>
+</div>
+<div class="flex items-center justify-between px-1 text-xs font-mono text-[#76786d]">
+<span>Telemetry v2.4.1</span>
+<span class="w-2 h-2 rounded-full bg-[#52652b]"></span>
+</div>
+</div>
+</aside>
+<!-- MAIN WRAPPER -->
+<div class="pl-72 min-h-screen flex flex-col bg-[#fbfbe4]">
+<!-- TOP HEADER -->
+<header class="h-20 border-b border-[#e4e4ce]/60 bg-[#fbfbe4]/90 backdrop-blur-md sticky top-0 z-40 px-10 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-[#f5f5df] border border-[#e4e4ce]/80 px-3.5 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[18px] text-[#52652b]">location_on</span>
+<span class="text-sm font-medium text-[#1b1d0f]">North Quad Eco-Station #01</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-[#76786d] font-mono">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span>Updated 4s ago</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-[#f5f5df] border border-[#e4e4ce]/80 px-3.5 py-1.5 rounded-lg">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#52652b] opacity-60"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#52652b]"></span>
+</span>
+<span class="font-mono text-xs text-[#293613] font-medium tracking-wide">ESP32 DevKit V1 • ONLINE</span>
+</div>
+<div class="w-9 h-9 rounded-full bg-[#3f4d27] text-white flex items-center justify-center font-medium shadow-sm">
+<span class="material-symbols-outlined text-[18px]">person</span>
+</div>
+</div>
+</header>
+<!-- CONTENT AREA -->
+<main class="w-full flex-1">
+<div class="max-w-[1400px] mx-auto px-10 py-10 flex flex-col gap-10">
+<!-- 1. ENVIRONMENTAL STATE HERO -->
+<section class="bg-[#f5f5df] rounded-2xl p-8 lg:p-10 border border-[#e4e4ce]/80 shadow-[0_2px_12px_rgba(41,54,19,0.03)] flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+<div class="flex flex-col gap-3 max-w-2xl">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#52652b]"></span>
+<span class="font-mono text-xs text-[#76786d] uppercase tracking-widest font-medium">Ambient Ecological State</span>
+</div>
+<div class="flex items-center gap-5 pt-1">
+<!-- Subtle Environmental Pulse Ring -->
+<div class="relative flex items-center justify-center w-10 h-10">
+<span class="absolute inline-flex h-10 w-10 rounded-full bg-[#52652b]/15 animate-pulse"></span>
+<span class="w-5 h-5 rounded-full bg-[#3f4d27] flex items-center justify-center text-white">
+<span class="w-2 h-2 rounded-full bg-[#d4eba3]"></span>
+</span>
+</div>
+<h1 class="text-5xl lg:text-6xl font-headline font-bold text-[#3f4d27] tracking-tight">NORMAL</h1>
+<span class="bg-[#eae9d4] px-3 py-1 rounded-md text-[#293613] font-mono text-xs font-semibold tracking-wider">
+                94 / 100 BIO-SCORE
+              </span>
+</div>
+<p class="text-base text-[#45483e] leading-relaxed pt-1">
+              Campus environmental conditions are currently within the expected range. Microclimate atmospheric metrics across North Quad exhibit stable diurnal equilibrium with balanced transpiration rates.
+            </p>
+</div>
+<!-- Hero Telemetry & Device Metadata -->
+<div class="bg-[#efefd9] rounded-xl p-6 flex flex-col gap-3.5 min-w-[310px] border border-[#e4e4ce]/60 self-stretch lg:self-center"><div class="flex items-center justify-between gap-6 text-[13px] font-mono"><span class="text-[#76786d]">Last Updated</span><span class="text-[#293613] font-semibold">14:32:08 EDT · 4s ago</span></div><div class="h-px bg-[#e4e4ce]/70 w-full"></div><div class="flex items-center justify-between gap-6 text-[13px] font-mono"><span class="text-[#76786d]">Freshness Flow</span><span class="text-[#52652b] font-semibold flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#52652b]"></span> 100% Active Stream</span></div><div class="h-px bg-[#e4e4ce]/70 w-full"></div><div class="flex items-center justify-between gap-6 text-[13px] font-mono"><span class="text-[#76786d]">Hardware Node</span><span class="text-[#293613] font-semibold">ESP32 DevKit V1 • ONLINE</span></div><div class="h-px bg-[#e4e4ce]/70 w-full"></div><div class="flex items-center justify-between gap-6 text-[13px] font-mono"><span class="text-[#76786d]">Field Quality</span><span class="text-[#52652b] font-semibold">Nominal Living Lab</span></div></div>
+</section>
+<!-- 2. SENSOR CARDS: 7 PRIMARY SIGNALS -->
+<section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"><div class="bg-[#f5f5df] border border-[#e4e4ce]/80 rounded-xl p-6 flex flex-col justify-between hover:bg-[#eae9d4]/60 transition-colors shadow-sm"><div class="text-[13px] font-headline text-[#45483e] font-medium tracking-tight mb-2">Temperature</div><div class="my-2"><div class="flex items-baseline gap-1.5 font-mono"><span class="text-3xl lg:text-4xl font-bold text-[#293613] tracking-tight">24.8</span><span class="text-sm text-[#76786d] font-normal">°C</span></div><div class="flex items-center gap-1.5 text-xs font-mono text-[#52652b] mt-2.5 font-medium"><span class="material-symbols-outlined text-[15px]">trending_up</span><span>+0.2°C/h</span></div></div><div class="text-xs font-mono text-[#76786d] pt-3 border-t border-[#e4e4ce]/60">Updated 4s ago</div></div><div class="bg-[#f5f5df] border border-[#e4e4ce]/80 rounded-xl p-6 flex flex-col justify-between hover:bg-[#eae9d4]/60 transition-colors shadow-sm"><div class="text-[13px] font-headline text-[#45483e] font-medium tracking-tight mb-2">Humidity</div><div class="my-2"><div class="flex items-baseline gap-1.5 font-mono"><span class="text-3xl lg:text-4xl font-bold text-[#293613] tracking-tight">61.0</span><span class="text-sm text-[#76786d] font-normal">%</span></div><div class="flex items-center gap-1.5 text-xs font-mono text-[#45483e] mt-2.5 font-medium"><span class="material-symbols-outlined text-[15px]">trending_down</span><span>-1.4%/h</span></div></div><div class="text-xs font-mono text-[#76786d] pt-3 border-t border-[#e4e4ce]/60">Updated 4s ago</div></div><div class="bg-[#f5f5df] border border-[#e4e4ce]/80 rounded-xl p-6 flex flex-col justify-between hover:bg-[#eae9d4]/60 transition-colors shadow-sm"><div class="text-[13px] font-headline text-[#45483e] font-medium tracking-tight mb-2">PM 1.0</div><div class="my-2"><div class="flex items-baseline gap-1.5 font-mono"><span class="text-3xl lg:text-4xl font-bold text-[#293613] tracking-tight">12</span><span class="text-xs text-[#76786d] font-normal">µg/m³</span></div><div class="flex items-center gap-1.5 text-xs font-mono text-[#52652b] mt-2.5 font-medium"><span class="material-symbols-outlined text-[15px]">trending_flat</span><span>Stable</span></div></div><div class="text-xs font-mono text-[#76786d] pt-3 border-t border-[#e4e4ce]/60">Updated 4s ago</div></div><div class="bg-[#f5f5df] border border-[#e4e4ce]/80 rounded-xl p-6 flex flex-col justify-between hover:bg-[#eae9d4]/60 transition-colors shadow-sm"><div class="text-[13px] font-headline text-[#45483e] font-medium tracking-tight mb-2">PM 2.5</div><div class="my-2"><div class="flex items-baseline gap-1.5 font-mono"><span class="text-3xl lg:text-4xl font-bold text-[#293613] tracking-tight">18</span><span class="text-xs text-[#76786d] font-normal">µg/m³</span></div><div class="flex items-center gap-1.5 text-xs font-mono text-[#52652b] mt-2.5 font-medium"><span class="material-symbols-outlined text-[15px]">trending_down</span><span>-2 µg/m³</span></div></div><div class="text-xs font-mono text-[#76786d] pt-3 border-t border-[#e4e4ce]/60">Updated 4s ago</div></div><div class="bg-[#f5f5df] border border-[#e4e4ce]/80 rounded-xl p-6 flex flex-col justify-between hover:bg-[#eae9d4]/60 transition-colors shadow-sm"><div class="text-[13px] font-headline text-[#45483e] font-medium tracking-tight mb-2">PM 10</div><div class="my-2"><div class="flex items-baseline gap-1.5 font-mono"><span class="text-3xl lg:text-4xl font-bold text-[#293613] tracking-tight">31</span><span class="text-xs text-[#76786d] font-normal">µg/m³</span></div><div class="flex items-center gap-1.5 text-xs font-mono text-[#45483e] mt-2.5 font-medium"><span class="material-symbols-outlined text-[15px]">trending_up</span><span>+3 µg/m³</span></div></div><div class="text-xs font-mono text-[#76786d] pt-3 border-t border-[#e4e4ce]/60">Updated 4s ago</div></div><div class="bg-[#f5f5df] border border-[#e4e4ce]/80 rounded-xl p-6 flex flex-col justify-between hover:bg-[#eae9d4]/60 transition-colors shadow-sm"><div class="text-[13px] font-headline text-[#45483e] font-medium tracking-tight mb-2">MQ-135 Gas</div><div class="my-2"><div class="flex items-baseline gap-1.5 font-mono"><span class="text-3xl lg:text-4xl font-bold text-[#293613] tracking-tight">469</span><span class="text-xs text-[#76786d] font-normal">raw</span></div><div class="flex items-center gap-1.5 text-xs font-mono text-[#52652b] mt-2.5 font-medium"><span class="material-symbols-outlined text-[15px]">air</span><span>Pure Air</span></div></div><div class="text-xs font-mono text-[#76786d] pt-3 border-t border-[#e4e4ce]/60">Updated 4s ago</div></div><div class="bg-[#f5f5df] border border-[#e4e4ce]/80 rounded-xl p-6 flex flex-col justify-between hover:bg-[#eae9d4]/60 transition-colors shadow-sm"><div class="text-[13px] font-headline text-[#45483e] font-medium tracking-tight mb-2">Noise Level</div><div class="my-2"><div class="flex items-baseline gap-1.5 font-mono"><span class="text-3xl lg:text-4xl font-bold text-[#293613] tracking-tight">48</span><span class="text-xs text-[#76786d] font-normal">dBA</span></div><div class="flex items-center gap-1.5 text-xs font-mono text-[#52652b] mt-2.5 font-medium"><span class="material-symbols-outlined text-[15px]">volume_down</span><span>Quiet Quad</span></div></div><div class="text-xs font-mono text-[#76786d] pt-3 border-t border-[#e4e4ce]/60">Updated 4s ago</div></div></section>
+<!-- 3. ENVIRONMENTAL FLOW GRAPH: ANALYTICAL DEFINING CENTER -->
+<section class="bg-[#f5f5df] rounded-2xl p-8 lg:p-10 border border-[#e4e4ce]/80 shadow-[0_2px_12px_rgba(41,54,19,0.03)] flex flex-col gap-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-3">
+<h2 class="text-xl font-headline font-semibold text-[#293613] tracking-tight">Environmental Flow Analysis</h2>
+<span class="bg-[#eae9d4] px-2.5 py-0.5 rounded text-[#52652b] font-mono text-xs uppercase font-medium">Composite Model</span>
+</div>
+<p class="text-sm text-[#45483e] mt-1">
+                Continuous multi-sensor composite ecological signal and dynamic campus microclimate baseline.
+              </p>
+</div>
+<!-- Clean Range Selector -->
+<div class="inline-flex p-1 bg-[#efefd9] border border-[#e4e4ce]/80 rounded-lg self-start sm:self-auto">
+<button class="px-4 py-1.5 rounded-md bg-[#3f4d27] text-white font-mono text-xs font-medium shadow-sm transition-all">24H</button>
+<button class="px-4 py-1.5 rounded-md text-[#45483e] hover:text-[#1b1d0f] font-mono text-xs transition-all">7D</button>
+<button class="px-4 py-1.5 rounded-md text-[#45483e] hover:text-[#1b1d0f] font-mono text-xs transition-all">30D</button>
+<button class="px-4 py-1.5 rounded-md text-[#45483e] hover:text-[#1b1d0f] font-mono text-xs transition-all">Custom</button>
+</div>
+</div>
+<!-- Heightened SVG Visualization Area (h-84 to h-96 for generous breathing room) -->
+<div class="relative w-full h-96 md:h-96 bg-[#efefd9]/70 rounded-xl p-7 border border-[#e4e4ce]/70 flex flex-col justify-between overflow-hidden shadow-sm">
+<!-- Reference Lines -->
+<div class="absolute inset-x-8 top-12 flex items-center justify-between border-b border-dashed border-[#76786d]/25">
+<span class="font-mono text-xs text-[#76786d]">Upper Range (80)</span>
+</div>
+<div class="absolute inset-x-8 top-36 flex items-center justify-between border-b border-dashed border-[#76786d]/20">
+<span class="font-mono text-xs text-[#76786d]">Diurnal Target (50)</span>
+</div>
+<div class="absolute inset-x-8 bottom-20 flex items-center justify-between border-b border-dashed border-[#76786d]/20">
+<span class="font-mono text-xs text-[#76786d]">Baseline Resting (20)</span>
+</div>
+<!-- SVG Curves Canvas -->
+<svg class="w-full h-full absolute inset-0 pt-6 pb-12 px-6" preserveAspectRatio="none" viewBox="0 0 1000 300">
+<defs>
+<linearGradient id="flowGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#3f4d27" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#3f4d27" stop-opacity="0.01"></stop>
+</linearGradient>
+<linearGradient id="secondaryFlowGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#9AA77A" stop-opacity="0.18"></stop>
+<stop offset="100%" stop-color="#9AA77A" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<!-- Secondary Wash -->
+<path d="M0,170 C140,190 260,220 400,190 C560,160 670,140 820,175 C910,190 960,185 1000,170 L1000,300 L0,300 Z" fill="url(#secondaryFlowGradient)"></path>
+<!-- Primary Wash -->
+<path d="M0,200 C130,210 240,140 380,110 C500,85 620,150 740,90 C850,45 920,105 1000,80 L1000,300 L0,300 Z" fill="url(#flowGradient)"></path>
+<!-- Secondary Subtle Flow Line -->
+<path d="M0,170 C140,190 260,220 400,190 C560,160 670,140 820,175 C910,190 960,185 1000,170" fill="none" stroke="#76786d" stroke-dasharray="5 5" stroke-opacity="0.5" stroke-width="1.75"></path>
+<!-- Primary Organic Flow Curve -->
+<path d="M0,200 C130,210 240,140 380,110 C500,85 620,150 740,90 C850,45 920,105 1000,80" fill="none" stroke="#3f4d27" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+<!-- Inspection Marker at 740,90 (13:45 EDT) -->
+<line stroke="#3f4d27" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1.5" x1="740" x2="740" y1="30" y2="270"></line>
+<circle cx="740" cy="90" fill="#3f4d27" fill-opacity="0.2" r="9"></circle>
+<circle cx="740" cy="90" fill="#fbfbe4" r="5" stroke="#3f4d27" stroke-width="3"></circle>
+</svg>
+<!-- Floating Interactive Tooltip -->
+<div class="absolute left-[64%] md:left-[69%] top-8 bg-[#ffffff]/95 backdrop-blur-md rounded-lg px-4 py-2.5 shadow-md border border-[#c6c8ba]/80 flex flex-col gap-1 z-10">
+<div class="flex items-center justify-between gap-4 font-mono text-xs">
+<span class="text-[#293613] font-semibold">13:45 EDT</span>
+<span class="text-[#52652b] font-medium">Quad Center Station</span>
+</div>
+<div class="font-mono text-xs text-[#45483e] flex items-center gap-2">
+<span class="font-medium text-[#293613]">23.4°C</span>
+<span class="text-[#76786d]">•</span>
+<span>PM2.5: 17 µg/m³</span>
+<span class="text-[#76786d]">•</span>
+<span class="text-[#52652b] font-medium">AQI: Normal</span>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="w-full flex items-center justify-between font-mono text-xs text-[#76786d] z-10 px-2 mt-auto">
+<span>00:00</span>
+<span>04:00</span>
+<span>08:00</span>
+<span>12:00</span>
+<span class="text-[#3f4d27] font-semibold bg-[#eae9d4] px-2 py-0.5 rounded">14:00 (Live)</span>
+<span>18:00</span>
+<span>22:00</span>
+</div>
+</div>
+</section>
+<!-- 4. BOTTOM DUAL SECTION: SYSTEM TELEMETRY & FIELD LOGS / SUMMARY -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
+<!-- LEFT COLUMN: SYSTEM SIGNALS & DEVICE STATUS -->
+<div class="flex flex-col gap-8">
+<!-- Simplified System Signals -->
+<div class="bg-[#f5f5df] rounded-2xl p-8 border border-[#e4e4ce]/80 shadow-[0_2px_12px_rgba(41,54,19,0.03)] flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#3f4d27] text-[22px]">hub</span>
+<h3 class="font-headline font-semibold text-lg text-[#293613]">System Signals</h3>
+</div>
+<span class="font-mono text-xs text-[#52652b] bg-[#eae9d4] px-2.5 py-1 rounded font-medium">High Fidelity</span>
+</div>
+<!-- Clean List with Generous Spacing -->
+<div class="flex flex-col">
+<div class="flex items-center justify-between py-3.5 border-b border-[#e4e4ce]/60 text-sm">
+<span class="text-[#45483e]">Latest Ingestion</span>
+<span class="font-mono text-sm text-[#293613] font-semibold">1.2s avg (Nominal)</span>
+</div>
+<div class="flex items-center justify-between py-3.5 border-b border-[#e4e4ce]/60 text-sm">
+<span class="text-[#45483e]">Active Sensors</span>
+<span class="font-mono text-sm text-[#52652b] font-semibold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#52652b]"></span> 7 / 7 Online
+                  </span>
+</div>
+<div class="flex items-center justify-between py-3.5 border-b border-[#e4e4ce]/60 text-sm">
+<span class="text-[#45483e]">Data Points Today</span>
+<span class="font-mono text-sm text-[#293613] font-semibold">24,192 records</span>
+</div>
+<div class="flex items-center justify-between py-3.5 text-sm">
+<span class="text-[#45483e]">Hardware Node</span>
+<span class="font-mono text-sm text-[#293613] font-semibold">ESP32 DevKit V1 (v2.4.1)</span>
+</div>
+</div>
+</div>
+<!-- Device Status Block -->
+<div class="bg-[#f5f5df] rounded-2xl p-8 border border-[#e4e4ce]/80 shadow-[0_2px_12px_rgba(41,54,19,0.03)] flex flex-col gap-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#3f4d27] text-[22px]">memory</span>
+<h3 class="font-headline font-semibold text-lg text-[#293613]">Device Status</h3>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#d4eba3]/60 text-[#3b4d16]">
+<span class="w-2 h-2 rounded-full bg-[#52652b]"></span>
+<span class="font-mono text-xs font-semibold uppercase">Connected</span>
+</div>
+</div>
+<!-- Reliable Status Banner -->
+<div class="bg-[#efefd9] p-5 rounded-xl border border-[#e4e4ce]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#52652b] text-[20px]">router</span>
+<div>
+<div class="text-sm font-semibold text-[#293613]">ESP32 DevKit V1 • ONLINE</div>
+<div class="text-[#76786d]">North Quad Mesh Hub</div>
+</div>
+</div>
+<div class="flex sm:flex-col items-end gap-1 text-right">
+<span class="text-[#52652b] font-medium">7/7 Sensors Active</span>
+<span class="text-[#76786d]">Last transmission: 4s ago</span>
+</div>
+</div>
+<!-- Technical Node Specs -->
+<div class="grid grid-cols-2 gap-3 text-xs">
+<div class="bg-[#efefd9]/60 p-3.5 rounded-lg border border-[#e4e4ce]/50 flex flex-col gap-1">
+<span class="text-[#76786d] font-mono">Power Reserve</span>
+<span class="text-sm font-semibold text-[#293613]">USB 5V / 98% LiPo</span>
+</div>
+<div class="bg-[#efefd9]/60 p-3.5 rounded-lg border border-[#e4e4ce]/50 flex flex-col gap-1">
+<span class="text-[#76786d] font-mono">Mesh Protocol</span>
+<span class="text-sm font-semibold text-[#293613]">WPA3-Enterprise</span>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: RECENT ALERTS & DAILY SUMMARY -->
+<div class="flex flex-col gap-8">
+<!-- Recent Field Logs & Alerts -->
+<div class="bg-[#f5f5df] rounded-2xl p-8 border border-[#e4e4ce]/80 shadow-[0_2px_12px_rgba(41,54,19,0.03)] flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#3f4d27] text-[22px]">notifications_none</span>
+<h3 class="font-headline font-semibold text-lg text-[#293613]">Recent Field Logs &amp; Alerts</h3>
+</div>
+<span class="font-mono text-xs text-[#76786d]">Live Filter</span>
+</div>
+<!-- Clean Timeline List -->
+<div class="flex flex-col divide-y divide-[#e4e4ce]/60">
+<!-- Alert 1 -->
+<div class="py-4 first:pt-0 last:pb-0 flex items-start justify-between gap-4">
+<div class="flex items-start gap-3">
+<span class="mt-0.5 px-2 py-0.5 rounded bg-[#eae9d4] text-[#3f4d27] font-mono text-xs font-semibold tracking-wider">
+                      NORMAL
+                    </span>
+<div class="flex flex-col gap-0.5">
+<span class="text-sm font-medium text-[#1b1d0f]">Temperature stabilized within optimal seasonal baseline (24.8°C).</span>
+<span class="text-xs text-[#76786d]">Canopy microclimate equilibrium verified</span>
+</div>
+</div>
+<span class="font-mono text-xs text-[#76786d] whitespace-nowrap">14:15</span>
+</div>
+<!-- Alert 2 -->
+<div class="py-4 flex items-start justify-between gap-4">
+<div class="flex items-start gap-3">
+<span class="mt-0.5 px-2 py-0.5 rounded bg-[#fdf0d5] text-[#b4782a] font-mono text-xs font-semibold tracking-wider">
+                      WARNING
+                    </span>
+<div class="flex flex-col gap-0.5">
+<span class="text-sm font-medium text-[#1b1d0f]">PM2.5 particulate transient spike (38 µg/m³).</span>
+<span class="text-xs text-[#76786d]">Localized maintenance delivery near Facilities loading bay</span>
+</div>
+</div>
+<span class="font-mono text-xs text-[#76786d] whitespace-nowrap">12:40</span>
+</div>
+<!-- Alert 3 -->
+<div class="py-4 last:pb-0 flex items-start justify-between gap-4">
+<div class="flex items-start gap-3">
+<span class="mt-0.5 px-2 py-0.5 rounded bg-[#eae9d4] text-[#3f4d27] font-mono text-xs font-semibold tracking-wider">
+                      NORMAL
+                    </span>
+<div class="flex flex-col gap-0.5">
+<span class="text-sm font-medium text-[#1b1d0f]">Air quality restored to baseline (MQ-135 reading 452).</span>
+<span class="text-xs text-[#76786d]">Dissipation complete; no secondary pollutants detected</span>
+</div>
+</div>
+<span class="font-mono text-xs text-[#76786d] whitespace-nowrap">11:05</span>
+</div>
+</div>
+</div>
+<!-- Daily Environmental Summary: Clean Analytical Grid -->
+<div class="bg-[#f5f5df] rounded-2xl p-8 border border-[#e4e4ce]/80 shadow-[0_2px_12px_rgba(41,54,19,0.03)] flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#3f4d27] text-[22px]">analytics</span>
+<h3 class="font-headline font-semibold text-lg text-[#293613]">Daily Environmental Summary</h3>
+</div>
+<span class="font-mono text-xs text-[#76786d]">24h Quad Averages</span>
+</div>
+<!-- Uncluttered Analytical Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-1">
+<div class="flex flex-col gap-1">
+<span class="font-mono text-xs text-[#76786d] uppercase tracking-wider">Avg Temp</span>
+<div class="font-mono text-2xl font-semibold text-[#293613]">23.1 °C</div>
+<span class="text-xs text-[#52652b] font-medium">Optimal Living</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-mono text-xs text-[#76786d] uppercase tracking-wider">Avg Humidity</span>
+<div class="font-mono text-2xl font-semibold text-[#293613]">58.4 %</div>
+<span class="text-xs text-[#52652b] font-medium">Balanced Flora</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-mono text-xs text-[#76786d] uppercase tracking-wider">Avg PM2.5</span>
+<div class="font-mono text-2xl font-semibold text-[#293613]">16.2 µg/m³</div>
+<span class="text-xs text-[#52652b] font-medium">WHO Tier 1 Clean</span>
+</div>
+<div class="flex flex-col gap-1 pt-2">
+<span class="font-mono text-xs text-[#76786d] uppercase tracking-wider">Avg Sound</span>
+<div class="font-mono text-2xl font-semibold text-[#293613]">46.5 dBA</div>
+<span class="text-xs text-[#52652b] font-medium">Study Corridor</span>
+</div>
+<div class="flex flex-col gap-1 pt-2">
+<span class="font-mono text-xs text-[#76786d] uppercase tracking-wider">MQ-135 Trace</span>
+<div class="font-mono text-2xl font-semibold text-[#293613]">458 raw</div>
+<span class="text-xs text-[#52652b] font-medium">Pure Quadrant Air</span>
+</div>
+<div class="flex flex-col gap-1 pt-2">
+<span class="font-mono text-xs text-[#76786d] uppercase tracking-wider">Overall State</span>
+<div class="font-mono text-2xl font-semibold text-[#3f4d27]">Exemplary</div>
+<span class="text-xs text-[#52652b] font-medium">Bio-baseline Verified</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+
+</body></html>
