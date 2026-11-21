@@ -139,10 +139,10 @@
               <div class="hist-graph-title-row">
                 <h2 class="hist-graph-title" id="active-graph-title">Environmental Trend: Temperature</h2>
                 <h2 id="hist-chart-title" style="display: none;">Environmental Trend: Temperature</h2>
-                <span class="hist-param-badge" id="active-param-badge">TEMPERATURE (°C)</span>
-                <span id="hist-param-badge" style="display: none;">TEMPERATURE (°C)</span>
               </div>
               <div class="hist-graph-meta">
+                <span class="hist-param-badge" id="active-param-badge">TEMPERATURE (°C)</span>
+                <span id="hist-param-badge" style="display: none;">TEMPERATURE (°C)</span>
                 <div class="hist-legend-item">
                   <span class="hist-dot-obs"></span>
                   <span id="series-label">Observed Temperature (°C)</span>
@@ -157,10 +157,6 @@
             </div>
             <!-- View Controls -->
             <div class="hist-view-toggles">
-              <div class="toggle-pill-group" role="group" aria-label="Curve visualization style">
-                <button class="toggle-pill-btn active" data-style-toggle="spline">Smooth Line</button>
-                <button class="toggle-pill-btn" data-style-toggle="area">Layered Atmosphere</button>
-              </div>
               <div class="toggle-pill-group" role="group" aria-label="Sampling resolution">
                 <button class="toggle-pill-btn active" data-sample-toggle="15m">15m Sampling</button>
                 <button class="toggle-pill-btn" data-sample-toggle="1h">1h Average</button>
@@ -173,7 +169,7 @@
             <!-- Dynamic Peak Callout -->
             <div class="hist-callout-peak" id="callout-peak-pill">
               <span class="dot-warning" id="callout-peak-dot"></span>
-              <span id="callout-peak-text">13:10 UTC • Solar Peak (28.7 °C)</span>
+              <span id="callout-peak-text">13:10 UTC • Diurnal Temperature Peak (28.7 °C)</span>
             </div>
 
             <!-- Floating Inspection Tooltip Card -->
@@ -192,33 +188,29 @@
             </div>
 
             <!-- SVG Data Viz -->
-            <svg class="w-full" id="hist-chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 200" style="height: 200px; width: 100%; overflow: visible;">
+            <svg class="w-full" id="hist-chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 280" style="height: 280px; width: 100%; overflow: visible;">
               <defs>
                 <linearGradient id="param-gradient" x1="0%" x2="0%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#52652b" stop-opacity="0.25"></stop>
+                  <stop offset="0%" stop-color="#52652b" stop-opacity="0.28"></stop>
                   <stop offset="100%" stop-color="#52652b" stop-opacity="0.02"></stop>
                 </linearGradient>
-                <linearGradient id="param-gradient-layered" x1="0%" x2="0%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#52652b" stop-opacity="0.45"></stop>
-                  <stop offset="100%" stop-color="#52652b" stop-opacity="0.06"></stop>
-                </linearGradient>
                 <linearGradient id="histGrad" x1="0%" x2="0%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#52652b" stop-opacity="0.25"></stop>
+                  <stop offset="0%" stop-color="#52652b" stop-opacity="0.28"></stop>
                   <stop offset="100%" stop-color="#52652b" stop-opacity="0.02"></stop>
                 </linearGradient>
               </defs>
               <!-- Horizontal Grid Lines -->
               <g stroke="#e4e4ce" stroke-dasharray="3,3" stroke-width="1">
-                <line x1="40" x2="980" y1="25" y2="25"></line>
-                <line x1="40" x2="980" y1="62.5" y2="62.5"></line>
-                <line x1="40" x2="980" y1="100" y2="100"></line>
-                <line x1="40" x2="980" y1="137.5" y2="137.5"></line>
-                <line x1="40" x2="980" y1="175" y2="175"></line>
+                <line x1="40" x2="980" y1="35" y2="35"></line>
+                <line x1="40" x2="980" y1="87.5" y2="87.5"></line>
+                <line x1="40" x2="980" y1="140" y2="140"></line>
+                <line x1="40" x2="980" y1="192.5" y2="192.5"></line>
+                <line x1="40" x2="980" y1="245" y2="245"></line>
               </g>
 
               <!-- Threshold Lines -->
-              <line id="threshold-line" stroke="#ba1a1a" stroke-dasharray="4,4" stroke-width="1.2" x1="40" x2="980" y1="120" y2="120" opacity="0.75"></line>
-              <text id="threshold-svg-text" class="font-telemetry" fill="#ba1a1a" font-size="10" opacity="0.85" x="50" y="114">Reference Limit (&lt; 32 °C)</text>
+              <line id="threshold-line" stroke="#ba1a1a" stroke-dasharray="4,4" stroke-width="1.2" x1="40" x2="980" y1="140" y2="140" opacity="0.75"></line>
+              <text id="threshold-svg-text" class="font-telemetry" fill="#ba1a1a" font-size="10" opacity="0.85" x="50" y="134">Reference Limit (&lt; 32 °C)</text>
               <line id="hist-thresh-upper-line" style="display:none;"></line>
               <text id="hist-thresh-upper-text" style="display:none;"></text>
               <line id="hist-thresh-lower-line" style="display:none;"></line>
@@ -229,16 +221,19 @@
               <path id="hist-area-path" fill="url(#param-gradient)" d="" style="display:none;"></path>
 
               <!-- Spline Telemetry Curve -->
-              <path id="chart-line-path" fill="none" stroke="#52652b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d=""></path>
-              <path id="hist-line-path" fill="none" stroke="#52652b" stroke-width="2.2" d="" style="display:none;"></path>
+              <path id="chart-line-path" fill="none" stroke="#52652b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d=""></path>
+              <path id="hist-line-path" fill="none" stroke="#52652b" stroke-width="2.5" d="" style="display:none;"></path>
+
+              <!-- Subtle Observation Points along Curve -->
+              <g id="chart-points-group"></g>
 
               <!-- Vertical Inspection Crosshair Guide -->
-              <line id="chart-crosshair" class="chart-crosshair" stroke="#3f4d27" stroke-dasharray="2,2" stroke-width="1.2" x1="600" x2="600" y1="25" y2="175" style="display:none;"></line>
+              <line id="chart-crosshair" class="chart-crosshair" stroke="#3f4d27" stroke-dasharray="2,2" stroke-width="1.2" x1="600" x2="600" y1="35" y2="245" style="display:none;"></line>
               <line id="hist-crosshair" class="chart-crosshair" style="display:none;"></line>
 
               <!-- Inspection Cursor Point -->
-              <circle id="chart-cursor-dot" cx="600" cy="120" fill="#ffffff" r="4" stroke="#52652b" stroke-width="2.2" style="display:none;"></circle>
-              <circle id="hist-inspect-node" cx="0" cy="0" r="4" style="display:none;"></circle>
+              <circle id="chart-cursor-dot" cx="600" cy="140" fill="#ffffff" r="4.5" stroke="#52652b" stroke-width="2.5" style="display:none;"></circle>
+              <circle id="hist-inspect-node" cx="0" cy="0" r="4.5" style="display:none;"></circle>
             </svg>
 
             <!-- X-Axis Timestamps -->
@@ -339,7 +334,7 @@
                 <span class="hist-trend-period" id="trend-period-label">Last 24 Hours</span>
               </div>
               <p class="hist-trend-narrative" id="trend-narrative-text">
-                Typical sinusoidal solar warming curve observed across campus with predictable afternoon dissipation.
+                Typical diurnal warming and cooling curve observed across campus with predictable afternoon equilibrium.
               </p>
               <p id="hist-trend-narrative" style="display: none;"></p>
             </div>

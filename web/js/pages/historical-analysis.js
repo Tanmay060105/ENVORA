@@ -1,7 +1,7 @@
 /**
  * ENVORA — Historical Analysis Page Controller
  * Source of Truth: Approved Phase 1 Implementation Plan & docs/16_VISUAL_REFERENCE_GUIDE.md
- * Phase 4.6 Stitch-Fidelity Graph Correction
+ * Phase 4.7 Strict Stitch Visual Fidelity Correction
  *
  * Strict 5-parameter contract: Temperature, Relative Humidity, Atmospheric Pressure,
  * MQ-135 Gas Response, Environmental Noise.
@@ -18,7 +18,6 @@
 
   var activeParam = 'temperature';
   var activeWindow = '24H';
-  var activeStyle = 'spline'; // 'spline' (Smooth Line) or 'area' (Layered Atmosphere)
   var activeSampling = '15m'; // '15m' or '1h'
 
   var PARAM_META = {
@@ -30,7 +29,7 @@
       seriesLabel: 'Observed Temperature (°C)',
       thresholdLabel: 'Reference Limit: < 32 °C',
       icon: 'thermostat',
-      peakDesc: 'Solar Peak',
+      peakDesc: 'Diurnal Temperature Peak',
       desc: 'BME280 Ambient Temperature'
     },
     'humidity': {
@@ -41,7 +40,7 @@
       seriesLabel: 'Observed Humidity (%)',
       thresholdLabel: 'Normal Range: 30.0 - 70.0 %',
       icon: 'humidity_mid',
-      peakDesc: 'Moisture Peak',
+      peakDesc: 'Diurnal Humidity Peak',
       desc: 'BME280 Relative Humidity'
     },
     'pressure': {
@@ -63,7 +62,7 @@
       seriesLabel: 'Observed MQ-135 Gas Response (raw)',
       thresholdLabel: 'Reference Limit: < 900 raw',
       icon: 'air',
-      peakDesc: 'Activity Peak',
+      peakDesc: 'Peak Gas Response',
       desc: 'MQ-135 Baseline Air Sensor Response'
     },
     'noise': {
@@ -74,7 +73,7 @@
       seriesLabel: 'Observed Environmental Noise (dB SPL)',
       thresholdLabel: 'Reference Limit: < 65.0 dB SPL',
       icon: 'graphic_eq',
-      peakDesc: 'Acoustic Peak',
+      peakDesc: 'Peak Sound Level',
       desc: 'INMP441 Acoustic Sound Level'
     }
   };
@@ -85,7 +84,7 @@
 
     bindParamSwitcher(dataLayer);
     bindRangeSelector(dataLayer);
-    bindViewToggles(dataLayer);
+    bindSamplingToggle(dataLayer);
     renderAnalysis(dataLayer);
   }
 
@@ -131,19 +130,7 @@
     });
   }
 
-  function bindViewToggles(dataLayer) {
-    // Style toggle: Smooth Line vs Layered Atmosphere
-    var styleBtns = document.querySelectorAll('[data-style-toggle]');
-    styleBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        styleBtns.forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-        activeStyle = btn.getAttribute('data-style-toggle') || 'spline';
-        applyGraphStyle();
-      });
-    });
-
-    // Sampling toggle: 15m Sampling vs 1h Average
+  function bindSamplingToggle(dataLayer) {
     var sampleBtns = document.querySelectorAll('[data-sample-toggle]');
     sampleBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -153,25 +140,6 @@
         renderAnalysis(dataLayer);
       });
     });
-  }
-
-  function applyGraphStyle() {
-    var areaPath = document.getElementById('chart-area-path');
-    var histArea = document.getElementById('hist-area-path');
-    var linePath = document.getElementById('chart-line-path');
-    var histLine = document.getElementById('hist-line-path');
-
-    if (activeStyle === 'area') {
-      if (areaPath) areaPath.setAttribute('fill', 'url(#param-gradient-layered)');
-      if (histArea) histArea.setAttribute('fill', 'url(#param-gradient-layered)');
-      if (linePath) linePath.setAttribute('stroke-width', '2.0');
-      if (histLine) histLine.setAttribute('stroke-width', '2.0');
-    } else {
-      if (areaPath) areaPath.setAttribute('fill', 'url(#param-gradient)');
-      if (histArea) histArea.setAttribute('fill', 'url(#param-gradient)');
-      if (linePath) linePath.setAttribute('stroke-width', '2.2');
-      if (histLine) histLine.setAttribute('stroke-width', '2.2');
-    }
   }
 
   function downsampleSeries(rawSeries) {
@@ -384,13 +352,13 @@
 
     var rowsHtml = '';
 
-    // 1. Peak event
+    // 1. Peak event (data-grounded terminology)
     if (maxItem) {
       rowsHtml += createObservationRow(
         formatTime(maxItem.timestamp),
         'var(--color-state-warning)',
         'Highest ' + meta.name + ' recorded (' + formatVal(maxItem.value, meta.unit) + ')',
-        'Midday peak registered under standard solar and campus conditions',
+        'Midday peak registered under typical campus atmospheric conditions',
         'Peak: 35 min',
         'Recorded',
         ''
@@ -403,7 +371,7 @@
         formatTime(minItem.timestamp),
         'var(--color-state-normal)',
         'Lowest ' + meta.name + ' recorded (' + formatVal(minItem.value, meta.unit) + ')',
-        'Nocturnal / pre-dawn baseline verified within nominal envelope',
+        'Nocturnal baseline verified within calibrated nominal envelope',
         'Duration: 2 hours',
         'Nominal',
         'badge-green'
@@ -470,8 +438,8 @@
     var xStart = 40;
     var xEnd = 980;
     var xSpan = xEnd - xStart;
-    var yTop = 25;
-    var yBottom = 175;
+    var yTop = 35;
+    var yBottom = 245;
     var ySpan = yBottom - yTop;
 
     var N = series.length;
@@ -499,9 +467,10 @@
     areaPath.setAttribute('d', areaD);
     if (histArea) histArea.setAttribute('d', areaD);
 
-    applyGraphStyle();
+    // Render subtle observation points along the curve
+    renderObservationPoints(pts);
 
-    // Dynamic Threshold lines (compact 200px coordinates)
+    // Dynamic Threshold lines (calibrated 280px coordinates)
     renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan);
 
     // Peak Callout Pill
@@ -509,6 +478,19 @@
 
     // Interactive chart inspection
     setupChartInspection(pts, meta, cfg);
+  }
+
+  function renderObservationPoints(points) {
+    var pointsGroup = document.getElementById('chart-points-group');
+    if (!pointsGroup) return;
+
+    var dotsHtml = '';
+    var stride = points.length > 50 ? 2 : 1;
+    for (var i = 0; i < points.length; i += stride) {
+      var p = points[i];
+      dotsHtml += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="2.2" fill="#52652b" opacity="0.65" class="hist-curve-dot" />';
+    }
+    pointsGroup.innerHTML = dotsHtml;
   }
 
   function renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan) {
@@ -636,7 +618,7 @@
         var timeStr = formatTime(p.timestamp);
         var valStr = formatVal(p.val, meta.unit);
 
-        // Position crosshair
+        // Position crosshair across calibrated plotting boundaries
         if (crosshair) {
           crosshair.setAttribute('x1', p.x);
           crosshair.setAttribute('x2', p.x);
