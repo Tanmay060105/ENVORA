@@ -429,52 +429,72 @@
     var histLine = document.getElementById('hist-line-path');
     var areaPath = document.getElementById('chart-area-path');
     var histArea = document.getElementById('hist-area-path');
-    if (!linePath || !areaPath) return;
+    if (!linePath || !areaPath || !series || series.length === 0) return;
 
     // Viewport geometry matching Stitch reference (viewBox: 0 0 1000 320)
     var xStart = 40;
     var xEnd = 980;
     var xSpan = xEnd - xStart;
-    var yTop = 40;
-    var yBottom = 280;
-    var ySpan = yBottom - yTop;
 
-    // Dynamic vertical range: provide clear vertical amplitude while preserving data variation
+    // Calibrated vertical plotting window: maintains ample headroom and base margin
+    // Leaves room for threshold indicator (y: 60-75) and bottom grid line (y: 280)
+    var plotYTop = 95;
+    var plotYBottom = 240;
+    var plotYSpan = plotYBottom - plotYTop;
+
+    // Environmental scaling: prevents minor sensor fluctuations from exploding into artificial spikes
     var dataVals = series.map(function (item) { return item.value; });
     var dataMin = Math.min.apply(null, dataVals);
     var dataMax = Math.max.apply(null, dataVals);
     var rawSpan = dataMax - dataMin;
-    var span = Math.max(rawSpan, 1.2);
-    var pad = span * 0.16;
 
-    var yMin = dataMin - pad;
-    var yMax = dataMax + pad;
-    if (yMax <= yMin) yMax = yMin + 1.0;
+    // Nominal reference spans by parameter to contextualize sensor observations naturally
+    var minSpans = {
+      temperature: 5.0,
+      humidity: 15.0,
+      pressure: 8.0,
+      gas_response: 200.0,
+      noise: 18.0
+    };
+    var minSpan = minSpans[activeParam] || 5.0;
+
+    // Dynamic display bounds: preserves true signal dynamics with restrained, natural amplitude
+    var span = Math.max(rawSpan * 1.4, minSpan);
+    var mid = (dataMin + dataMax) / 2;
+    var yMin = mid - (span / 2);
+    var yMax = mid + (span / 2);
 
     var N = series.length;
     var pts = series.map(function (item, idx) {
       var x = xStart + (idx / (N - 1)) * xSpan;
       var norm = (item.value - yMin) / (yMax - yMin);
-      norm = Math.max(0, Math.min(1, norm));
-      var y = yBottom - (norm * ySpan);
-      return { x: x, y: y, val: item.value, timestamp: item.timestamp };
+      norm = Math.max(0.04, Math.min(0.96, norm));
+      var y = plotYBottom - (norm * plotYSpan);
+      return {
+        x: Number(x.toFixed(1)),
+        y: Number(y.toFixed(1)),
+        val: item.value,
+        timestamp: item.timestamp
+      };
     });
 
-    // Generate smooth Catmull-Rom cubic Bezier spline with continuous tangents
-    var d = generateSplinePath(pts, 0.22);
+    // Generate smooth Monotone Cubic Spline (Steffen / Fritsch-Carlson algorithm)
+    // Strictly eliminates artificial extrema, oscillation, and Catmull-Rom overshoot
+    var d = computeMonotoneSpline(pts);
 
     linePath.setAttribute('d', d);
     if (histLine) histLine.setAttribute('d', d);
 
-    var areaD = d + ' L ' + xEnd + ' ' + yBottom + ' L ' + xStart + ' ' + yBottom + ' Z';
+    // Subtle area wash anchored to baseline grid (y = 280)
+    var areaD = d + ' L ' + xEnd + ' 280 L ' + xStart + ' 280 Z';
     areaPath.setAttribute('d', areaD);
     if (histArea) histArea.setAttribute('d', areaD);
 
-    // Render subtle observation points along the curve
+    // Render restrained, subtle observation points
     renderObservationPoints(pts);
 
-    // Dynamic Threshold lines (thin dashed muted red line with inline label)
-    renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan);
+    // Dynamic Threshold lines (thin dashed muted red line with restrained opacity)
+    renderThresholds(cfg, meta, yMin, yMax, plotYTop, plotYBottom, plotYSpan);
 
     // Dynamic Peak Callout Pill
     renderPeakCallout(series, meta, pts);
@@ -483,49 +503,73 @@
     setupChartInspection(pts, meta, cfg);
   }
 
-  function generateSplinePath(pts, tension) {
+  function computeMonotoneSpline(pts) {
     if (!pts || pts.length === 0) return '';
     if (pts.length === 1) return 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
     if (pts.length === 2) {
       return 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1) + ' L ' + pts[1].x.toFixed(1) + ' ' + pts[1].y.toFixed(1);
     }
 
-    var t = typeof tension === 'number' ? tension : 0.22;
-    var d = 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+    var n = pts.length;
+    var deltas = [];
+    for (var i = 0; i < n - 1; i++) {
+      var dx = pts[i + 1].x - pts[i].x;
+      var dy = pts[i + 1].y - pts[i].y;
+      deltas.push(dx !== 0 ? dy / dx : 0);
+    }
 
-    for (var i = 0; i < pts.length - 1; i++) {
-      var p0 = i > 0 ? pts[i - 1] : pts[0];
+    // Tangent slopes with Steffen monotonicity constraint to prevent overshoot and oscillations
+    var m = new Array(n);
+    m[0] = deltas[0];
+    for (var i = 1; i < n - 1; i++) {
+      if (deltas[i - 1] * deltas[i] <= 0) {
+        // Local extremum: zero tangent slope strictly prevents overshoot
+        m[i] = 0;
+      } else {
+        var dPrev = deltas[i - 1];
+        var dNext = deltas[i];
+        var sign = dPrev > 0 ? 1 : -1;
+        var avg = (pts[i + 1].y - pts[i - 1].y) / (pts[i + 1].x - pts[i - 1].x);
+        m[i] = sign * Math.min(Math.abs(dPrev), Math.abs(dNext), 0.5 * Math.abs(avg));
+      }
+    }
+    m[n - 1] = deltas[n - 2];
+
+    // Convert monotonic tangents to cubic Bezier control points
+    var path = 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+    for (var i = 0; i < n - 1; i++) {
       var p1 = pts[i];
       var p2 = pts[i + 1];
-      var p3 = i < pts.length - 2 ? pts[i + 2] : p2;
+      var hx = (p2.x - p1.x) / 3;
 
-      // Smooth Catmull-Rom tangents converted to cubic Bezier control points
-      var cp1x = p1.x + (p2.x - p0.x) * t;
-      var cp1y = p1.y + (p2.y - p0.y) * t;
-      var cp2x = p2.x - (p3.x - p1.x) * t;
-      var cp2y = p2.y - (p3.y - p1.y) * t;
+      var cp1x = p1.x + hx;
+      var cp1y = p1.y + m[i] * hx;
+      var cp2x = p2.x - hx;
+      var cp2y = p2.y - m[i + 1] * hx;
 
-      d += ' C ' + cp1x.toFixed(1) + ' ' + cp1y.toFixed(1) + ', ' +
-                   cp2x.toFixed(1) + ' ' + cp2y.toFixed(1) + ', ' +
-                   p2.x.toFixed(1) + ' ' + p2.x.toFixed(1);
+      path += ' C ' + cp1x.toFixed(1) + ' ' + cp1y.toFixed(1) + ', ' +
+                      cp2x.toFixed(1) + ' ' + cp2y.toFixed(1) + ', ' +
+                      p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
     }
-    return d;
+    return path;
   }
 
   function renderObservationPoints(points) {
     var pointsGroup = document.getElementById('chart-points-group');
     if (!pointsGroup) return;
 
+    // Restrained, subtle observation points (r=1.5, opacity=0.25) so they follow actual
+    // data without forming an overpowering dotted secondary graph
     var dotsHtml = '';
-    var stride = points.length > 50 ? 2 : 1;
+    var stride = points.length > 30 ? 2 : 1;
     for (var i = 0; i < points.length; i += stride) {
       var p = points[i];
-      dotsHtml += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="2.2" fill="#52652b" opacity="0.65" class="hist-curve-dot" />';
+      dotsHtml += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="1.5" fill="#52652b" opacity="0.25" class="hist-curve-dot" />';
     }
     pointsGroup.innerHTML = dotsHtml;
   }
 
-  function renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan) {
+  function renderThresholds(cfg, meta, yMin, yMax, plotYTop, plotYBottom, plotYSpan) {
     var tLine = document.getElementById('threshold-line');
     var tText = document.getElementById('threshold-svg-text');
     var upperLine = document.getElementById('hist-thresh-upper-line');
@@ -544,12 +588,12 @@
       var yU;
       if (upperVal >= yMin && upperVal <= yMax) {
         var normU = (upperVal - yMin) / (yMax - yMin);
-        yU = yBottom - (normU * ySpan);
+        yU = plotYBottom - (normU * plotYSpan);
       } else if (upperVal > yMax) {
-        // Position threshold cleanly in upper plot area
-        yU = yTop + 35;
+        // Position threshold naturally within upper plotting headspace (y = 70)
+        yU = 70;
       } else {
-        yU = yBottom - 20;
+        yU = 250;
       }
 
       var upperLabelStr = (cfg.type === 'two-sided' ? 'Upper Threshold (' : 'Reference Limit (') + upperVal + ' ' + meta.unit + ')';
@@ -559,11 +603,18 @@
         tLine.setAttribute('x2', '980');
         tLine.setAttribute('y1', yU);
         tLine.setAttribute('y2', yU);
+        tLine.setAttribute('stroke', '#ba1a1a');
+        tLine.setAttribute('stroke-dasharray', '4,4');
+        tLine.setAttribute('stroke-width', '1.2');
+        tLine.setAttribute('opacity', '0.65');
         tLine.style.display = 'block';
       }
       if (tText) {
         tText.setAttribute('x', '50');
         tText.setAttribute('y', yU - 6);
+        tText.setAttribute('fill', '#ba1a1a');
+        tText.setAttribute('opacity', '0.75');
+        tText.setAttribute('font-size', '10');
         tText.textContent = upperLabelStr;
         tText.style.display = 'block';
       }
@@ -572,11 +623,18 @@
         upperLine.setAttribute('x2', '980');
         upperLine.setAttribute('y1', yU);
         upperLine.setAttribute('y2', yU);
+        upperLine.setAttribute('stroke', '#ba1a1a');
+        upperLine.setAttribute('stroke-dasharray', '4,4');
+        upperLine.setAttribute('stroke-width', '1.2');
+        upperLine.setAttribute('opacity', '0.65');
         upperLine.style.display = 'block';
       }
       if (upperText) {
         upperText.setAttribute('x', '50');
         upperText.setAttribute('y', yU - 4);
+        upperText.setAttribute('fill', '#ba1a1a');
+        upperText.setAttribute('opacity', '0.75');
+        upperText.setAttribute('font-size', '10');
         upperText.textContent = 'Upper Limit: ' + upperVal + ' ' + meta.unit;
         upperText.style.display = 'block';
       }
@@ -592,12 +650,12 @@
       var yL;
       if (lowerVal >= yMin && lowerVal <= yMax) {
         var normL = (lowerVal - yMin) / (yMax - yMin);
-        yL = yBottom - (normL * ySpan);
+        yL = plotYBottom - (normL * plotYSpan);
       } else if (lowerVal < yMin) {
-        // Position threshold cleanly in lower plot area
-        yL = yBottom - 25;
+        // Position threshold naturally within lower plotting region (y = 255)
+        yL = 255;
       } else {
-        yL = yTop + 45;
+        yL = 80;
       }
 
       if (lowerLine) {
@@ -605,11 +663,18 @@
         lowerLine.setAttribute('x2', '980');
         lowerLine.setAttribute('y1', yL);
         lowerLine.setAttribute('y2', yL);
+        lowerLine.setAttribute('stroke', '#ba1a1a');
+        lowerLine.setAttribute('stroke-dasharray', '4,4');
+        lowerLine.setAttribute('stroke-width', '1.2');
+        lowerLine.setAttribute('opacity', '0.65');
         lowerLine.style.display = 'block';
       }
       if (lowerText) {
         lowerText.setAttribute('x', '50');
         lowerText.setAttribute('y', yL + 12);
+        lowerText.setAttribute('fill', '#ba1a1a');
+        lowerText.setAttribute('opacity', '0.75');
+        lowerText.setAttribute('font-size', '10');
         lowerText.textContent = 'Lower Limit: ' + lowerVal + ' ' + meta.unit;
         lowerText.style.display = 'block';
       }
