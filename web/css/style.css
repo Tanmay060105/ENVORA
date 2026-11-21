@@ -2176,25 +2176,132 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 600;
 }
 
-/* Parameter Selector Bar */
+/* ==========================================================================
+   Historical Analysis Phase 4.5 Visual Fidelity
+   ========================================================================== */
+
+/* 1. Historical Workspace Header */
+.hist-workspace-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .hist-workspace-header {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+}
+
+.hist-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.hist-breadcrumb-sub {
+  color: var(--color-state-normal);
+  font-weight: 600;
+}
+
+.hist-title {
+  font-family: var(--font-narrative);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.hist-desc {
+  font-family: var(--font-narrative);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+.hist-right-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+@media (min-width: 768px) {
+  .hist-right-controls {
+    align-items: flex-end;
+  }
+}
+
+.hist-sync-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* 2. Parameter Switcher Instrument Card */
+.param-switcher-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.03);
+}
+
+.param-switcher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.25rem;
+}
+
+.param-switcher-title {
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.param-switcher-count {
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-state-normal);
+  font-weight: 500;
+}
+
 .param-selector-bar {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
-  padding: var(--space-sm);
-  background-color: var(--color-surface-dim);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  align-items: center;
 }
 
 .param-btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 0.5rem;
   padding: 0.5rem 0.875rem;
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-dim);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-family: var(--font-narrative);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -2203,21 +2310,608 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   transition: all var(--timing-tooltip) var(--ease-natural);
 }
 
+.param-btn:hover {
+  background-color: #f2ede1;
+  border-color: var(--color-border-hover);
+}
+
 .param-btn.active {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-text-inverse);
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.12);
 }
 
-.param-btn.active .param-unit-tag {
-  color: var(--color-text-inverse);
-  opacity: 0.85;
+.param-btn-icon {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
 }
 
 .param-unit-tag {
   font-family: var(--font-telemetry);
-  font-size: var(--text-xs);
+  font-size: 11px;
   color: var(--color-text-muted);
+  background-color: rgba(0, 0, 0, 0.04);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+}
+
+.param-btn.active .param-unit-tag {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-inverse);
+}
+
+/* 3. Primary Historical Graph Card */
+.hist-graph-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.03);
+}
+
+.hist-graph-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  border-bottom: 1px solid rgba(233, 224, 204, 0.6);
+  padding-bottom: var(--space-sm);
+}
+
+@media (min-width: 1024px) {
+  .hist-graph-top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.hist-graph-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.hist-graph-title {
+  font-family: var(--font-narrative);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+}
+
+.hist-graph-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.hist-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.hist-thresh-legend {
+  border-left: 1px solid rgba(233, 224, 204, 0.8);
+  padding-left: var(--space-md);
+}
+
+.hist-thresh-dash {
+  width: 16px;
+  height: 0;
+  border-bottom: 2px dashed #ba1a1a;
+}
+
+.hist-view-toggles {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.toggle-pill-group {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-surface-dim);
+  padding: 2px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.toggle-pill-btn {
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--timing-tooltip) var(--ease-natural);
+}
+
+.toggle-pill-btn.active {
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(41, 45, 34, 0.08);
+}
+
+/* Graph Viewport */
+.hist-viewport {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-color: var(--color-surface-dim);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(41, 45, 34, 0.04);
+}
+
+.hist-callout-peak {
+  position: absolute;
+  top: 1rem;
+  left: 32%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: rgba(251, 249, 242, 0.95);
+  border: 1px solid var(--color-border);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 6px rgba(41, 45, 34, 0.06);
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-primary);
+  z-index: 15;
+  pointer-events: none;
+}
+
+.hist-floating-tooltip {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  box-shadow: 0 4px 14px rgba(41, 45, 34, 0.08);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 25;
+  min-width: 180px;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.hist-tip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(233, 224, 204, 0.6);
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.hist-tip-badge {
+  font-size: 10px;
+  color: var(--color-state-normal);
+  font-weight: 500;
+}
+
+.hist-tip-body {
+  padding: 0.35rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hist-tip-label {
+  font-family: var(--font-telemetry);
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.hist-tip-val {
+  font-family: var(--font-telemetry);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.hist-tip-status {
+  padding-top: 0.25rem;
+  border-top: 1px solid rgba(233, 224, 204, 0.4);
+  font-family: var(--font-narrative);
+  font-size: 11px;
+  color: var(--color-state-normal);
+  font-weight: 500;
+}
+
+.hist-xaxis-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  padding-top: 0.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* 4. Statistical Summary Matrix */
+.hist-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 640px) {
+  .hist-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hist-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.hist-stat-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.03);
+}
+
+.hist-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.hist-stat-row {
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.hist-stat-val {
+  font-family: var(--font-telemetry);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.hist-stat-val.val-green {
+  color: var(--color-state-normal);
+}
+
+.hist-stat-unit {
+  font-family: var(--font-telemetry);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.hist-stat-footer {
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* 5. Trend Interpretation & Comparative Insight */
+.hist-trend-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.03);
+}
+
+@media (min-width: 768px) {
+  .hist-trend-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.hist-trend-left {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.hist-trend-icon-box {
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-dim);
+  color: var(--color-state-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.hist-trend-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hist-trend-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+}
+
+.hist-trend-badge {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.hist-trend-period {
+  color: var(--color-state-normal);
+  font-weight: 500;
+}
+
+.hist-trend-narrative {
+  font-family: var(--font-narrative);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  max-width: 760px;
+  line-height: 1.5;
+}
+
+.hist-trend-right-box {
+  background-color: var(--color-surface-dim);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 1rem;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.hist-trend-change-label {
+  font-family: var(--font-telemetry);
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hist-trend-change-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-telemetry);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-state-normal);
+  margin: 2px 0;
+}
+
+.hist-trend-change-sub {
+  font-family: var(--font-telemetry);
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+/* 6. Notable Observations Ledger */
+.hist-observations-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.03);
+}
+
+.hist-observations-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid rgba(233, 224, 204, 0.6);
+}
+
+.hist-obs-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hist-obs-icon {
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+.hist-obs-title {
+  font-family: var(--font-narrative);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+}
+
+.hist-obs-subtitle {
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.hist-observations-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.hist-observation-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid rgba(233, 224, 204, 0.4);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--timing-tooltip) var(--ease-natural);
+}
+
+@media (min-width: 768px) {
+  .hist-observation-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.hist-observation-row:hover {
+  background-color: rgba(247, 243, 232, 0.5);
+}
+
+.hist-observation-row:last-child {
+  border-bottom: none;
+}
+
+.hist-obs-left {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+@media (min-width: 768px) {
+  .hist-obs-left {
+    align-items: center;
+  }
+}
+
+.hist-obs-time {
+  font-family: var(--font-telemetry);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+  min-width: 75px;
+}
+
+.hist-obs-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: var(--color-state-normal);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+@media (min-width: 768px) {
+  .hist-obs-dot {
+    margin-top: 0;
+  }
+}
+
+.hist-obs-desc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+@media (min-width: 640px) {
+  .hist-obs-desc-wrap {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.hist-obs-main-text {
+  font-family: var(--font-narrative);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.hist-obs-sub-text {
+  font-family: var(--font-narrative);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.hist-obs-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  align-self: flex-end;
+}
+
+@media (min-width: 768px) {
+  .hist-obs-right {
+    align-self: auto;
+  }
+}
+
+.hist-obs-duration {
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.hist-obs-badge {
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-dim);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.hist-obs-badge.badge-green {
+  background-color: rgba(102, 122, 62, 0.15);
+  color: var(--color-state-normal);
+  border-color: rgba(102, 122, 62, 0.3);
 }
 
 /* Data Tables */

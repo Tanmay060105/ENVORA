@@ -7,11 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="app-shell">
+    <!-- SIDEBAR NAVIGATION -->
     <aside class="app-sidebar">
       <div class="app-sidebar-top">
         <div class="app-sidebar-brand">
@@ -35,149 +37,331 @@
       </div>
     </aside>
 
+    <!-- MAIN APPLICATION WRAPPER -->
     <div class="app-main-wrapper">
+      <!-- TOP HEADER -->
       <header class="app-header">
         <div class="header-left">
           <div class="station-pill">
+            <span class="material-symbols-outlined text-[16px]">location_on</span>
             <span>North Quad Eco-Station #01</span>
           </div>
-          <div class="ticker-text">Historical Telemetry · Synced</div>
+          <div class="ticker-text" id="hist-header-updated">
+            Historical Telemetry · Synced
+          </div>
         </div>
         <div class="header-right">
           <div class="hardware-pill">
             <span class="pulse-dot"></span>
-            <span>ESP32 • ONLINE</span>
+            <span>ESP32 DevKit V1 • ONLINE</span>
           </div>
           <div class="avatar-pill" title="System Operator">OP</div>
         </div>
       </header>
 
+      <!-- CONTENT AREA -->
       <main class="app-content">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+        <!-- 1. Header & Breadcrumb -->
+        <section class="hist-workspace-header">
           <div>
-            <div class="hero-state-label">Analytical Workspace</div>
-            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">Historical Trend Analysis</h1>
-            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
-              Longitudinal multi-scale trend observations across calibrated campus sensor records.
+            <div class="hist-breadcrumb">
+              <span>TELEMETRIC MODULES</span>
+              <span class="breadcrumb-separator">/</span>
+              <span class="hist-breadcrumb-sub">Historical Intelligence</span>
+            </div>
+            <h1 class="hist-title">HISTORICAL ANALYSIS</h1>
+            <p class="hist-desc">
+              Explore environmental patterns, microclimatic trends, and diurnal cycles across calibrated campus sensor records.
             </p>
           </div>
-          <div class="segmented-control">
-            <button class="segmented-btn active" data-hist-range="24H">24H</button>
-            <button class="segmented-btn" data-hist-range="7D">7D</button>
-            <button class="segmented-btn" data-hist-range="30D">30D</button>
-            <button class="segmented-btn" data-hist-range="Custom">Custom</button>
+          <!-- Right Controls: Time Range & Archive Status -->
+          <div class="hist-right-controls">
+            <div class="segmented-control" role="group" aria-label="Historical time window">
+              <button class="segmented-btn active" data-hist-range="24H">24H</button>
+              <button class="segmented-btn" data-hist-range="7D">7D</button>
+              <button class="segmented-btn" data-hist-range="30D">30D</button>
+              <button class="segmented-btn" data-hist-range="Custom" style="display: inline-flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                <span id="hist-custom-range-label">Custom Window</span>
+              </button>
+            </div>
+            <div class="hist-sync-line">
+              <span class="dot-normal"></span>
+              <span id="hist-sync-status">Historical telemetry · Synced 2m ago</span>
+            </div>
           </div>
-        </div>
-
-        <!-- 5-PARAMETER SWITCHER BAR -->
-        <section class="param-selector-bar">
-          <button class="param-btn active" data-analysis-param="temperature">
-            <span>Temperature</span>
-            <span class="param-unit-tag">°C</span>
-          </button>
-          <button class="param-btn" data-analysis-param="humidity">
-            <span>Humidity</span>
-            <span class="param-unit-tag">%</span>
-          </button>
-          <button class="param-btn" data-analysis-param="pressure">
-            <span>Atmospheric Pressure</span>
-            <span class="param-unit-tag">hPa</span>
-          </button>
-          <button class="param-btn" data-analysis-param="gas_response">
-            <span>MQ-135 Gas</span>
-            <span class="param-unit-tag">raw</span>
-          </button>
-          <button class="param-btn" data-analysis-param="noise">
-            <span>Environmental Noise</span>
-            <span class="param-unit-tag">dB SPL</span>
-          </button>
         </section>
 
-        <!-- PRIMARY HISTORICAL GRAPH CENTERPIECE -->
-        <section class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title-wrap">
-              <h2 class="chart-title" id="hist-chart-title">Environmental Trend: Temperature</h2>
-              <div style="display: flex; align-items: center; gap: var(--space-md); margin-top: 4px;">
-                <span class="badge badge-normal" id="hist-param-badge">Temperature (°C)</span>
-                <span class="ticker-text" id="hist-series-label">Observed Temperature (°C)</span>
-                <span class="ticker-text" id="hist-threshold-label" style="color: var(--color-state-warning);">Reference Limit: 28.0 °C</span>
+        <!-- 2. Environmental Parameter Switcher (Instrument Card) -->
+        <section class="param-switcher-card">
+          <div class="param-switcher-header">
+            <span class="param-switcher-title">SELECT ANALYSIS PARAMETER</span>
+            <span class="param-switcher-count">5 Calibrated Channels Active</span>
+          </div>
+          <div class="param-selector-bar" id="param-selector-bar" role="tablist" aria-label="Analysis Parameter Selection">
+            <!-- Parameter 1: Temperature (Default Active) -->
+            <button class="param-btn active" data-analysis-param="temperature">
+              <span class="material-symbols-outlined param-btn-icon">thermostat</span>
+              <span>Temperature</span>
+              <span class="param-unit-tag">°C</span>
+            </button>
+            <!-- Parameter 2: Relative Humidity -->
+            <button class="param-btn" data-analysis-param="humidity">
+              <span class="material-symbols-outlined param-btn-icon">humidity_mid</span>
+              <span>Relative Humidity</span>
+              <span class="param-unit-tag">%</span>
+            </button>
+            <!-- Parameter 3: Atmospheric Pressure -->
+            <button class="param-btn" data-analysis-param="pressure">
+              <span class="material-symbols-outlined param-btn-icon">compress</span>
+              <span>Atmospheric Pressure</span>
+              <span class="param-unit-tag">hPa</span>
+            </button>
+            <!-- Parameter 4: MQ-135 Gas -->
+            <button class="param-btn" data-analysis-param="gas_response">
+              <span class="material-symbols-outlined param-btn-icon">air</span>
+              <span>MQ-135 Gas</span>
+              <span class="param-unit-tag">raw</span>
+            </button>
+            <!-- Parameter 5: Environmental Noise -->
+            <button class="param-btn" data-analysis-param="noise">
+              <span class="material-symbols-outlined param-btn-icon">graphic_eq</span>
+              <span>Environmental Noise</span>
+              <span class="param-unit-tag">dB SPL</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 3. Primary Historical Graph Centerpiece -->
+        <section class="hist-graph-card">
+          <div class="hist-graph-top">
+            <div>
+              <div class="hist-graph-title-row">
+                <h2 class="hist-graph-title" id="active-graph-title">Environmental Trend: Temperature</h2>
+                <h2 id="hist-chart-title" style="display: none;">Environmental Trend: Temperature</h2>
+                <span class="badge badge-normal" id="active-param-badge">Temperature · Ambient Microclimate (°C)</span>
+                <span id="hist-param-badge" style="display: none;">Temperature (°C)</span>
+              </div>
+              <div class="hist-graph-meta">
+                <div class="hist-legend-item">
+                  <span class="dot-normal"></span>
+                  <span id="series-label">Observed Values (°C)</span>
+                  <span id="hist-series-label" style="display: none;">Observed Temperature (°C)</span>
+                </div>
+                <div class="hist-legend-item hist-thresh-legend">
+                  <span class="hist-thresh-dash"></span>
+                  <span id="threshold-label" style="color: #ba1a1a;">Reference Limit: 28.0 °C</span>
+                  <span id="hist-threshold-label" style="display: none;">Reference Limit: 28.0 °C</span>
+                </div>
+              </div>
+            </div>
+            <!-- View Controls -->
+            <div class="hist-view-toggles">
+              <div class="toggle-pill-group">
+                <button class="toggle-pill-btn active">Smooth Spline</button>
+                <button class="toggle-pill-btn">Layered Area</button>
+              </div>
+              <div class="toggle-pill-group">
+                <button class="toggle-pill-btn active">15m Sampling</button>
+                <button class="toggle-pill-btn">1h Average</button>
               </div>
             </div>
           </div>
 
-          <div class="chart-viewport" id="hist-chart-container" style="position: relative;">
-            <div class="chart-tooltip" id="hist-chart-tooltip" style="display: none; position: absolute;"></div>
-            <svg class="chart-svg" id="hist-chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 300">
+          <!-- Graph Viewport -->
+          <div class="hist-viewport" id="hist-chart-container">
+            <!-- Dynamic Peak Callout -->
+            <div class="hist-callout-peak" id="callout-peak-pill">
+              <span class="dot-warning" id="callout-peak-dot"></span>
+              <span id="callout-peak-text">13:10 UTC • Daytime Peak (28.7 °C)</span>
+            </div>
+
+            <!-- Floating Inspection Tooltip Card -->
+            <div class="hist-floating-tooltip" id="hist-chart-tooltip" style="display: none;">
+              <div class="hist-tip-header">
+                <span id="tooltip-point-time">14:15 UTC</span>
+                <span class="hist-tip-badge">Selected Point</span>
+              </div>
+              <div class="hist-tip-body">
+                <span class="hist-tip-label" id="tooltip-param-name">Temperature Reading</span>
+                <span class="hist-tip-val" id="tooltip-param-val">24.8 °C</span>
+              </div>
+              <div class="hist-tip-status" id="tooltip-param-status">
+                Within normal range
+              </div>
+            </div>
+
+            <!-- SVG Data Viz -->
+            <svg class="w-full h-full" id="hist-chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 320" style="overflow: visible;">
               <defs>
+                <linearGradient id="param-gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#52652b" stop-opacity="0.32"></stop>
+                  <stop offset="100%" stop-color="#52652b" stop-opacity="0.02"></stop>
+                </linearGradient>
                 <linearGradient id="histGrad" x1="0%" x2="0%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#667A3E" stop-opacity="0.3"></stop>
-                  <stop offset="100%" stop-color="#667A3E" stop-opacity="0.02"></stop>
+                  <stop offset="0%" stop-color="#52652b" stop-opacity="0.32"></stop>
+                  <stop offset="100%" stop-color="#52652b" stop-opacity="0.02"></stop>
                 </linearGradient>
               </defs>
-              <line x1="0" x2="1000" y1="60" y2="60" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
-              <line x1="0" x2="1000" y1="140" y2="140" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
-              <line x1="0" x2="1000" y1="220" y2="220" stroke="#E9E0CC" stroke-dasharray="3 3"></line>
-              <line id="hist-thresh-upper-line" x1="0" x2="1000" y1="0" y2="0" stroke="#C88A2E" stroke-dasharray="4 4" stroke-width="1.5" style="display:none;"></line>
-              <text id="hist-thresh-upper-text" x="990" y="0" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#C88A2E" style="display:none;"></text>
-              <line id="hist-thresh-lower-line" x1="0" x2="1000" y1="0" y2="0" stroke="#C88A2E" stroke-dasharray="4 4" stroke-width="1.5" style="display:none;"></line>
-              <text id="hist-thresh-lower-text" x="990" y="0" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#C88A2E" style="display:none;"></text>
-              <path id="hist-area-path" fill="url(#histGrad)" d=""></path>
-              <path id="hist-line-path" fill="none" stroke="#667A3E" stroke-width="2.5" d=""></path>
-              <line id="hist-crosshair" class="chart-crosshair" x1="0" x2="0" y1="20" y2="280" style="display:none;"></line>
-              <circle id="hist-inspect-node" class="chart-inspect-node" cx="0" cy="0" r="4.5" style="display:none;"></circle>
+              <!-- Horizontal Grid Lines -->
+              <g stroke="#e4e4ce" stroke-dasharray="3,3" stroke-width="1">
+                <line x1="40" x2="980" y1="40" y2="40"></line>
+                <line x1="40" x2="980" y1="100" y2="100"></line>
+                <line x1="40" x2="980" y1="160" y2="160"></line>
+                <line x1="40" x2="980" y1="220" y2="220"></line>
+                <line x1="40" x2="980" y1="280" y2="280"></line>
+              </g>
+
+              <!-- Threshold Lines -->
+              <line id="threshold-line" stroke="#ba1a1a" stroke-dasharray="4,4" stroke-width="1.2" x1="40" x2="980" y1="185" y2="185" opacity="0.75"></line>
+              <text id="threshold-svg-text" class="font-telemetry" fill="#ba1a1a" font-size="10" opacity="0.85" x="50" y="179">Reference Limit (28.0 °C)</text>
+              <line id="hist-thresh-upper-line" style="display:none;"></line>
+              <text id="hist-thresh-upper-text" style="display:none;"></text>
+              <line id="hist-thresh-lower-line" style="display:none;"></line>
+              <text id="hist-thresh-lower-text" style="display:none;"></text>
+
+              <!-- Area Wash -->
+              <path id="chart-area-path" fill="url(#param-gradient)" d=""></path>
+              <path id="hist-area-path" fill="url(#param-gradient)" d="" style="display:none;"></path>
+
+              <!-- Spline Telemetry Curve -->
+              <path id="chart-line-path" fill="none" stroke="#52652b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d=""></path>
+              <path id="hist-line-path" fill="none" stroke="#52652b" stroke-width="2.5" d="" style="display:none;"></path>
+
+              <!-- Vertical Inspection Crosshair Guide -->
+              <line id="chart-crosshair" class="chart-crosshair" stroke="#3f4d27" stroke-dasharray="2,2" stroke-width="1.5" x1="600" x2="600" y1="40" y2="280" style="display:none;"></line>
+              <line id="hist-crosshair" class="chart-crosshair" style="display:none;"></line>
+
+              <!-- Inspection Cursor Point -->
+              <circle id="chart-cursor-dot" cx="600" cy="192" fill="#ffffff" r="4.5" stroke="#52652b" stroke-width="2.5" style="display:none;"></circle>
+              <circle id="hist-inspect-node" cx="0" cy="0" r="4.5" style="display:none;"></circle>
             </svg>
-          </div>
-        </section>
 
-        <!-- STATISTICAL SUMMARY MATRIX (4 METRICS) -->
-        <section>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md);">
-            <div class="metric-card">
-              <div class="metric-card-header">AVERAGE (WINDOW)</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="stat-avg-val">--</span>
-                <span class="metric-unit" id="stat-avg-val-unit"></span>
-              </div>
-              <div class="metric-trend-pill">Mean value calculation</div>
-            </div>
-
-            <div class="metric-card">
-              <div class="metric-card-header">MINIMUM</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="stat-min-val">--</span>
-                <span class="metric-unit" id="stat-min-val-unit"></span>
-              </div>
-              <div class="metric-trend-pill">Lowest observed point</div>
-            </div>
-
-            <div class="metric-card">
-              <div class="metric-card-header">MAXIMUM</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="stat-max-val">--</span>
-                <span class="metric-unit" id="stat-max-val-unit"></span>
-              </div>
-              <div class="metric-trend-pill" style="color: var(--color-state-warning);">Peak reading observed</div>
-            </div>
-
-            <div class="metric-card">
-              <div class="metric-card-header">CURRENT VALUE</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="stat-cur-val">--</span>
-                <span class="metric-unit" id="stat-cur-val-unit"></span>
-              </div>
-              <div class="metric-trend-pill">Most recent fixture ingest</div>
+            <!-- X-Axis Timestamps -->
+            <div class="hist-xaxis-row" id="hist-xaxis-labels">
+              <span>00:00 (Midnight)</span>
+              <span>04:00</span>
+              <span>08:00</span>
+              <span>12:00 (Noon)</span>
+              <span>16:00</span>
+              <span>20:00</span>
+              <span class="text-primary font-medium">24:00 (Latest Ingest)</span>
             </div>
           </div>
         </section>
 
-        <!-- TREND INTERPRETATION NARRATIVE -->
-        <section class="card-surface-dim">
-          <div style="display: flex; align-items: center; gap: var(--space-md);">
-            <span class="badge badge-normal">DIURNAL OBSERVATION</span>
-            <p id="hist-trend-narrative" style="font-size: var(--text-sm); color: var(--color-text-primary); margin: 0;">
-              Loading historical trend observations...
-            </p>
+        <!-- 4. Statistical Summary Matrix (4 Cards) -->
+        <section class="hist-stats-grid">
+          <!-- Card 1: Average -->
+          <div class="hist-stat-card">
+            <div class="hist-stat-header">
+              <span>AVERAGE (24H)</span>
+              <span class="material-symbols-outlined text-[18px]">functions</span>
+            </div>
+            <div class="hist-stat-row">
+              <span class="hist-stat-val" id="stat-avg-val">22.8</span>
+              <span class="hist-stat-unit" id="stat-avg-unit">°C</span>
+              <span id="stat-avg-val-unit" style="display: none;">°C</span>
+            </div>
+            <div class="hist-stat-footer" id="stat-avg-sub">
+              <span class="dot-normal"></span>
+              <span>Calculated over 96 intervals</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Minimum -->
+          <div class="hist-stat-card">
+            <div class="hist-stat-header">
+              <span>MINIMUM</span>
+              <span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+            </div>
+            <div class="hist-stat-row">
+              <span class="hist-stat-val val-green" id="stat-min-val">16.4</span>
+              <span class="hist-stat-unit" id="stat-min-unit">°C</span>
+              <span id="stat-min-val-unit" style="display: none;">°C</span>
+            </div>
+            <div class="hist-stat-footer" id="stat-min-sub">
+              Recorded today at 05:20 UTC
+            </div>
+          </div>
+
+          <!-- Card 3: Maximum -->
+          <div class="hist-stat-card">
+            <div class="hist-stat-header">
+              <span>MAXIMUM</span>
+              <span class="material-symbols-outlined text-[18px]" style="color: var(--color-state-warning);">arrow_upward</span>
+            </div>
+            <div class="hist-stat-row">
+              <span class="hist-stat-val" id="stat-max-val">28.7</span>
+              <span class="hist-stat-unit" id="stat-max-unit">°C</span>
+              <span id="stat-max-val-unit" style="display: none;">°C</span>
+            </div>
+            <div class="hist-stat-footer" id="stat-max-sub" style="color: var(--color-state-warning);">
+              Recorded today at 13:10 UTC
+            </div>
+          </div>
+
+          <!-- Card 4: Current -->
+          <div class="hist-stat-card">
+            <div class="hist-stat-header">
+              <span>CURRENT</span>
+              <span class="relative-pulse-wrapper">
+                <span class="pulse-ring"></span>
+                <span class="pulse-core"></span>
+              </span>
+            </div>
+            <div class="hist-stat-row">
+              <span class="hist-stat-val" id="stat-cur-val">24.1</span>
+              <span class="hist-stat-unit" id="stat-cur-unit">°C</span>
+              <span id="stat-cur-val-unit" style="display: none;">°C</span>
+            </div>
+            <div class="hist-stat-footer" id="stat-cur-sub">
+              Last reading received 4s ago
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Trend Interpretation & Comparative Insight -->
+        <section class="hist-trend-card">
+          <div class="hist-trend-left">
+            <div class="hist-trend-icon-box" id="trend-icon-box">
+              <span class="material-symbols-outlined text-[24px]" id="trend-icon">trending_flat</span>
+            </div>
+            <div class="hist-trend-content">
+              <div class="hist-trend-eyebrow">
+                <span class="dot-normal" id="trend-indicator-dot"></span>
+                <span class="hist-trend-badge" id="trend-badge-status">TREND: STABLE</span>
+                <span class="text-muted">•</span>
+                <span class="hist-trend-period" id="trend-period-label">Last 24 Hours</span>
+              </div>
+              <p class="hist-trend-narrative" id="trend-narrative-text">
+                Typical sinusoidal solar warming curve observed across campus with predictable afternoon dissipation.
+              </p>
+              <p id="hist-trend-narrative" style="display: none;"></p>
+            </div>
+          </div>
+          <div class="hist-trend-right-box">
+            <span class="hist-trend-change-label">24h Change</span>
+            <div class="hist-trend-change-stat" id="trend-change-stat">
+              <span class="material-symbols-outlined text-[16px]" id="trend-change-icon">trending_flat</span>
+              <span id="trend-change-val">+0.4 °C (+1.8%)</span>
+            </div>
+            <span class="hist-trend-change-sub">Compared to previous 24 hours</span>
+          </div>
+        </section>
+
+        <!-- 6. Notable Observations & Anomaly Log -->
+        <section class="hist-observations-card">
+          <div class="hist-observations-header">
+            <div class="hist-obs-title-group">
+              <span class="material-symbols-outlined hist-obs-icon">history_edu</span>
+              <h3 class="hist-obs-title">Notable Observations</h3>
+            </div>
+            <span class="hist-obs-subtitle">Chronological Log (Last 24 Hours)</span>
+          </div>
+          <!-- Observation Ledger List -->
+          <div class="hist-observations-list" id="hist-observations-list">
+            <!-- Dynamic rows will be rendered here by historical-analysis.js -->
           </div>
         </section>
       </main>

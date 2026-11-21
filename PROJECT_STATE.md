@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-21  
-**Overall Status:** Phase 4.2 (Dashboard Visual Fidelity & Metadata Integrity Correction) Complete & Verified  
+**Overall Status:** Phase 4.5 (Historical Analysis Visual Fidelity Correction) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -20,18 +20,20 @@
 | **Phase 4.2** | Dashboard Visual Fidelity & Metadata Integrity Correction | 🟢 Complete | None |
 | **Phase 4.3** | Live Monitoring Visual Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.4** | Live Monitoring Final Visual & Metadata Correction | 🟢 Complete | None |
+| **Phase 4.5** | Historical Analysis Visual Fidelity Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.4 (Live Monitoring Final Visual & Metadata Correction) completed and verified against the locked Stitch reference (`live-monitoring.html`).
-  - Restored the prominent Telemetry Ingestion Header hierarchy (`TELEMETRY INGESTION / Channel Alpha-01`, title `LIVE MONITORING` in 2.5rem semibold font, and descriptive telemetry text) as direct children of `.app-content` alongside the status strip, cards, graph, and lower grid, ensuring true uncollapsed flex/gap layout.
-  - Positioned the Stitch-style environmental status strip directly beneath the header with dynamic severity pill, countdown timer (`27s`), and continuous sync window indicator (`30s window`).
-  - Refined the Five Parameter Cards (Temperature, Relative Humidity, Atmospheric Pressure, MQ-135 Gas Response, Environmental Noise) to include parameter label, sensor source badge (`BME280`, `ADC1`, `INMP441`), primary scalar (`28px`), unit, secondary measurement context (`Precision ±0.5°C · Ambient`, `12-bit Analog · Air Sensor`, etc.), trend indicator (`↑ 0.1°C`), and latency (`3s ago`) while preserving compact Stitch telemetry density.
-  - Preserved complete graph architecture (360px viewport, organic Bezier spline, `oliveStreamGradient` fill, dynamic operational limits, live pulsating radar marker, `requestAnimationFrame` throttled pin tooltip, and 5-column diagnostics strip).
-  - Preserved lower two-column layout (`Sensor Status` 5-row table and `Device & Station Status` metadata list with hardware photo callout).
-  - Conducted full metadata integrity audit: replaced hardcoded `EDT` with timezone-neutral/runtime `UTC` across diagnostics strip and tooltips (`HH:mm:ss UTC · Station Node #01`); replaced ungrounded physical deployment claims (`Arboretum Canopy`, `Field Calibrated & Weatherproofed`, `Physical Enclosure #01`) with factual documented specifications (`Campus Living Lab`, `Hardware Node Enclosure #01`, `5 Channels Monitored · USB 5V Powered`).
+- **Active Task:** Phase 4.5 (Historical Analysis Visual Fidelity Correction) completed and verified against the locked Stitch reference (`historical-analysis.html`).
+  - Restored prominent Historical Workspace Header with breadcrumb (`TELEMETRIC MODULES / Historical Intelligence`), main title `HISTORICAL ANALYSIS`, descriptive microclimate subtitle, time-window controls (`24H`, `7D`, `30D`, `Custom Window`), and sync status indicator (`Historical telemetry · Synced 2m ago`).
+  - Implemented 5-parameter instrument selector card (`.param-switcher-card`) with Temperature as default active, supporting all 5 approved parameters (Temperature, Relative Humidity, Atmospheric Pressure, MQ-135 Gas, Environmental Noise) with icons, labels, unit tags, and smooth cross-parameter switching.
+  - Rebuilt Primary Historical Graph Centerpiece: 400px viewport, smooth cubic Bezier spline, layered area gradient wash, dynamic threshold reference line and text, dynamic peak callout pill (`13:10 UTC • Solar Peak (28.7 °C)`), and X-axis timestamps (`00:00 (Midnight)` to `24:00 (Latest Ingest)`).
+  - Implemented Interactive Graph Inspection Tooltip tracking mouse movement throttled with `requestAnimationFrame`, updating vertical crosshair, cursor dot, timestamp in UTC, exact parameter value + unit, and threshold status context; resets on `mouseleave`.
+  - Built Statistical Summary Matrix (4 Cards) computing Average, Minimum, Maximum, and Current values with respective units, timestamps, and interval sample counts via `intelligence.computeParameterStats`.
+  - Built Trend Interpretation Card featuring directional icon box, trend badge (`TREND: STABLE`), 24h change scalar with percentage delta, and grounded narrative from Phase 3 intelligence.
+  - Implemented Notable Observations Ledger rendering 4 grounded historical events derived dynamically from the dataset (diurnal maximum, nocturnal minimum, baseline stabilization, and active telemetry sync).
   - All 10 verification gates in `verify_phase4.ps1` and master regression suites pass cleanly with zero PM/AQI references.
 
 ---

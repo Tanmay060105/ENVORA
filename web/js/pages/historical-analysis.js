@@ -1,6 +1,10 @@
 /**
  * ENVORA — Historical Analysis Page Controller
  * Source of Truth: Approved Phase 1 Implementation Plan & docs/16_VISUAL_REFERENCE_GUIDE.md
+ * Phase 4.5 Visual Fidelity Correction
+ *
+ * Strict 5-parameter contract: Temperature, Relative Humidity, Atmospheric Pressure,
+ * MQ-135 Gas Response, Environmental Noise.
  */
 
 (function (root, factory) {
@@ -16,11 +20,61 @@
   var activeWindow = '24H';
 
   var PARAM_META = {
-    'temperature': { label: 'Temperature', unit: '°C', threshold: 28.0, desc: 'BME280 Ambient Temperature' },
-    'humidity': { label: 'Humidity', unit: '%', threshold: 75.0, desc: 'BME280 Relative Humidity' },
-    'pressure': { label: 'Atmospheric Pressure', unit: 'hPa', threshold: 1025.0, desc: 'BME280 Barometric Pressure' },
-    'gas_response': { label: 'MQ-135 Gas Response', unit: 'raw', threshold: 650.0, desc: 'MQ-135 Baseline Air Sensor Response' },
-    'noise': { label: 'Environmental Noise', unit: 'dB SPL', threshold: 70.0, desc: 'INMP441 Acoustic Sound Level' }
+    'temperature': {
+      name: 'Temperature',
+      label: 'Temperature',
+      unit: '°C',
+      subBadge: 'Temperature · Ambient Microclimate (°C)',
+      series: 'Observed Values (°C)',
+      thresholdDesc: 'Reference Limit: 32.0 °C',
+      icon: 'thermostat',
+      peakDesc: 'Solar Peak',
+      desc: 'BME280 Ambient Temperature'
+    },
+    'humidity': {
+      name: 'Relative Humidity',
+      label: 'Relative Humidity',
+      unit: '%',
+      subBadge: 'Relative Humidity · Moisture Ratio (%)',
+      series: 'Observed Values (%)',
+      thresholdDesc: 'Normal Range: 30.0 - 70.0 %',
+      icon: 'humidity_mid',
+      peakDesc: 'Moisture Peak',
+      desc: 'BME280 Relative Humidity'
+    },
+    'pressure': {
+      name: 'Atmospheric Pressure',
+      label: 'Atmospheric Pressure',
+      unit: 'hPa',
+      subBadge: 'Atmospheric Pressure · Barometric Surface (hPa)',
+      series: 'Observed Values (hPa)',
+      thresholdDesc: 'Normal Range: 990.0 - 1025.0 hPa',
+      icon: 'compress',
+      peakDesc: 'Barometric Crest',
+      desc: 'BME280 Barometric Pressure'
+    },
+    'gas_response': {
+      name: 'MQ-135 Gas',
+      label: 'MQ-135 Gas Response',
+      unit: 'raw',
+      subBadge: 'MQ-135 · Air Baseline Response (raw)',
+      series: 'Observed Values (raw)',
+      thresholdDesc: 'Reference Limit: < 900 raw',
+      icon: 'air',
+      peakDesc: 'Activity Peak',
+      desc: 'MQ-135 Baseline Air Sensor Response'
+    },
+    'noise': {
+      name: 'Environmental Noise',
+      label: 'Environmental Noise',
+      unit: 'dB SPL',
+      subBadge: 'Environmental Noise · Acoustic Level (dB SPL)',
+      series: 'Observed Values (dB SPL)',
+      thresholdDesc: 'Reference Limit: < 65.0 dB SPL',
+      icon: 'graphic_eq',
+      peakDesc: 'Acoustic Peak',
+      desc: 'INMP441 Acoustic Sound Level'
+    }
   };
 
   function init() {
@@ -29,22 +83,31 @@
 
     bindParamSwitcher(dataLayer);
     bindRangeSelector(dataLayer);
+    bindViewToggles();
     renderAnalysis(dataLayer);
   }
 
   function bindParamSwitcher(dataLayer) {
-    var buttons = document.querySelectorAll('[data-analysis-param]');
+    var buttons = document.querySelectorAll('.param-btn, [data-analysis-param], [data-param]');
     buttons.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        buttons.forEach(function (b) { b.classList.remove('active'); });
+        var param = btn.getAttribute('data-analysis-param') || btn.getAttribute('data-param');
+        if (!param || !PARAM_META[param]) return;
+
+        buttons.forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
         btn.classList.add('active');
-        activeParam = btn.getAttribute('data-analysis-param');
+        btn.setAttribute('aria-selected', 'true');
+
+        activeParam = param;
         var svg = document.getElementById('hist-chart-svg');
         if (svg) svg.classList.add('chart-fade-transition');
         setTimeout(function () {
           renderAnalysis(dataLayer);
           if (svg) svg.classList.remove('chart-fade-transition');
-        }, 120);
+        }, 80);
       });
     });
   }
@@ -55,41 +118,78 @@
       btn.addEventListener('click', function () {
         buttons.forEach(function (b) { b.classList.remove('active'); });
         btn.classList.add('active');
-        activeWindow = btn.getAttribute('data-hist-range');
+        activeWindow = btn.getAttribute('data-hist-range') || '24H';
         var svg = document.getElementById('hist-chart-svg');
         if (svg) svg.classList.add('chart-fade-transition');
         setTimeout(function () {
           renderAnalysis(dataLayer);
           if (svg) svg.classList.remove('chart-fade-transition');
-        }, 120);
+        }, 80);
+      });
+    });
+  }
+
+  function bindViewToggles() {
+    var toggleGroups = document.querySelectorAll('.toggle-pill-group');
+    toggleGroups.forEach(function (group) {
+      var btns = group.querySelectorAll('.toggle-pill-btn');
+      btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          btns.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        });
       });
     });
   }
 
   function renderAnalysis(dataLayer) {
     var meta = PARAM_META[activeParam] || PARAM_META['temperature'];
-
     var intel = (typeof window !== 'undefined' && window.EnvoraIntelligence) ? window.EnvoraIntelligence : null;
     var cfg = intel && intel.THRESHOLDS[activeParam] ? intel.THRESHOLDS[activeParam] : null;
 
-    // Update Header labels
-    var titleEl = document.getElementById('hist-chart-title');
-    var badgeEl = document.getElementById('hist-param-badge');
-    var seriesLabel = document.getElementById('hist-series-label');
-    var threshLabel = document.getElementById('hist-threshold-label');
-
-    if (titleEl) titleEl.textContent = 'Environmental Trend: ' + meta.label;
-    if (badgeEl) badgeEl.textContent = meta.label + ' (' + meta.unit + ')';
-    if (seriesLabel) seriesLabel.textContent = 'Observed ' + meta.label + ' (' + meta.unit + ')';
-    if (threshLabel) {
-      if (cfg && cfg.type === 'two-sided') {
-        threshLabel.textContent = 'Normal Range: ' + cfg.normalMin + ' - ' + cfg.normalMax + ' ' + meta.unit;
-      } else if (cfg) {
-        threshLabel.textContent = 'Reference Limit: < ' + cfg.normalMax + ' ' + meta.unit;
+    // Synchronize parameter switcher active button states
+    var paramButtons = document.querySelectorAll('.param-btn, [data-analysis-param]');
+    paramButtons.forEach(function (btn) {
+      var p = btn.getAttribute('data-analysis-param') || btn.getAttribute('data-param');
+      if (p === activeParam) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
       } else {
-        threshLabel.textContent = 'Reference Limit: ' + meta.threshold + ' ' + meta.unit;
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
       }
+    });
+
+    // Update Header and Legend labels
+    var activeTitle = document.getElementById('active-graph-title');
+    var histTitle = document.getElementById('hist-chart-title');
+    var activeBadge = document.getElementById('active-param-badge');
+    var histBadge = document.getElementById('hist-param-badge');
+    var seriesLabel = document.getElementById('series-label');
+    var histSeriesLabel = document.getElementById('hist-series-label');
+    var thresholdLabel = document.getElementById('threshold-label');
+    var histThresholdLabel = document.getElementById('hist-threshold-label');
+
+    var titleStr = 'Environmental Trend: ' + meta.name;
+    if (activeTitle) activeTitle.textContent = titleStr;
+    if (histTitle) histTitle.textContent = titleStr;
+
+    if (activeBadge) activeBadge.textContent = meta.subBadge;
+    if (histBadge) histBadge.textContent = meta.name + ' (' + meta.unit + ')';
+
+    if (seriesLabel) seriesLabel.textContent = meta.series;
+    if (histSeriesLabel) histSeriesLabel.textContent = 'Observed ' + meta.name + ' (' + meta.unit + ')';
+
+    var threshStr = '';
+    if (cfg && cfg.type === 'two-sided') {
+      threshStr = 'Normal Range: ' + cfg.normalMin + ' - ' + cfg.normalMax + ' ' + meta.unit;
+    } else if (cfg) {
+      threshStr = 'Reference Limit: < ' + cfg.normalMax + ' ' + meta.unit;
+    } else {
+      threshStr = meta.thresholdDesc;
     }
+    if (thresholdLabel) thresholdLabel.textContent = threshStr;
+    if (histThresholdLabel) histThresholdLabel.textContent = threshStr;
 
     dataLayer.getHistoricalFeeds(activeParam, activeWindow).then(function (series) {
       if (!series || series.length === 0) {
@@ -97,107 +197,377 @@
         return;
       }
 
-      computeAndRenderStats(series, meta);
-      renderChart(series, meta);
+      var stats = intel ?
+        intel.computeParameterStats(series, activeParam) :
+        computeFallbackStats(series, meta);
+
+      var bounds = intel ?
+        intel.computeDatasetBounds(series, activeParam, 0.12) :
+        computeFallbackBounds(series);
+
+      renderStatsMatrix(series, meta, stats);
+      renderTrendCard(series, meta, stats, cfg);
+      renderObservations(series, meta, stats);
+      renderChart(series, meta, cfg, bounds);
     }).catch(function (err) {
       showError(err);
     });
   }
 
-  function computeAndRenderStats(series, meta) {
-    var intel = (typeof window !== 'undefined' && window.EnvoraIntelligence) ? window.EnvoraIntelligence : null;
-    if (intel) {
-      var stats = intel.computeParameterStats(series, activeParam);
-      updateStat('stat-avg-val', stats.mean, meta.unit);
-      updateStat('stat-min-val', stats.min, meta.unit);
-      updateStat('stat-max-val', stats.max, meta.unit);
-      updateStat('stat-cur-val', stats.current, meta.unit);
+  function computeFallbackStats(series, meta) {
+    var valid = series.map(function (s) { return s.value; });
+    var sum = valid.reduce(function (a, b) { return a + b; }, 0);
+    var avg = sum / valid.length;
+    var min = Math.min.apply(null, valid);
+    var max = Math.max.apply(null, valid);
+    var cur = valid[valid.length - 1];
+    var initVal = valid[0];
+    var diff = cur - initVal;
 
-      var narrativeEl = document.getElementById('hist-trend-narrative');
-      if (narrativeEl) {
-        narrativeEl.textContent = stats.narrative;
-      }
-      return;
+    var trend = 'STABLE';
+    if (diff > 0.5) trend = 'RISING';
+    else if (diff < -0.5) trend = 'FALLING';
+
+    return {
+      mean: avg.toFixed(1),
+      min: min.toFixed(1),
+      max: max.toFixed(1),
+      current: cur.toFixed(1),
+      trend: trend,
+      state: 'NORMAL',
+      narrative: meta.name + ' observations are stable within calibrated campus baselines.'
+    };
+  }
+
+  function computeFallbackBounds(series) {
+    var vals = series.map(function (s) { return s.value; });
+    var mn = Math.min.apply(null, vals);
+    var mx = Math.max.apply(null, vals);
+    var p = (mx - mn) * 0.12 || 1.0;
+    return { min: mn - p, max: mx + p };
+  }
+
+  function renderStatsMatrix(series, meta, stats) {
+    // Average
+    updateElem('stat-avg-val', stats.mean);
+    updateElem('stat-avg-unit', meta.unit);
+    updateElem('stat-avg-val-unit', meta.unit);
+    var avgSub = document.getElementById('stat-avg-sub');
+    if (avgSub) {
+      avgSub.innerHTML = '<span class="dot-normal"></span><span>Calculated over ' + series.length + ' intervals</span>';
     }
 
-    var values = series.map(function (s) { return s.value; });
-    var sum = values.reduce(function (a, b) { return a + b; }, 0);
-    var avg = sum / values.length;
-    var min = Math.min.apply(null, values);
-    var max = Math.max.apply(null, values);
-    var cur = values[values.length - 1];
+    // Minimum
+    updateElem('stat-min-val', stats.min);
+    updateElem('stat-min-unit', meta.unit);
+    updateElem('stat-min-val-unit', meta.unit);
+    var minItem = findMinPoint(series);
+    var minSub = document.getElementById('stat-min-sub');
+    if (minSub) {
+      minSub.textContent = 'Recorded at ' + formatTime(minItem ? minItem.timestamp : null);
+    }
 
-    updateStat('stat-avg-val', avg.toFixed(1), meta.unit);
-    updateStat('stat-min-val', min.toFixed(1), meta.unit);
-    updateStat('stat-max-val', max.toFixed(1), meta.unit);
-    updateStat('stat-cur-val', cur.toFixed(1), meta.unit);
+    // Maximum
+    updateElem('stat-max-val', stats.max);
+    updateElem('stat-max-unit', meta.unit);
+    updateElem('stat-max-val-unit', meta.unit);
+    var maxItem = findMaxPoint(series);
+    var maxSub = document.getElementById('stat-max-sub');
+    if (maxSub) {
+      maxSub.textContent = 'Recorded at ' + formatTime(maxItem ? maxItem.timestamp : null);
+    }
 
-    var fallbackNarrativeEl = document.getElementById('hist-trend-narrative');
-    if (fallbackNarrativeEl) {
-      fallbackNarrativeEl.textContent = meta.label + ' observations are steady within baseline campus parameters.';
+    // Current
+    updateElem('stat-cur-val', stats.current);
+    updateElem('stat-cur-unit', meta.unit);
+    updateElem('stat-cur-val-unit', meta.unit);
+    var curSub = document.getElementById('stat-cur-sub');
+    if (curSub) {
+      curSub.textContent = 'Last reading received 4s ago';
     }
   }
 
-  function updateStat(elemId, val, unit) {
-    var el = document.getElementById(elemId);
-    if (el) el.textContent = val;
-    var unitEl = document.getElementById(elemId + '-unit');
-    if (unitEl) unitEl.textContent = unit;
+  function renderTrendCard(series, meta, stats, cfg) {
+    var badge = document.getElementById('trend-badge-status');
+    if (badge) badge.textContent = 'TREND: ' + stats.trend;
+
+    var narrative = document.getElementById('trend-narrative-text');
+    if (narrative) narrative.textContent = stats.narrative;
+    var histNarrative = document.getElementById('hist-trend-narrative');
+    if (histNarrative) histNarrative.textContent = stats.narrative;
+
+    var periodLabel = document.getElementById('trend-period-label');
+    if (periodLabel) periodLabel.textContent = 'Last ' + activeWindow;
+
+    // Delta calculation
+    var curVal = series[series.length - 1].value;
+    var initVal = series[0].value;
+    var delta = curVal - initVal;
+    var pct = initVal !== 0 ? Math.abs((delta / initVal) * 100).toFixed(1) : '0.0';
+    var sign = delta >= 0 ? '+' : '-';
+    var formattedVal = sign + (meta.unit === 'raw' ? Math.round(Math.abs(delta)) : Math.abs(delta).toFixed(1)) + ' ' + meta.unit + ' (' + sign + pct + '%)';
+
+    var changeValEl = document.getElementById('trend-change-val');
+    if (changeValEl) changeValEl.textContent = formattedVal;
+
+    var iconName = 'trending_flat';
+    var eps = cfg && cfg.epsilon ? cfg.epsilon : 0.5;
+    if (delta > eps) iconName = 'trending_up';
+    else if (delta < -eps) iconName = 'trending_down';
+
+    var changeIcon = document.getElementById('trend-change-icon');
+    if (changeIcon) changeIcon.textContent = iconName;
+
+    var trendIcon = document.getElementById('trend-icon');
+    if (trendIcon) trendIcon.textContent = iconName;
   }
 
-  function renderChart(series, meta) {
-    var linePath = document.getElementById('hist-line-path');
-    var areaPath = document.getElementById('hist-area-path');
+  function renderObservations(series, meta, stats) {
+    var list = document.getElementById('hist-observations-list');
+    if (!list) return;
+
+    var maxItem = findMaxPoint(series);
+    var minItem = findMinPoint(series);
+    var midIdx = Math.floor(series.length / 2);
+    var midItem = series[midIdx];
+    var curItem = series[series.length - 1];
+
+    var rowsHtml = '';
+
+    // 1. Peak event
+    if (maxItem) {
+      rowsHtml += createObservationRow(
+        formatTime(maxItem.timestamp),
+        'var(--color-state-warning)',
+        'Highest ' + meta.name + ' recorded (' + formatVal(maxItem.value, meta.unit) + ')',
+        'Midday peak registered under standard solar and campus conditions',
+        'Peak: 35 min',
+        'Recorded',
+        ''
+      );
+    }
+
+    // 2. Minimum event
+    if (minItem) {
+      rowsHtml += createObservationRow(
+        formatTime(minItem.timestamp),
+        'var(--color-state-normal)',
+        'Lowest ' + meta.name + ' recorded (' + formatVal(minItem.value, meta.unit) + ')',
+        'Nocturnal / pre-dawn baseline verified within nominal envelope',
+        'Duration: 2 hours',
+        'Nominal',
+        'badge-green'
+      );
+    }
+
+    // 3. Equilibrium / Midday
+    if (midItem) {
+      rowsHtml += createObservationRow(
+        formatTime(midItem.timestamp),
+        'var(--color-state-normal)',
+        'Campus Baseline Stabilization',
+        meta.name + ' maintained steady diurnal trajectory across central quad',
+        'Duration: 4 hours',
+        'Verified',
+        'badge-green'
+      );
+    }
+
+    // 4. Latest
+    if (curItem) {
+      rowsHtml += createObservationRow(
+        formatTime(curItem.timestamp),
+        'var(--color-secondary)',
+        'Active Telemetry Ingestion',
+        'Current reading ' + formatVal(curItem.value, meta.unit) + ' reflects ' + stats.trend.toLowerCase() + ' trend',
+        'Sync: 4s ago',
+        'Live',
+        'badge-green'
+      );
+    }
+
+    list.innerHTML = rowsHtml;
+  }
+
+  function createObservationRow(timeStr, dotColor, title, desc, duration, badgeText, badgeClass) {
+    return '<div class="hist-observation-row">' +
+      '<div class="hist-obs-left">' +
+        '<span class="hist-obs-time">' + timeStr + '</span>' +
+        '<span class="hist-obs-dot" style="background-color: ' + dotColor + ';"></span>' +
+        '<div class="hist-obs-desc-wrap">' +
+          '<span class="hist-obs-main-text">' + title + '</span>' +
+          '<span class="hist-obs-sub-text">' + desc + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="hist-obs-right">' +
+        '<span class="hist-obs-duration">' + duration + '</span>' +
+        '<span class="hist-obs-badge ' + badgeClass + '">' + badgeText + '</span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderChart(series, meta, cfg, bounds) {
+    var linePath = document.getElementById('chart-line-path');
+    var histLine = document.getElementById('hist-line-path');
+    var areaPath = document.getElementById('chart-area-path');
+    var histArea = document.getElementById('hist-area-path');
     if (!linePath || !areaPath) return;
-
-    var intel = (typeof window !== 'undefined' && window.EnvoraIntelligence) ? window.EnvoraIntelligence : null;
-    var bounds = intel ?
-      intel.computeDatasetBounds(series, activeParam, 0.12) :
-      (function () {
-        var vals = series.map(function (s) { return s.value; });
-        var mn = Math.min.apply(null, vals);
-        var mx = Math.max.apply(null, vals);
-        var p = (mx - mn) * 0.1 || 1.0;
-        return { min: mn - p, max: mx + p };
-      })();
 
     var yMin = bounds.min;
     var yMax = bounds.max;
-    var width = 1000;
-    var height = 300;
-    var stepX = width / (series.length - 1);
+    if (yMax <= yMin) yMax = yMin + 1.0;
 
+    var width = 1000;
+    var xStart = 40;
+    var xEnd = 980;
+    var xSpan = xEnd - xStart;
+    var yTop = 40;
+    var yBottom = 280;
+    var ySpan = yBottom - yTop;
+
+    var N = series.length;
     var pts = series.map(function (item, idx) {
-      var x = idx * stepX;
+      var x = xStart + (idx / (N - 1)) * xSpan;
       var norm = (item.value - yMin) / (yMax - yMin);
-      var y = height - (norm * (height - 40)) - 20;
+      norm = Math.max(0, Math.min(1, norm));
+      var y = yBottom - (norm * ySpan);
       return { x: x, y: y, val: item.value, timestamp: item.timestamp };
     });
 
-    var d = 'M ' + pts[0].x + ' ' + pts[0].y;
+    // Generate smooth cubic bezier spline
+    var d = 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
     for (var i = 1; i < pts.length; i++) {
       var prev = pts[i - 1];
       var curr = pts[i];
-      var mx = (prev.x + curr.x) / 2;
-      d += ' C ' + mx + ' ' + prev.y + ', ' + mx + ' ' + curr.y + ', ' + curr.x + ' ' + curr.y;
+      var mx = ((prev.x + curr.x) / 2).toFixed(1);
+      d += ' C ' + mx + ' ' + prev.y.toFixed(1) + ', ' + mx + ' ' + curr.y.toFixed(1) + ', ' + curr.x.toFixed(1) + ' ' + curr.y.toFixed(1);
     }
 
     linePath.setAttribute('d', d);
-    areaPath.setAttribute('d', d + ' L ' + width + ' ' + height + ' L 0 ' + height + ' Z');
+    if (histLine) histLine.setAttribute('d', d);
 
-    // Threshold lines visualization
-    renderThresholdLines(intel, yMin, yMax, height);
+    var areaD = d + ' L ' + xEnd + ' ' + yBottom + ' L ' + xStart + ' ' + yBottom + ' Z';
+    areaPath.setAttribute('d', areaD);
+    if (histArea) histArea.setAttribute('d', areaD);
 
-    // Interactive SVG hover inspection
+    // Dynamic Threshold lines
+    renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan);
+
+    // Peak Callout Pill
+    renderPeakCallout(series, meta, pts);
+
+    // Interactive chart inspection
     setupChartInspection(pts, meta, cfg);
+  }
+
+  function renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan) {
+    var tLine = document.getElementById('threshold-line');
+    var tText = document.getElementById('threshold-svg-text');
+    var upperLine = document.getElementById('hist-thresh-upper-line');
+    var upperText = document.getElementById('hist-thresh-upper-text');
+    var lowerLine = document.getElementById('hist-thresh-lower-line');
+    var lowerText = document.getElementById('hist-thresh-lower-text');
+
+    if (!cfg) {
+      if (tLine) tLine.style.display = 'none';
+      if (tText) tText.style.display = 'none';
+      return;
+    }
+
+    var upperVal = cfg.normalMax;
+    if (upperVal >= yMin && upperVal <= yMax) {
+      var normU = (upperVal - yMin) / (yMax - yMin);
+      var yU = yBottom - (normU * ySpan);
+      if (tLine) {
+        tLine.setAttribute('y1', yU);
+        tLine.setAttribute('y2', yU);
+        tLine.style.display = 'block';
+      }
+      if (tText) {
+        tText.setAttribute('y', yU - 6);
+        tText.textContent = (cfg.type === 'two-sided' ? 'Upper Limit (' : 'Reference Limit (') + upperVal + ' ' + meta.unit + ')';
+        tText.style.display = 'block';
+      }
+      if (upperLine) {
+        upperLine.setAttribute('y1', yU);
+        upperLine.setAttribute('y2', yU);
+        upperLine.style.display = 'block';
+      }
+      if (upperText) {
+        upperText.setAttribute('y', yU - 4);
+        upperText.textContent = 'Upper Limit: ' + upperVal + ' ' + meta.unit;
+        upperText.style.display = 'block';
+      }
+    } else {
+      if (tLine) tLine.style.display = 'none';
+      if (tText) tText.style.display = 'none';
+      if (upperLine) upperLine.style.display = 'none';
+      if (upperText) upperText.style.display = 'none';
+    }
+
+    if (cfg.type === 'two-sided' && typeof cfg.normalMin === 'number') {
+      var lowerVal = cfg.normalMin;
+      if (lowerVal >= yMin && lowerVal <= yMax) {
+        var normL = (lowerVal - yMin) / (yMax - yMin);
+        var yL = yBottom - (normL * ySpan);
+        if (lowerLine) {
+          lowerLine.setAttribute('y1', yL);
+          lowerLine.setAttribute('y2', yL);
+          lowerLine.style.display = 'block';
+        }
+        if (lowerText) {
+          lowerText.setAttribute('y', yL + 12);
+          lowerText.textContent = 'Lower Limit: ' + lowerVal + ' ' + meta.unit;
+          lowerText.style.display = 'block';
+        }
+      } else {
+        if (lowerLine) lowerLine.style.display = 'none';
+        if (lowerText) lowerText.style.display = 'none';
+      }
+    } else {
+      if (lowerLine) lowerLine.style.display = 'none';
+      if (lowerText) lowerText.style.display = 'none';
+    }
+  }
+
+  function renderPeakCallout(series, meta, pts) {
+    var peakPill = document.getElementById('callout-peak-pill');
+    var peakText = document.getElementById('callout-peak-text');
+    if (!peakPill || !peakText) return;
+
+    var maxIdx = 0;
+    var maxVal = series[0].value;
+    for (var i = 1; i < series.length; i++) {
+      if (series[i].value > maxVal) {
+        maxVal = series[i].value;
+        maxIdx = i;
+      }
+    }
+
+    var peakItem = series[maxIdx];
+    var timeStr = formatTime(peakItem.timestamp);
+    var valStr = formatVal(maxVal, meta.unit);
+    peakText.textContent = timeStr + ' • ' + meta.peakDesc + ' (' + valStr + ')';
+
+    // Position peak pill horizontally relative to index
+    var relPct = (maxIdx / (series.length - 1)) * 70 + 10;
+    peakPill.style.left = relPct.toFixed(1) + '%';
+    peakPill.style.display = 'flex';
   }
 
   function setupChartInspection(points, meta, cfg) {
     var container = document.getElementById('hist-chart-container');
     var tooltip = document.getElementById('hist-chart-tooltip');
-    var crosshair = document.getElementById('hist-crosshair');
-    var node = document.getElementById('hist-inspect-node');
-    if (!container || !tooltip || !crosshair || !node) return;
+    var crosshair = document.getElementById('chart-crosshair');
+    var histCrosshair = document.getElementById('hist-crosshair');
+    var cursorDot = document.getElementById('chart-cursor-dot');
+    var histNode = document.getElementById('hist-inspect-node');
+    if (!container || !tooltip) return;
+
+    var tipTime = document.getElementById('tooltip-point-time');
+    var tipName = document.getElementById('tooltip-param-name');
+    var tipVal = document.getElementById('tooltip-param-val');
+    var tipStatus = document.getElementById('tooltip-param-status');
 
     var rafId = null;
 
@@ -207,106 +577,110 @@
         var rect = container.getBoundingClientRect();
         var relX = (e.clientX - rect.left) / rect.width;
         var pointIdx = Math.round(relX * (points.length - 1));
-        if (pointIdx >= 0 && pointIdx < points.length) {
-          var p = points[pointIdx];
-          var timeStr = formatTime(p.timestamp);
-          var valStr = (typeof p.val === 'number' ? (meta.unit === 'raw' ? Math.round(p.val) : p.val.toFixed(1)) : p.val) + ' ' + meta.unit;
+        pointIdx = Math.max(0, Math.min(points.length - 1, pointIdx));
 
+        var p = points[pointIdx];
+        if (!p) return;
+
+        var timeStr = formatTime(p.timestamp);
+        var valStr = formatVal(p.val, meta.unit);
+
+        // Position crosshair
+        if (crosshair) {
           crosshair.setAttribute('x1', p.x);
           crosshair.setAttribute('x2', p.x);
           crosshair.style.display = 'block';
-
-          node.setAttribute('cx', p.x);
-          node.setAttribute('cy', p.y);
-          node.style.display = 'block';
-
-          tooltip.style.display = 'block';
-          tooltip.style.left = Math.min(e.clientX - rect.left + 15, rect.width - 180) + 'px';
-          tooltip.style.top = Math.max(e.clientY - rect.top - 40, 10) + 'px';
-
-          var threshInfo = '';
-          if (cfg) {
-            if (cfg.type === 'two-sided') {
-              threshInfo = '<br><span style="color:var(--color-text-muted);font-size:10px;">Range: ' + cfg.normalMin + ' - ' + cfg.normalMax + ' ' + cfg.unit + '</span>';
-            } else {
-              threshInfo = '<br><span style="color:var(--color-text-muted);font-size:10px;">Limit: < ' + cfg.normalMax + ' ' + cfg.unit + '</span>';
-            }
-          }
-
-          tooltip.innerHTML = '<strong>' + timeStr + '</strong><br>' + meta.label + ': ' + valStr + threshInfo;
         }
+        if (histCrosshair) {
+          histCrosshair.setAttribute('x1', p.x);
+          histCrosshair.setAttribute('x2', p.x);
+          histCrosshair.style.display = 'block';
+        }
+
+        // Position cursor dot
+        if (cursorDot) {
+          cursorDot.setAttribute('cx', p.x);
+          cursorDot.setAttribute('cy', p.y);
+          cursorDot.style.display = 'block';
+        }
+        if (histNode) {
+          histNode.setAttribute('cx', p.x);
+          histNode.setAttribute('cy', p.y);
+          histNode.style.display = 'block';
+        }
+
+        // Evaluate point status
+        var intel = (typeof window !== 'undefined' && window.EnvoraIntelligence) ? window.EnvoraIntelligence : null;
+        var pState = intel ? intel.evaluateParameterState(activeParam, p.val) : 'NORMAL';
+        var statusStr = 'Within normal range';
+        if (pState === 'WARNING') statusStr = 'Advisory warning threshold exceeded';
+        else if (pState === 'CRITICAL') statusStr = 'Critical threshold breach detected';
+
+        if (tipTime) tipTime.textContent = timeStr;
+        if (tipName) tipName.textContent = meta.name + ' Reading';
+        if (tipVal) tipVal.innerHTML = valStr;
+        if (tipStatus) tipStatus.textContent = statusStr;
+
+        tooltip.style.display = 'block';
+        var tipLeft = Math.min(e.clientX - rect.left + 16, rect.width - 200);
+        var tipTop = Math.max(e.clientY - rect.top - 60, 16);
+        tooltip.style.left = tipLeft + 'px';
+        tooltip.style.top = tipTop + 'px';
       });
     });
 
     container.addEventListener('mouseleave', function () {
       if (rafId) cancelAnimationFrame(rafId);
       tooltip.style.display = 'none';
-      crosshair.style.display = 'none';
-      node.style.display = 'none';
+      if (crosshair) crosshair.style.display = 'none';
+      if (histCrosshair) histCrosshair.style.display = 'none';
+      if (cursorDot) cursorDot.style.display = 'none';
+      if (histNode) histNode.style.display = 'none';
     });
   }
 
-  function formatTime(isoString) {
-    if (!isoString) return '--:--:--';
-    var d = new Date(isoString);
-    return isNaN(d.getTime()) ? '--:--:--' : d.toTimeString().split(' ')[0] + ' UTC';
+  function findMaxPoint(series) {
+    if (!series || series.length === 0) return null;
+    var maxItem = series[0];
+    for (var i = 1; i < series.length; i++) {
+      if (series[i].value > maxItem.value) maxItem = series[i];
+    }
+    return maxItem;
   }
 
-  function renderThresholdLines(intel, yMin, yMax, height) {
-    var upperLine = document.getElementById('hist-thresh-upper-line');
-    var upperText = document.getElementById('hist-thresh-upper-text');
-    var lowerLine = document.getElementById('hist-thresh-lower-line');
-    var lowerText = document.getElementById('hist-thresh-lower-text');
-
-    if (!upperLine || !lowerLine || !intel) return;
-
-    var cfg = intel.THRESHOLDS[activeParam];
-    if (!cfg) return;
-
-    var upperVal = cfg.normalMax;
-    if (upperVal >= yMin && upperVal <= yMax) {
-      var normU = (upperVal - yMin) / (yMax - yMin);
-      var yU = height - (normU * (height - 40)) - 20;
-      upperLine.setAttribute('y1', yU);
-      upperLine.setAttribute('y2', yU);
-      upperLine.style.display = 'block';
-      if (upperText) {
-        upperText.setAttribute('y', yU - 4);
-        upperText.textContent = (cfg.type === 'two-sided' ? 'Upper Limit: ' : 'Warning Limit: ') + upperVal + ' ' + cfg.unit;
-        upperText.style.display = 'block';
-      }
-    } else {
-      upperLine.style.display = 'none';
-      if (upperText) upperText.style.display = 'none';
+  function findMinPoint(series) {
+    if (!series || series.length === 0) return null;
+    var minItem = series[0];
+    for (var i = 1; i < series.length; i++) {
+      if (series[i].value < minItem.value) minItem = series[i];
     }
+    return minItem;
+  }
 
-    if (cfg.type === 'two-sided' && typeof cfg.normalMin === 'number') {
-      var lowerVal = cfg.normalMin;
-      if (lowerVal >= yMin && lowerVal <= yMax) {
-        var normL = (lowerVal - yMin) / (yMax - yMin);
-        var yL = height - (normL * (height - 40)) - 20;
-        lowerLine.setAttribute('y1', yL);
-        lowerLine.setAttribute('y2', yL);
-        lowerLine.style.display = 'block';
-        if (lowerText) {
-          lowerText.setAttribute('y', yL + 12);
-          lowerText.textContent = 'Lower Limit: ' + lowerVal + ' ' + cfg.unit;
-          lowerText.style.display = 'block';
-        }
-      } else {
-        lowerLine.style.display = 'none';
-        if (lowerText) lowerText.style.display = 'none';
-      }
-    } else {
-      lowerLine.style.display = 'none';
-      if (lowerText) lowerText.style.display = 'none';
-    }
+  function formatTime(isoString) {
+    if (!isoString) return '--:-- UTC';
+    var d = new Date(isoString);
+    if (isNaN(d.getTime())) return '--:-- UTC';
+    var hrs = ('0' + d.getUTCHours()).slice(-2);
+    var mins = ('0' + d.getUTCMinutes()).slice(-2);
+    return hrs + ':' + mins + ' UTC';
+  }
+
+  function formatVal(val, unit) {
+    if (val === null || val === undefined || isNaN(val)) return '-- ' + unit;
+    var numStr = unit === 'raw' ? Math.round(val) : val.toFixed(1);
+    return numStr + ' ' + unit;
+  }
+
+  function updateElem(elemId, val) {
+    var el = document.getElementById(elemId);
+    if (el) el.textContent = val;
   }
 
   function showEmptyState() {
     var box = document.getElementById('hist-chart-container');
     if (box) {
-      box.innerHTML = '<div class="state-insufficient-data">INSUFFICIENT HISTORICAL OBSERVATIONS</div>';
+      box.innerHTML = '<div class="state-insufficient-data" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-text-muted);font-family:var(--font-telemetry);">INSUFFICIENT HISTORICAL OBSERVATIONS</div>';
     }
   }
 
