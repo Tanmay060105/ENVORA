@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-21  
-**Overall Status:** Phase 4.7 (Historical Analysis Strict Stitch Visual Fidelity Correction) Complete & Verified  
+**Overall Status:** Phase 4.8 (Historical Analysis Strict Final Stitch Visual Correction) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -23,19 +23,20 @@
 | **Phase 4.5** | Historical Analysis Visual Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.6** | Historical Analysis Stitch-Fidelity Graph Correction | 🟢 Complete | None |
 | **Phase 4.7** | Historical Analysis Strict Stitch Visual Fidelity Correction | 🟢 Complete | None |
+| **Phase 4.8** | Historical Analysis Strict Final Stitch Visual Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.7 (Historical Analysis Strict Stitch Visual Fidelity Correction) completed and verified against the locked Stitch reference (`historical-analysis.html`).
-  - Restored strict Stitch visual hierarchy for graph section header: Title row displays `Environmental Trend: [Parameter]` alone; the parameter badge (`TEMPERATURE (°C)`) is placed in the metadata/legend row immediately preceding the observed-data label and operational threshold.
-  - Completely removed invented "Curve Style" toggles (`Smooth Line` / `Layered Atmosphere`), ensuring the graph automatically renders using the approved organic spline curve with subtle environmental area wash.
-  - Recreated Stitch-style compact sampling controls (`15m Sampling` / `1h Average`) in the top-right of the graph card, with functional 4-point rolling average downsampling for 1-hour intervals.
-  - Calibrated graph viewport proportions: expanded height to 350px (SVG `viewBox="0 0 1000 280"`), establishing the graph as the visual centerpiece of the analytical page with comfortable vertical amplitude.
-  - Rendered subtle observation points along the spline curve (`#chart-points-group`), highlighting the inspected point dynamically on hover with vertical crosshair and floating card.
-  - Completely eradicated ungrounded solar-radiation references across UI, narrative strings, tooltips, and comments, adopting factual parameter-specific diurnal terminology (`Diurnal Temperature Peak`, `Midday peak registered under typical campus atmospheric conditions`).
-  - Preserved 5-parameter contract, Phase 3 intelligence engine, and decoupled data layer. All 10 verification gates in `verify_phase4.ps1` and `test_historical_phase4_7.js` passed cleanly.
+- **Active Task:** Phase 4.8 (Historical Analysis Strict Final Stitch Visual Correction) completed and verified against the authoritative Stitch reference (`historical-analysis.html`).
+  - Refined chart spline mathematics from step-flattened interpolation to a smooth Catmull-Rom cubic Bezier algorithm (`generateSplinePath`) with continuous tangents ($C^1$ continuity), providing organic curve fluidity, natural peak rounding, and visible local variations without artificial horizontal shelf-flattening.
+  - Calibrated SVG viewport geometry to Stitch reference (`viewBox="0 0 1000 320"`, $y$-span 40 to 280), aligning with 5 horizontal grid lines ($y = 40, 100, 160, 220, 280$).
+  - Implemented dynamic vertical amplitude scaling so that actual sensor variations occupy an expressive 50–70% vertical span across the plotting area while keeping observation points and the area wash visually balanced.
+  - Rendered authoritative reference threshold lines (`#threshold-line` and `#threshold-svg-text`) using thin dashed muted red (`stroke="#ba1a1a" stroke-dasharray="4,4" stroke-width="1.2"`) positioned cleanly in the plot for all upper and two-sided parameters.
+  - Enhanced inspection interaction with `requestAnimationFrame` throttling, anchoring the inspection cursor dot, crosshair, and floating tooltip directly to the selected observation point.
+  - Structured Notable Observations ledger into clean tabular visual columns (`TIME | EVENT | OBSERVATION / CONTEXT | DURATION | STATUS`) with compact status badge styling.
+  - Preserved 5-parameter model, Phase 3 intelligence calculations, zero backend architecture, zero PM/AQI references, and zero unsupported solar radiation terms. All test suites and 10 verification gates passed cleanly.
 
 ---
 

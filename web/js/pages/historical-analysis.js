@@ -431,16 +431,25 @@
     var histArea = document.getElementById('hist-area-path');
     if (!linePath || !areaPath) return;
 
-    var yMin = bounds.min;
-    var yMax = bounds.max;
-    if (yMax <= yMin) yMax = yMin + 1.0;
-
+    // Viewport geometry matching Stitch reference (viewBox: 0 0 1000 320)
     var xStart = 40;
     var xEnd = 980;
     var xSpan = xEnd - xStart;
-    var yTop = 35;
-    var yBottom = 245;
+    var yTop = 40;
+    var yBottom = 280;
     var ySpan = yBottom - yTop;
+
+    // Dynamic vertical range: provide clear vertical amplitude while preserving data variation
+    var dataVals = series.map(function (item) { return item.value; });
+    var dataMin = Math.min.apply(null, dataVals);
+    var dataMax = Math.max.apply(null, dataVals);
+    var rawSpan = dataMax - dataMin;
+    var span = Math.max(rawSpan, 1.2);
+    var pad = span * 0.16;
+
+    var yMin = dataMin - pad;
+    var yMax = dataMax + pad;
+    if (yMax <= yMin) yMax = yMin + 1.0;
 
     var N = series.length;
     var pts = series.map(function (item, idx) {
@@ -451,14 +460,8 @@
       return { x: x, y: y, val: item.value, timestamp: item.timestamp };
     });
 
-    // Generate smooth cubic bezier spline
-    var d = 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
-    for (var i = 1; i < pts.length; i++) {
-      var prev = pts[i - 1];
-      var curr = pts[i];
-      var mx = ((prev.x + curr.x) / 2).toFixed(1);
-      d += ' C ' + mx + ' ' + prev.y.toFixed(1) + ', ' + mx + ' ' + curr.y.toFixed(1) + ', ' + curr.x.toFixed(1) + ' ' + curr.y.toFixed(1);
-    }
+    // Generate smooth Catmull-Rom cubic Bezier spline with continuous tangents
+    var d = generateSplinePath(pts, 0.22);
 
     linePath.setAttribute('d', d);
     if (histLine) histLine.setAttribute('d', d);
@@ -470,14 +473,43 @@
     // Render subtle observation points along the curve
     renderObservationPoints(pts);
 
-    // Dynamic Threshold lines (calibrated 280px coordinates)
+    // Dynamic Threshold lines (thin dashed muted red line with inline label)
     renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan);
 
-    // Peak Callout Pill
+    // Dynamic Peak Callout Pill
     renderPeakCallout(series, meta, pts);
 
-    // Interactive chart inspection
+    // Interactive chart inspection with requestAnimationFrame throttling
     setupChartInspection(pts, meta, cfg);
+  }
+
+  function generateSplinePath(pts, tension) {
+    if (!pts || pts.length === 0) return '';
+    if (pts.length === 1) return 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+    if (pts.length === 2) {
+      return 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1) + ' L ' + pts[1].x.toFixed(1) + ' ' + pts[1].y.toFixed(1);
+    }
+
+    var t = typeof tension === 'number' ? tension : 0.22;
+    var d = 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = i > 0 ? pts[i - 1] : pts[0];
+      var p1 = pts[i];
+      var p2 = pts[i + 1];
+      var p3 = i < pts.length - 2 ? pts[i + 2] : p2;
+
+      // Smooth Catmull-Rom tangents converted to cubic Bezier control points
+      var cp1x = p1.x + (p2.x - p0.x) * t;
+      var cp1y = p1.y + (p2.y - p0.y) * t;
+      var cp2x = p2.x - (p3.x - p1.x) * t;
+      var cp2y = p2.y - (p3.y - p1.y) * t;
+
+      d += ' C ' + cp1x.toFixed(1) + ' ' + cp1y.toFixed(1) + ', ' +
+                   cp2x.toFixed(1) + ' ' + cp2y.toFixed(1) + ', ' +
+                   p2.x.toFixed(1) + ' ' + p2.x.toFixed(1);
+    }
+    return d;
   }
 
   function renderObservationPoints(points) {
@@ -508,25 +540,42 @@
     }
 
     var upperVal = cfg.normalMax;
-    if (upperVal >= yMin && upperVal <= yMax) {
-      var normU = (upperVal - yMin) / (yMax - yMin);
-      var yU = yBottom - (normU * ySpan);
+    if (typeof upperVal === 'number') {
+      var yU;
+      if (upperVal >= yMin && upperVal <= yMax) {
+        var normU = (upperVal - yMin) / (yMax - yMin);
+        yU = yBottom - (normU * ySpan);
+      } else if (upperVal > yMax) {
+        // Position threshold cleanly in upper plot area
+        yU = yTop + 35;
+      } else {
+        yU = yBottom - 20;
+      }
+
+      var upperLabelStr = (cfg.type === 'two-sided' ? 'Upper Threshold (' : 'Reference Limit (') + upperVal + ' ' + meta.unit + ')';
+
       if (tLine) {
+        tLine.setAttribute('x1', '40');
+        tLine.setAttribute('x2', '980');
         tLine.setAttribute('y1', yU);
         tLine.setAttribute('y2', yU);
         tLine.style.display = 'block';
       }
       if (tText) {
+        tText.setAttribute('x', '50');
         tText.setAttribute('y', yU - 6);
-        tText.textContent = (cfg.type === 'two-sided' ? 'Upper Threshold (' : 'Reference Limit (') + upperVal + ' ' + meta.unit + ')';
+        tText.textContent = upperLabelStr;
         tText.style.display = 'block';
       }
       if (upperLine) {
+        upperLine.setAttribute('x1', '40');
+        upperLine.setAttribute('x2', '980');
         upperLine.setAttribute('y1', yU);
         upperLine.setAttribute('y2', yU);
         upperLine.style.display = 'block';
       }
       if (upperText) {
+        upperText.setAttribute('x', '50');
         upperText.setAttribute('y', yU - 4);
         upperText.textContent = 'Upper Limit: ' + upperVal + ' ' + meta.unit;
         upperText.style.display = 'block';
@@ -540,22 +589,29 @@
 
     if (cfg.type === 'two-sided' && typeof cfg.normalMin === 'number') {
       var lowerVal = cfg.normalMin;
+      var yL;
       if (lowerVal >= yMin && lowerVal <= yMax) {
         var normL = (lowerVal - yMin) / (yMax - yMin);
-        var yL = yBottom - (normL * ySpan);
-        if (lowerLine) {
-          lowerLine.setAttribute('y1', yL);
-          lowerLine.setAttribute('y2', yL);
-          lowerLine.style.display = 'block';
-        }
-        if (lowerText) {
-          lowerText.setAttribute('y', yL + 12);
-          lowerText.textContent = 'Lower Limit: ' + lowerVal + ' ' + meta.unit;
-          lowerText.style.display = 'block';
-        }
+        yL = yBottom - (normL * ySpan);
+      } else if (lowerVal < yMin) {
+        // Position threshold cleanly in lower plot area
+        yL = yBottom - 25;
       } else {
-        if (lowerLine) lowerLine.style.display = 'none';
-        if (lowerText) lowerText.style.display = 'none';
+        yL = yTop + 45;
+      }
+
+      if (lowerLine) {
+        lowerLine.setAttribute('x1', '40');
+        lowerLine.setAttribute('x2', '980');
+        lowerLine.setAttribute('y1', yL);
+        lowerLine.setAttribute('y2', yL);
+        lowerLine.style.display = 'block';
+      }
+      if (lowerText) {
+        lowerText.setAttribute('x', '50');
+        lowerText.setAttribute('y', yL + 12);
+        lowerText.textContent = 'Lower Limit: ' + lowerVal + ' ' + meta.unit;
+        lowerText.style.display = 'block';
       }
     } else {
       if (lowerLine) lowerLine.style.display = 'none';
@@ -582,10 +638,15 @@
     var valStr = formatVal(maxVal, meta.unit);
     peakText.textContent = timeStr + ' • ' + meta.peakDesc + ' (' + valStr + ')';
 
-    // Position peak pill horizontally relative to index
-    var relPct = (maxIdx / (series.length - 1)) * 70 + 10;
-    peakPill.style.left = relPct.toFixed(1) + '%';
-    peakPill.style.display = 'flex';
+    // Position peak pill horizontally relative to actual peak observation point
+    if (pts && pts[maxIdx]) {
+      var relPct = (pts[maxIdx].x / 1000) * 100;
+      peakPill.style.left = Math.max(8, Math.min(72, relPct - 10)).toFixed(1) + '%';
+    } else {
+      var fallbackPct = (maxIdx / (series.length - 1)) * 70 + 10;
+      peakPill.style.left = fallbackPct.toFixed(1) + '%';
+    }
+    peakPill.style.display = 'inline-flex';
   }
 
   function setupChartInspection(points, meta, cfg) {
@@ -595,7 +656,7 @@
     var histCrosshair = document.getElementById('hist-crosshair');
     var cursorDot = document.getElementById('chart-cursor-dot');
     var histNode = document.getElementById('hist-inspect-node');
-    if (!container || !tooltip) return;
+    if (!container || !tooltip || !points || points.length === 0) return;
 
     var tipTime = document.getElementById('tooltip-point-time');
     var tipName = document.getElementById('tooltip-param-name');
@@ -608,29 +669,44 @@
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(function () {
         var rect = container.getBoundingClientRect();
-        var relX = (e.clientX - rect.left) / rect.width;
-        var pointIdx = Math.round(relX * (points.length - 1));
-        pointIdx = Math.max(0, Math.min(points.length - 1, pointIdx));
+        var mouseX = e.clientX - rect.left;
+        var relX = Math.max(0, Math.min(1, mouseX / rect.width));
+        var targetSvgX = 40 + (relX * 940);
 
-        var p = points[pointIdx];
+        // Find nearest observation point
+        var closestIdx = 0;
+        var minDiff = Math.abs(points[0].x - targetSvgX);
+        for (var i = 1; i < points.length; i++) {
+          var diff = Math.abs(points[i].x - targetSvgX);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestIdx = i;
+          }
+        }
+
+        var p = points[closestIdx];
         if (!p) return;
 
         var timeStr = formatTime(p.timestamp);
         var valStr = formatVal(p.val, meta.unit);
 
-        // Position crosshair across calibrated plotting boundaries
+        // Position crosshair across calibrated plotting boundaries (y: 40 -> 280)
         if (crosshair) {
           crosshair.setAttribute('x1', p.x);
           crosshair.setAttribute('x2', p.x);
+          crosshair.setAttribute('y1', '40');
+          crosshair.setAttribute('y2', '280');
           crosshair.style.display = 'block';
         }
         if (histCrosshair) {
           histCrosshair.setAttribute('x1', p.x);
           histCrosshair.setAttribute('x2', p.x);
+          histCrosshair.setAttribute('y1', '40');
+          histCrosshair.setAttribute('y2', '280');
           histCrosshair.style.display = 'block';
         }
 
-        // Position cursor dot
+        // Position prominent inspection anchor node
         if (cursorDot) {
           cursorDot.setAttribute('cx', p.x);
           cursorDot.setAttribute('cy', p.y);
@@ -655,8 +731,13 @@
         if (tipStatus) tipStatus.textContent = statusStr;
 
         tooltip.style.display = 'block';
-        var tipLeft = Math.min(e.clientX - rect.left + 14, rect.width - 200);
-        var tipTop = Math.max(e.clientY - rect.top - 50, 10);
+        var pixelX = (p.x / 1000) * rect.width;
+        var pixelY = (p.y / 320) * (rect.height - 35);
+        var tipLeft = pixelX + 16;
+        if (tipLeft + 200 > rect.width) {
+          tipLeft = pixelX - 205;
+        }
+        var tipTop = Math.max(12, Math.min(rect.height - 110, pixelY - 45));
         tooltip.style.left = tipLeft + 'px';
         tooltip.style.top = tipTop + 'px';
       });
