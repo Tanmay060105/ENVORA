@@ -64,463 +64,481 @@
 
       <!-- CONTENT AREA -->
       <main class="app-content">
-        <div class="envora-container">
-          <!-- 1. Top Telemetry Ingestion Header -->
-          <div class="live-telemetry-header">
-            <div class="live-header-meta">
-              <div class="live-channel-breadcrumb">
-                <span class="live-sub-title">Telemetry Ingestion Engine</span>
-                <span class="breadcrumb-separator">/</span>
-                <span class="live-channel-id">Channel Alpha-01</span>
-              </div>
-              <h1 class="live-page-title">LIVE MONITORING</h1>
-              <p class="live-page-desc">
-                Real-time environmental telemetry from the campus sensor station. High-frequency microclimate profiling and atmospheric composition index.
-              </p>
+        <!-- 1. Top Telemetry Ingestion Header -->
+        <section class="live-telemetry-header">
+          <div class="live-header-meta">
+            <div class="live-channel-breadcrumb">
+              <span class="live-sub-title">TELEMETRY INGESTION</span>
+              <span class="breadcrumb-separator">/</span>
+              <span class="live-channel-id">Channel Alpha-01</span>
             </div>
-            <!-- Right-Aligned Live Status Cluster -->
-            <div class="live-status-cluster">
-              <div class="status-cluster-pill">
-                <span class="relative-pulse-wrapper">
-                  <span class="pulse-ring"></span>
-                  <span class="pulse-core"></span>
-                </span>
-                <span class="cluster-pill-live">LIVE</span>
-              </div>
-              <div class="status-cluster-pill">
-                <span class="cluster-pill-node">ESP32 DevKit V1 • ONLINE</span>
-              </div>
-              <div class="status-cluster-pill" id="live-tx-pill">
-                <span class="cluster-pill-tx">Tx: <span class="tx-highlight" id="live-tx-freshness">3s ago</span> (Nominal)</span>
-              </div>
-              <div class="status-cluster-pill pill-primary">
-                <span class="cluster-pill-count">5 / 5 Sensors Active</span>
-              </div>
+            <h1 class="live-page-title">LIVE MONITORING</h1>
+            <p class="live-page-desc">
+              Real-time environmental telemetry from the campus sensor station. High-frequency microclimate profiling and atmospheric composition index.
+            </p>
+          </div>
+          <!-- Right-Aligned Live Status Cluster -->
+          <div class="live-status-cluster">
+            <div class="status-cluster-pill">
+              <span class="relative-pulse-wrapper">
+                <span class="pulse-ring"></span>
+                <span class="pulse-core"></span>
+              </span>
+              <span class="cluster-pill-live">LIVE</span>
+            </div>
+            <div class="status-cluster-pill">
+              <span class="cluster-pill-node">ESP32 DevKit V1 • ONLINE</span>
+            </div>
+            <div class="status-cluster-pill" id="live-tx-pill">
+              <span class="cluster-pill-tx">Tx: <span class="tx-highlight" id="live-tx-freshness">3s ago</span> (Nominal)</span>
+            </div>
+            <div class="status-cluster-pill pill-primary">
+              <span class="cluster-pill-count">5 / 5 Sensors Active</span>
             </div>
           </div>
+        </section>
 
-          <!-- 2. Environmental Alert / Status Strip -->
-          <div class="live-status-strip">
-            <div class="status-strip-left">
-              <span class="status-pill status-pill-normal" id="live-overall-status-pill">
-                <span class="dot-normal" id="live-overall-status-dot"></span>
-                <span id="live-overall-status-text">NORMAL</span>
-              </span>
-              <span class="status-strip-msg" id="live-status-strip-desc">
-                All monitored microclimate parameters are currently within expected ranges. Next automated ingestion cycle in <span class="countdown-highlight" id="live-next-cycle-countdown">27s</span>.
-              </span>
-            </div>
-            <div class="status-strip-right">
-              <span class="sync-indicator">
-                <span class="material-symbols-outlined text-[15px]">sync</span>
-                <span>Live telemetry sync: Continuous (30s window)</span>
-              </span>
-            </div>
+        <!-- 2. Environmental Alert / Status Strip -->
+        <section class="live-status-strip">
+          <div class="status-strip-left">
+            <span class="status-pill status-pill-normal" id="live-overall-status-pill">
+              <span class="dot-normal" id="live-overall-status-dot"></span>
+              <span id="live-overall-status-text">NORMAL</span>
+            </span>
+            <span class="status-strip-msg" id="live-status-strip-desc">
+              All monitored microclimate parameters are currently within expected ranges. Next automated ingestion cycle in <span class="countdown-highlight" id="live-next-cycle-countdown">27s</span>.
+            </span>
           </div>
+          <div class="status-strip-right">
+            <span class="sync-indicator">
+              <span class="material-symbols-outlined text-[15px]">sync</span>
+              <span>Live telemetry sync: Continuous (30s window)</span>
+            </span>
+          </div>
+        </section>
 
-          <!-- 3. Current Live Sensor Readings (5 Cards Grid) -->
-          <div class="live-param-grid" role="region" aria-label="Live Sensor Telemetry Cards">
-            <!-- Card 1: Temperature (ACTIVE SELECTION) -->
-            <div class="live-param-card active" data-param="temperature" tabindex="0" role="button" aria-pressed="true" aria-label="Temperature telemetry card">
-              <div class="live-param-header">
+        <!-- 3. Current Live Sensor Readings (5 Cards Grid) -->
+        <section class="live-param-grid" role="region" aria-label="Live Sensor Telemetry Cards">
+          <!-- Card 1: Temperature (ACTIVE SELECTION) -->
+          <div class="live-param-card active" data-param="temperature" tabindex="0" role="button" aria-pressed="true" aria-label="Temperature telemetry card">
+            <div class="live-param-header">
+              <div class="live-param-title-wrap">
                 <span class="live-param-name">TEMPERATURE</span>
-                <span class="param-status-dot"></span>
+                <span class="live-param-source">BME280</span>
               </div>
-              <div class="live-param-reading">
-                <span class="live-param-scalar" id="live-temp-val">24.8</span>
-                <span class="live-param-unit">°C</span>
-              </div>
-              <div class="live-param-footer">
-                <span class="live-param-trend" id="live-temp-trend">↑ 0.1°C</span>
-                <span class="live-param-latency" id="live-temp-latency">3s ago</span>
-              </div>
+              <span class="param-status-dot"></span>
             </div>
+            <div class="live-param-reading">
+              <span class="live-param-scalar" id="live-temp-val">24.8</span>
+              <span class="live-param-unit">°C</span>
+            </div>
+            <div class="live-param-subtext">Precision ±0.5°C · Ambient</div>
+            <div class="live-param-footer">
+              <span class="live-param-trend" id="live-temp-trend">↑ 0.1°C</span>
+              <span class="live-param-latency" id="live-temp-latency">3s ago</span>
+            </div>
+          </div>
 
-            <!-- Card 2: Relative Humidity -->
-            <div class="live-param-card" data-param="humidity" tabindex="0" role="button" aria-pressed="false" aria-label="Relative humidity telemetry card">
-              <div class="live-param-header">
+          <!-- Card 2: Relative Humidity -->
+          <div class="live-param-card" data-param="humidity" tabindex="0" role="button" aria-pressed="false" aria-label="Relative humidity telemetry card">
+            <div class="live-param-header">
+              <div class="live-param-title-wrap">
                 <span class="live-param-name">HUMIDITY</span>
-                <span class="param-status-dot"></span>
+                <span class="live-param-source">BME280</span>
               </div>
-              <div class="live-param-reading">
-                <span class="live-param-scalar" id="live-humidity-val">61.0</span>
-                <span class="live-param-unit">%</span>
-              </div>
-              <div class="live-param-footer">
-                <span class="live-param-trend" id="live-humidity-trend">↓ 0.2%</span>
-                <span class="live-param-latency" id="live-humidity-latency">3s ago</span>
-              </div>
+              <span class="param-status-dot"></span>
             </div>
+            <div class="live-param-reading">
+              <span class="live-param-scalar" id="live-humidity-val">61.0</span>
+              <span class="live-param-unit">%</span>
+            </div>
+            <div class="live-param-subtext">Precision ±3% RH · Hygrometer</div>
+            <div class="live-param-footer">
+              <span class="live-param-trend" id="live-humidity-trend">↓ 0.2%</span>
+              <span class="live-param-latency" id="live-humidity-latency">3s ago</span>
+            </div>
+          </div>
 
-            <!-- Card 3: Atmospheric Pressure -->
-            <div class="live-param-card" data-param="pressure" tabindex="0" role="button" aria-pressed="false" aria-label="Atmospheric pressure telemetry card">
-              <div class="live-param-header">
+          <!-- Card 3: Atmospheric Pressure -->
+          <div class="live-param-card" data-param="pressure" tabindex="0" role="button" aria-pressed="false" aria-label="Atmospheric pressure telemetry card">
+            <div class="live-param-header">
+              <div class="live-param-title-wrap">
                 <span class="live-param-name">PRESSURE</span>
-                <span class="param-status-dot"></span>
+                <span class="live-param-source">BME280</span>
               </div>
-              <div class="live-param-reading">
-                <span class="live-param-scalar" id="live-pressure-val">1013.2</span>
-                <span class="live-param-unit">hPa</span>
-              </div>
-              <div class="live-param-footer">
-                <span class="live-param-trend" id="live-pressure-trend">≈ Stable</span>
-                <span class="live-param-latency" id="live-pressure-latency">3s ago</span>
-              </div>
+              <span class="param-status-dot"></span>
             </div>
+            <div class="live-param-reading">
+              <span class="live-param-scalar" id="live-pressure-val">1013.2</span>
+              <span class="live-param-unit">hPa</span>
+            </div>
+            <div class="live-param-subtext">Precision ±1.0 hPa · Barometer</div>
+            <div class="live-param-footer">
+              <span class="live-param-trend" id="live-pressure-trend">≈ Stable</span>
+              <span class="live-param-latency" id="live-pressure-latency">3s ago</span>
+            </div>
+          </div>
 
-            <!-- Card 4: MQ-135 Gas -->
-            <div class="live-param-card" data-param="gas_response" tabindex="0" role="button" aria-pressed="false" aria-label="MQ-135 gas response telemetry card">
-              <div class="live-param-header">
+          <!-- Card 4: MQ-135 Gas -->
+          <div class="live-param-card" data-param="gas_response" tabindex="0" role="button" aria-pressed="false" aria-label="MQ-135 gas response telemetry card">
+            <div class="live-param-header">
+              <div class="live-param-title-wrap">
                 <span class="live-param-name">MQ-135 GAS</span>
-                <span class="param-status-dot"></span>
+                <span class="live-param-source">ADC1 (GPIO 34)</span>
               </div>
-              <div class="live-param-reading">
-                <span class="live-param-scalar" id="live-gas-val">469</span>
-                <span class="live-param-unit">raw</span>
-              </div>
-              <div class="live-param-footer">
-                <span class="live-param-trend" id="live-gas-trend">Ambient</span>
-                <span class="live-param-latency" id="live-gas-latency">3s ago</span>
-              </div>
+              <span class="param-status-dot"></span>
             </div>
+            <div class="live-param-reading">
+              <span class="live-param-scalar" id="live-gas-val">469</span>
+              <span class="live-param-unit">raw</span>
+            </div>
+            <div class="live-param-subtext">12-bit Analog · Air Sensor</div>
+            <div class="live-param-footer">
+              <span class="live-param-trend" id="live-gas-trend">Ambient</span>
+              <span class="live-param-latency" id="live-gas-latency">3s ago</span>
+            </div>
+          </div>
 
-            <!-- Card 5: Noise SPL -->
-            <div class="live-param-card" data-param="noise" tabindex="0" role="button" aria-pressed="false" aria-label="Acoustic noise sound pressure level card">
-              <div class="live-param-header">
+          <!-- Card 5: Noise SPL -->
+          <div class="live-param-card" data-param="noise" tabindex="0" role="button" aria-pressed="false" aria-label="Acoustic noise sound pressure level card">
+            <div class="live-param-header">
+              <div class="live-param-title-wrap">
                 <span class="live-param-name">NOISE SPL</span>
-                <span class="param-status-dot"></span>
+                <span class="live-param-source">INMP441</span>
               </div>
-              <div class="live-param-reading">
-                <span class="live-param-scalar" id="live-noise-val">48.0</span>
-                <span class="live-param-unit">dB SPL</span>
+              <span class="param-status-dot"></span>
+            </div>
+            <div class="live-param-reading">
+              <span class="live-param-scalar" id="live-noise-val">48.0</span>
+              <span class="live-param-unit">dB SPL</span>
+            </div>
+            <div class="live-param-subtext">I2S Audio Pipeline · MEMS Mic</div>
+            <div class="live-param-footer">
+              <span class="live-param-trend" id="live-noise-trend">Quiet Quad</span>
+              <span class="live-param-latency" id="live-noise-latency">3s ago</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Primary Live Telemetry Graph Card -->
+        <section class="live-graph-card">
+          <!-- Header & Range Controls -->
+          <div class="live-graph-top">
+            <div>
+              <div class="live-graph-title-row">
+                <h2 class="live-graph-title">LIVE ENVIRONMENTAL TELEMETRY</h2>
+                <span class="badge-stream">REALTIME STREAM</span>
               </div>
-              <div class="live-param-footer">
-                <span class="live-param-trend" id="live-noise-trend">Quiet Quad</span>
-                <span class="live-param-latency" id="live-noise-latency">3s ago</span>
-              </div>
+              <p class="live-graph-subtitle">Continuous high-resolution telemetry stream • Ingesting 30s rolling buffers</p>
+            </div>
+            <div class="time-range-group" role="group" aria-label="Graph time range window">
+              <button class="time-range-btn active" data-range="5M">5 MIN</button>
+              <button class="time-range-btn" data-range="15M">15 MIN</button>
+              <button class="time-range-btn" data-range="30M">30 MIN</button>
+              <button class="time-range-btn" data-range="1H">1 HR</button>
             </div>
           </div>
 
-          <!-- 4. Primary Live Telemetry Graph Card -->
-          <div class="live-graph-card">
-            <!-- Header & Range Controls -->
-            <div class="live-graph-top">
-              <div>
-                <div class="live-graph-title-row">
-                  <h2 class="live-graph-title">LIVE ENVIRONMENTAL TELEMETRY</h2>
-                  <span class="badge-stream">REALTIME STREAM</span>
-                </div>
-                <p class="live-graph-subtitle">Continuous high-resolution telemetry stream • Ingesting 30s rolling buffers</p>
+          <!-- Parameter Selector Tabs -->
+          <div class="live-param-tabs" role="tablist" aria-label="Environmental parameter selection">
+            <button class="param-tab-pill active" role="tab" aria-selected="true" data-tab-param="temperature">
+              <span class="param-tab-dot"></span>
+              <span>Temperature (°C)</span>
+            </button>
+            <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="humidity">
+              <span>Relative Humidity (%)</span>
+            </button>
+            <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="pressure">
+              <span>Atmospheric Pressure (hPa)</span>
+            </button>
+            <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="gas_response">
+              <span>MQ-135 Gas (Raw)</span>
+            </button>
+            <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="noise">
+              <span>Noise SPL (dB SPL)</span>
+            </button>
+          </div>
+
+          <!-- Graph Canvas Container -->
+          <div class="live-graph-viewport" id="live-graph-container">
+            <!-- Y-Axis & Horizontal Limit Guide Lines -->
+            <div class="live-limit-lines">
+              <!-- Upper Limit -->
+              <div class="limit-row">
+                <span class="font-telemetry tracking-wider" id="limit-upper-label">UPPER OPERATIONAL LIMIT 28.0°C</span>
+                <div class="limit-line-dashed"></div>
+                <span class="font-telemetry" id="limit-upper-num">28.0</span>
               </div>
-              <div class="time-range-group" role="group" aria-label="Graph time range window">
-                <button class="time-range-btn active" data-range="5M">5 MIN</button>
-                <button class="time-range-btn" data-range="15M">15 MIN</button>
-                <button class="time-range-btn" data-range="30M">30 MIN</button>
-                <button class="time-range-btn" data-range="1H">1 HR</button>
+              <!-- Mid Target -->
+              <div class="limit-row limit-target">
+                <span class="font-telemetry tracking-wider" id="limit-target-label">BASELINE TARGET 24.0°C</span>
+                <div class="limit-line-dotted"></div>
+                <span class="font-telemetry" id="limit-target-num">24.0</span>
+              </div>
+              <!-- Lower Limit -->
+              <div class="limit-row">
+                <span class="font-telemetry tracking-wider" id="limit-lower-label">LOWER BOUND LIMIT 19.0°C</span>
+                <div class="limit-line-dashed"></div>
+                <span class="font-telemetry" id="limit-lower-num">19.0</span>
               </div>
             </div>
 
-            <!-- Parameter Selector Tabs -->
-            <div class="live-param-tabs" role="tablist" aria-label="Environmental parameter selection">
-              <button class="param-tab-pill active" role="tab" aria-selected="true" data-tab-param="temperature">
-                <span class="param-tab-dot"></span>
-                <span>Temperature (°C)</span>
-              </button>
-              <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="humidity">
-                <span>Relative Humidity (%)</span>
-              </button>
-              <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="pressure">
-                <span>Atmospheric Pressure (hPa)</span>
-              </button>
-              <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="gas_response">
-                <span>MQ-135 Gas (Raw)</span>
-              </button>
-              <button class="param-tab-pill" role="tab" aria-selected="false" data-tab-param="noise">
-                <span>Noise SPL (dB SPL)</span>
-              </button>
+            <!-- Inline SVG Waveform Data Viz -->
+            <div class="live-svg-container">
+              <svg class="live-stream-svg" id="live-stream-svg" preserveAspectRatio="none" viewBox="0 0 1000 300">
+                <defs>
+                  <linearGradient id="oliveStreamGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#3f4d27" stop-opacity="0.28"></stop>
+                    <stop offset="85%" stop-color="#3f4d27" stop-opacity="0.02"></stop>
+                    <stop offset="100%" stop-color="#3f4d27" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <!-- Vertical grid markers -->
+                <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="166" x2="166" y1="0" y2="300"></line>
+                <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="333" x2="333" y1="0" y2="300"></line>
+                <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="500" x2="500" y1="0" y2="300"></line>
+                <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="666" x2="666" y1="0" y2="300"></line>
+                <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="833" x2="833" y1="0" y2="300"></line>
+
+                <!-- Area Wash -->
+                <path id="live-stream-area" fill="url(#oliveStreamGradient)" d=""></path>
+                <!-- Spline Telemetry Line -->
+                <path id="live-waveform-path" fill="none" stroke="#3f4d27" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d=""></path>
+
+                <!-- Live Streaming Head Point (cx=1000) -->
+                <circle id="live-head-pulse" cx="1000" cy="80" fill="#3f4d27" opacity="0.3" r="10">
+                  <animate attributeName="r" dur="2s" repeatCount="indefinite" values="6;14;6"></animate>
+                  <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0.4;0.1;0.4"></animate>
+                </circle>
+                <circle id="live-head-dot" cx="1000" cy="80" fill="#fbfbe4" r="5" stroke="#3f4d27" stroke-width="2.5"></circle>
+
+                <!-- Interactive Pin Tooltip (Follows mouse or pinned at head) -->
+                <g id="live-pin-tooltip" transform="translate(710, 35)">
+                  <rect fill="#ffffff" height="52" rx="4" stroke="#c6c8ba" stroke-width="1" width="180" filter="drop-shadow(0 2px 4px rgba(41, 45, 34, 0.08))"></rect>
+                  <text id="inspect-time" fill="#76786d" font-family="JetBrains Mono" font-size="9" x="10" y="16">14:31:42 UTC • Station Node #01</text>
+                  <text id="inspect-value" fill="#293613" font-family="JetBrains Mono" font-size="13" font-weight="600" x="10" y="32">Temp: 24.8°C (+0.08°)</text>
+                  <text id="inspect-status" fill="#52652b" font-family="Hanken Grotesk" font-size="10" font-weight="500" x="10" y="45">• Status: In-Range (Nominal)</text>
+                  <line id="inspect-stem" stroke="#3f4d27" stroke-dasharray="2 2" stroke-width="1" x1="10" x2="10" y1="52" y2="75"></line>
+                  <circle id="inspect-dot" cx="10" cy="75" fill="#3f4d27" r="3"></circle>
+                </g>
+              </svg>
             </div>
 
-            <!-- Graph Canvas Container -->
-            <div class="live-graph-viewport" id="live-graph-container">
-              <!-- Y-Axis & Horizontal Limit Guide Lines -->
-              <div class="live-limit-lines">
-                <!-- Upper Limit -->
-                <div class="limit-row">
-                  <span class="font-telemetry tracking-wider" id="limit-upper-label">UPPER OPERATIONAL LIMIT 28.0°C</span>
-                  <div class="limit-line-dashed"></div>
-                  <span class="font-telemetry" id="limit-upper-num">28.0</span>
+            <!-- X-Axis Timestamps -->
+            <div class="live-xaxis-labels" id="live-xaxis-container">
+              <span id="x-time-0">14:27:00</span>
+              <span id="x-time-1">14:28:00</span>
+              <span id="x-time-2">14:29:00</span>
+              <span id="x-time-3">14:30:00</span>
+              <span id="x-time-4">14:31:00</span>
+              <span class="live-timestamp-active" id="x-time-live">
+                <span class="dot-normal"></span>
+                <span id="x-time-live-label">14:31:58 [Live]</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- 5. Telemetry Diagnostics & Live Rate Info Strip -->
+          <div class="live-diagnostics-strip">
+            <div class="diag-col">
+              <span class="diag-label">CURRENT</span>
+              <span class="diag-val primary-highlight" id="diag-current">24.8 °C</span>
+            </div>
+            <div class="diag-col">
+              <span class="diag-label">PREVIOUS (t-30s)</span>
+              <span class="diag-val" id="diag-prev">24.7 °C</span>
+            </div>
+            <div class="diag-col">
+              <span class="diag-label">CHANGE / DRIFT</span>
+              <span class="diag-val trend-highlight" id="diag-drift">
+                +0.1 °C <span style="font-size: 11px; font-weight: normal; color: var(--color-text-muted);">(↑ 0.4%)</span>
+              </span>
+            </div>
+            <div class="diag-col">
+              <span class="diag-label">SAMPLING RATE</span>
+              <span class="diag-val" id="diag-rate">30s interval</span>
+            </div>
+            <div class="diag-col">
+              <span class="diag-label">LAST READING</span>
+              <span class="diag-val primary-highlight" id="diag-last">14:32:01 UTC</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Bottom Operational Grid (2 Columns: 7 col / 5 col) -->
+        <section class="live-lower-grid">
+          <!-- Column 1: Sensor Status Table (7 Cols) -->
+          <div class="live-lower-card">
+            <div>
+              <div class="lower-card-header">
+                <div class="lower-title-group">
+                  <span class="material-symbols-outlined lower-icon">sensors</span>
+                  <h3 class="lower-title">Sensor Status</h3>
                 </div>
-                <!-- Mid Target -->
-                <div class="limit-row limit-target">
-                  <span class="font-telemetry tracking-wider" id="limit-target-label">BASELINE TARGET 24.0°C</span>
-                  <div class="limit-line-dotted"></div>
-                  <span class="font-telemetry" id="limit-target-num">24.0</span>
+                <span class="channel-active-badge">
+                  <span class="badge-dot-green"></span>
+                  <span>5 Monitored Channels</span>
+                </span>
+              </div>
+              <p class="lower-desc">Active environmental transducers and calibrated continuous microclimate parameters.</p>
+            </div>
+
+            <!-- Sensor Status Table -->
+            <div class="sensor-table-wrap">
+              <table class="sensor-status-table">
+                <thead>
+                  <tr>
+                    <th>ENVIRONMENTAL CHANNEL</th>
+                    <th>STATUS</th>
+                    <th style="text-align: right;">CURRENT VALUE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="cell-channel-name">Temperature</span>
+                      <span class="cell-channel-sub">Ambient microclimate (BME280)</span>
+                    </td>
+                    <td>
+                      <span class="channel-active-badge">
+                        <span class="badge-dot-green"></span> ACTIVE
+                      </span>
+                    </td>
+                    <td class="cell-value-bold" id="table-temp-val">24.8 °C</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="cell-channel-name">Relative Humidity</span>
+                      <span class="cell-channel-sub">Atmospheric moisture (BME280)</span>
+                    </td>
+                    <td>
+                      <span class="channel-active-badge">
+                        <span class="badge-dot-green"></span> ACTIVE
+                      </span>
+                    </td>
+                    <td class="cell-value-bold" id="table-humidity-val">61.0 %</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="cell-channel-name">Atmospheric Pressure</span>
+                      <span class="cell-channel-sub">Barometric surface pressure (BME280)</span>
+                    </td>
+                    <td>
+                      <span class="channel-active-badge">
+                        <span class="badge-dot-green"></span> ACTIVE
+                      </span>
+                    </td>
+                    <td class="cell-value-bold" id="table-pressure-val">1013.2 hPa</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="cell-channel-name">MQ-135 Gas Sensor</span>
+                      <span class="cell-channel-sub">Air quality &amp; VOC index</span>
+                    </td>
+                    <td>
+                      <span class="channel-active-badge">
+                        <span class="badge-dot-green"></span> ACTIVE
+                      </span>
+                    </td>
+                    <td class="cell-value-bold" id="table-gas-val">469 raw</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="cell-channel-name">Environmental Noise (INMP441)</span>
+                      <span class="cell-channel-sub">Acoustic sound level SPL</span>
+                    </td>
+                    <td>
+                      <span class="channel-active-badge">
+                        <span class="badge-dot-green"></span> ACTIVE
+                      </span>
+                    </td>
+                    <td class="cell-value-bold" id="table-noise-val">48.0 dB SPL</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Quiet Summary Footer -->
+            <div class="table-calm-footer">
+              <span class="material-symbols-outlined text-[15px]" style="color: var(--color-state-normal);">check_circle</span>
+              <span>All 5 environmental sensors operating nominally with calibrated baseline drifts.</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Device & Station Status (5 Cols) -->
+          <div class="live-lower-card">
+            <div>
+              <div class="lower-card-header">
+                <div class="lower-title-group">
+                  <span class="material-symbols-outlined lower-icon">nature</span>
+                  <h3 class="lower-title">Device &amp; Station Status</h3>
                 </div>
-                <!-- Lower Limit -->
-                <div class="limit-row">
-                  <span class="font-telemetry tracking-wider" id="limit-lower-label">LOWER BOUND LIMIT 19.0°C</span>
-                  <div class="limit-line-dashed"></div>
-                  <span class="font-telemetry" id="limit-lower-num">19.0</span>
+                <span class="channel-active-badge">
+                  <span class="badge-dot-green"></span>
+                  <span>ONLINE</span>
+                </span>
+              </div>
+              <p class="lower-desc">Deployment context and continuous telemetry operational status.</p>
+            </div>
+
+            <!-- Status List -->
+            <div class="station-metadata-list">
+              <div class="station-meta-row">
+                <span class="meta-label-group">
+                  <span class="material-symbols-outlined meta-icon">location_on</span> Station
+                </span>
+                <div>
+                  <span class="meta-val-text val-primary">North Quad Eco-Station #01</span>
+                  <span class="meta-sub-loc">Campus Living Lab</span>
                 </div>
               </div>
-
-              <!-- Inline SVG Waveform Data Viz -->
-              <div class="live-svg-container">
-                <svg class="live-stream-svg" id="live-stream-svg" preserveAspectRatio="none" viewBox="0 0 1000 300">
-                  <defs>
-                    <linearGradient id="oliveStreamGradient" x1="0%" x2="0%" y1="0%" y2="100%">
-                      <stop offset="0%" stop-color="#3f4d27" stop-opacity="0.28"></stop>
-                      <stop offset="85%" stop-color="#3f4d27" stop-opacity="0.02"></stop>
-                      <stop offset="100%" stop-color="#3f4d27" stop-opacity="0"></stop>
-                    </linearGradient>
-                  </defs>
-                  <!-- Vertical grid markers -->
-                  <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="166" x2="166" y1="0" y2="300"></line>
-                  <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="333" x2="333" y1="0" y2="300"></line>
-                  <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="500" x2="500" y1="0" y2="300"></line>
-                  <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="666" x2="666" y1="0" y2="300"></line>
-                  <line stroke="#c6c8ba" stroke-dasharray="3 3" stroke-opacity="0.4" x1="833" x2="833" y1="0" y2="300"></line>
-
-                  <!-- Area Wash -->
-                  <path id="live-stream-area" fill="url(#oliveStreamGradient)" d=""></path>
-                  <!-- Spline Telemetry Line -->
-                  <path id="live-waveform-path" fill="none" stroke="#3f4d27" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d=""></path>
-
-                  <!-- Live Streaming Head Point (cx=1000) -->
-                  <circle id="live-head-pulse" cx="1000" cy="80" fill="#3f4d27" opacity="0.3" r="10">
-                    <animate attributeName="r" dur="2s" repeatCount="indefinite" values="6;14;6"></animate>
-                    <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0.4;0.1;0.4"></animate>
-                  </circle>
-                  <circle id="live-head-dot" cx="1000" cy="80" fill="#fbfbe4" r="5" stroke="#3f4d27" stroke-width="2.5"></circle>
-
-                  <!-- Interactive Pin Tooltip (Follows mouse or pinned at head) -->
-                  <g id="live-pin-tooltip" transform="translate(710, 35)">
-                    <rect fill="#ffffff" height="52" rx="4" stroke="#c6c8ba" stroke-width="1" width="180" filter="drop-shadow(0 2px 4px rgba(41, 45, 34, 0.08))"></rect>
-                    <text id="inspect-time" fill="#76786d" font-family="JetBrains Mono" font-size="9" x="10" y="16">14:31:42 EDT • SPECIMEN-01</text>
-                    <text id="inspect-value" fill="#293613" font-family="JetBrains Mono" font-size="13" font-weight="600" x="10" y="32">Temp: 24.8°C (+0.08°)</text>
-                    <text id="inspect-status" fill="#52652b" font-family="Hanken Grotesk" font-size="10" font-weight="500" x="10" y="45">• Status: In-Range (Nominal)</text>
-                    <line id="inspect-stem" stroke="#3f4d27" stroke-dasharray="2 2" stroke-width="1" x1="10" x2="10" y1="52" y2="75"></line>
-                    <circle id="inspect-dot" cx="10" cy="75" fill="#3f4d27" r="3"></circle>
-                  </g>
-                </svg>
+              <div class="station-meta-row">
+                <span class="meta-label-group">
+                  <span class="material-symbols-outlined meta-icon">hub</span> Hardware Node
+                </span>
+                <span class="meta-val-text">ESP32 DevKit V1</span>
               </div>
-
-              <!-- X-Axis Timestamps -->
-              <div class="live-xaxis-labels" id="live-xaxis-container">
-                <span id="x-time-0">14:27:00</span>
-                <span id="x-time-1">14:28:00</span>
-                <span id="x-time-2">14:29:00</span>
-                <span id="x-time-3">14:30:00</span>
-                <span id="x-time-4">14:31:00</span>
-                <span class="live-timestamp-active" id="x-time-live">
-                  <span class="dot-normal"></span>
-                  <span id="x-time-live-label">14:31:58 [Live]</span>
+              <div class="station-meta-row">
+                <span class="meta-label-group">
+                  <span class="material-symbols-outlined meta-icon">sensors</span> Monitored Channels
+                </span>
+                <span class="meta-val-text val-green">5 / 5 Active</span>
+              </div>
+              <div class="station-meta-row">
+                <span class="meta-label-group">
+                  <span class="material-symbols-outlined meta-icon">schedule</span> Transmission
+                </span>
+                <span class="meta-val-text" id="station-transmission-val">a few seconds ago</span>
+              </div>
+              <div class="station-meta-row">
+                <span class="meta-label-group">
+                  <span class="material-symbols-outlined meta-icon">stream</span> Data Ingestion
+                </span>
+                <span class="meta-val-text val-green">LIVE continuous stream</span>
+              </div>
+              <div class="station-meta-row" style="align-items: flex-start;">
+                <span class="meta-label-group">
+                  <span class="material-symbols-outlined meta-icon">verified</span> Environmental Alert State
+                </span>
+                <span class="meta-val-text val-primary" id="station-alert-state-val" style="max-width: 200px;">
+                  NORMAL — Within diurnal campus baseline limits
                 </span>
               </div>
             </div>
 
-            <!-- 5. Telemetry Diagnostics & Live Rate Info Strip -->
-            <div class="live-diagnostics-strip">
-              <div class="diag-col">
-                <span class="diag-label">CURRENT</span>
-                <span class="diag-val primary-highlight" id="diag-current">24.8 °C</span>
+            <!-- Station Photo Callout -->
+            <div class="station-photo-callout">
+              <div class="photo-thumbnail">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1K-wB84VbwNIx8Q1ahzhtkWdPjqkomL95yFSIrpRs-PF0bHAMVcea6PJyZROabFH7DkoeuMdx3fIjmwh0PVfnZIFqXN7cb55yAJObFTzEAjJHnz79gDx6C8MpKioFElLCZapUarWJAhKyS8IISig7VGdayhPITUvh_WoHmXmeo1-vwRy_YoXft7i7IOPxGcFa2ajQu-uwBS_caKAuUmUp7r8ULhj3B21fwKji_S4" alt="Field monitoring station mounted in weather-sealed enclosure with sensors" width="60" height="60">
               </div>
-              <div class="diag-col">
-                <span class="diag-label">PREVIOUS (t-30s)</span>
-                <span class="diag-val" id="diag-prev">24.7 °C</span>
-              </div>
-              <div class="diag-col">
-                <span class="diag-label">CHANGE / DRIFT</span>
-                <span class="diag-val trend-highlight" id="diag-drift">
-                  +0.1 °C <span style="font-size: 11px; font-weight: normal; color: var(--color-text-muted);">(↑ 0.4%)</span>
-                </span>
-              </div>
-              <div class="diag-col">
-                <span class="diag-label">SAMPLING RATE</span>
-                <span class="diag-val" id="diag-rate">30s interval</span>
-              </div>
-              <div class="diag-col">
-                <span class="diag-label">LAST READING</span>
-                <span class="diag-val primary-highlight" id="diag-last">14:32:01 EDT</span>
+              <div class="photo-meta">
+                <span class="photo-title">Hardware Node Enclosure #01</span>
+                <span class="photo-subtitle">North Quad Campus Living Lab</span>
+                <span class="photo-tag">5 Channels Monitored · USB 5V Powered</span>
               </div>
             </div>
           </div>
-
-          <!-- 6. Bottom Operational Grid (2 Columns: 7 col / 5 col) -->
-          <div class="live-lower-grid">
-            <!-- Column 1: Sensor Status Table (7 Cols) -->
-            <div class="live-lower-card">
-              <div>
-                <div class="lower-card-header">
-                  <div class="lower-title-group">
-                    <span class="material-symbols-outlined lower-icon">sensors</span>
-                    <h3 class="lower-title">Sensor Status</h3>
-                  </div>
-                  <span class="channel-active-badge">
-                    <span class="badge-dot-green"></span>
-                    <span>5 Monitored Channels</span>
-                  </span>
-                </div>
-                <p class="lower-desc">Active environmental transducers and calibrated continuous microclimate parameters.</p>
-              </div>
-
-              <!-- Sensor Status Table -->
-              <div class="sensor-table-wrap">
-                <table class="sensor-status-table">
-                  <thead>
-                    <tr>
-                      <th>ENVIRONMENTAL CHANNEL</th>
-                      <th>STATUS</th>
-                      <th style="text-align: right;">CURRENT VALUE</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <span class="cell-channel-name">Temperature</span>
-                        <span class="cell-channel-sub">Ambient microclimate (BME280)</span>
-                      </td>
-                      <td>
-                        <span class="channel-active-badge">
-                          <span class="badge-dot-green"></span> ACTIVE
-                        </span>
-                      </td>
-                      <td class="cell-value-bold" id="table-temp-val">24.8 °C</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <span class="cell-channel-name">Relative Humidity</span>
-                        <span class="cell-channel-sub">Atmospheric moisture (BME280)</span>
-                      </td>
-                      <td>
-                        <span class="channel-active-badge">
-                          <span class="badge-dot-green"></span> ACTIVE
-                        </span>
-                      </td>
-                      <td class="cell-value-bold" id="table-humidity-val">61.0 %</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <span class="cell-channel-name">Atmospheric Pressure</span>
-                        <span class="cell-channel-sub">Barometric surface pressure (BME280)</span>
-                      </td>
-                      <td>
-                        <span class="channel-active-badge">
-                          <span class="badge-dot-green"></span> ACTIVE
-                        </span>
-                      </td>
-                      <td class="cell-value-bold" id="table-pressure-val">1013.2 hPa</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <span class="cell-channel-name">MQ-135 Gas Sensor</span>
-                        <span class="cell-channel-sub">Air quality &amp; VOC index</span>
-                      </td>
-                      <td>
-                        <span class="channel-active-badge">
-                          <span class="badge-dot-green"></span> ACTIVE
-                        </span>
-                      </td>
-                      <td class="cell-value-bold" id="table-gas-val">469 raw</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <span class="cell-channel-name">Environmental Noise (INMP441)</span>
-                        <span class="cell-channel-sub">Acoustic sound level SPL</span>
-                      </td>
-                      <td>
-                        <span class="channel-active-badge">
-                          <span class="badge-dot-green"></span> ACTIVE
-                        </span>
-                      </td>
-                      <td class="cell-value-bold" id="table-noise-val">48.0 dB SPL</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- Quiet Summary Footer -->
-              <div class="table-calm-footer">
-                <span class="material-symbols-outlined text-[15px]" style="color: var(--color-state-normal);">check_circle</span>
-                <span>All 5 environmental sensors operating nominally with calibrated baseline drifts.</span>
-              </div>
-            </div>
-
-            <!-- Column 2: Device & Station Status (5 Cols) -->
-            <div class="live-lower-card">
-              <div>
-                <div class="lower-card-header">
-                  <div class="lower-title-group">
-                    <span class="material-symbols-outlined lower-icon">nature</span>
-                    <h3 class="lower-title">Device &amp; Station Status</h3>
-                  </div>
-                  <span class="channel-active-badge">
-                    <span class="badge-dot-green"></span>
-                    <span>ONLINE</span>
-                  </span>
-                </div>
-                <p class="lower-desc">Deployment context and continuous telemetry operational status.</p>
-              </div>
-
-              <!-- Status List -->
-              <div class="station-metadata-list">
-                <div class="station-meta-row">
-                  <span class="meta-label-group">
-                    <span class="material-symbols-outlined meta-icon">location_on</span> Station
-                  </span>
-                  <div>
-                    <span class="meta-val-text val-primary">North Quad Eco-Station #01</span>
-                    <span class="meta-sub-loc">Arboretum Canopy</span>
-                  </div>
-                </div>
-                <div class="station-meta-row">
-                  <span class="meta-label-group">
-                    <span class="material-symbols-outlined meta-icon">hub</span> Hardware Node
-                  </span>
-                  <span class="meta-val-text">ESP32 DevKit V1</span>
-                </div>
-                <div class="station-meta-row">
-                  <span class="meta-label-group">
-                    <span class="material-symbols-outlined meta-icon">sensors</span> Monitored Channels
-                  </span>
-                  <span class="meta-val-text val-green">5 / 5 Active</span>
-                </div>
-                <div class="station-meta-row">
-                  <span class="meta-label-group">
-                    <span class="material-symbols-outlined meta-icon">schedule</span> Transmission
-                  </span>
-                  <span class="meta-val-text" id="station-transmission-val">a few seconds ago</span>
-                </div>
-                <div class="station-meta-row">
-                  <span class="meta-label-group">
-                    <span class="material-symbols-outlined meta-icon">stream</span> Data Ingestion
-                  </span>
-                  <span class="meta-val-text val-green">LIVE continuous stream</span>
-                </div>
-                <div class="station-meta-row" style="align-items: flex-start;">
-                  <span class="meta-label-group">
-                    <span class="material-symbols-outlined meta-icon">verified</span> Environmental Alert State
-                  </span>
-                  <span class="meta-val-text val-primary" id="station-alert-state-val" style="max-width: 200px;">
-                    NORMAL — Within diurnal campus baseline limits
-                  </span>
-                </div>
-              </div>
-
-              <!-- Station Photo Callout -->
-              <div class="station-photo-callout">
-                <div class="photo-thumbnail">
-                  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1K-wB84VbwNIx8Q1ahzhtkWdPjqkomL95yFSIrpRs-PF0bHAMVcea6PJyZROabFH7DkoeuMdx3fIjmwh0PVfnZIFqXN7cb55yAJObFTzEAjJHnz79gDx6C8MpKioFElLCZapUarWJAhKyS8IISig7VGdayhPITUvh_WoHmXmeo1-vwRy_YoXft7i7IOPxGcFa2ajQu-uwBS_caKAuUmUp7r8ULhj3B21fwKji_S4" alt="Field monitoring station mounted in weather-sealed enclosure with sensors" width="60" height="60">
-                </div>
-                <div class="photo-meta">
-                  <span class="photo-title">Physical Enclosure #01</span>
-                  <span class="photo-subtitle">Quad North-East Arboretum Canopy</span>
-                  <span class="photo-tag">Field Calibrated &amp; Weatherproofed</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </section>
       </main>
     </div>
   </div>

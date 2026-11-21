@@ -19,19 +19,20 @@
 | **Phase 4.1** | Dashboard Stitch Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.2** | Dashboard Visual Fidelity & Metadata Integrity Correction | 🟢 Complete | None |
 | **Phase 4.3** | Live Monitoring Visual Fidelity Correction | 🟢 Complete | None |
+| **Phase 4.4** | Live Monitoring Final Visual & Metadata Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.3 (Live Monitoring Visual Fidelity Correction) completed and verified against the locked Stitch reference (`live-monitoring.html`).
-  - Restored Telemetry Ingestion Header hierarchy (`Telemetry Ingestion Engine / Channel Alpha-01`, title `LIVE MONITORING`, descriptive microclimate profiling subtitle, and right status cluster: Live pulse pill, `ESP32 DevKit V1 • ONLINE`, `Tx: 3s ago (Nominal)`, and `5 / 5 Sensors Active`).
-  - Restored Live Telemetry Status Strip with `NORMAL` pill, expected range explanation, automated cycle countdown (`27s`), and continuous sync window indicator (`30s window`).
-  - Refined Five Parameter Cards for the locked contract (Temperature, Relative Humidity, Atmospheric Pressure, MQ-135 Gas Response, Environmental Noise) with Stitch proportions, `28px` scalar numbers, trend indicator (`↑ 0.1°C`), and latency (`3s ago`).
-  - Restored Continuous Rolling Telemetry Stream graph container (360px viewport), dynamic operational limits (`Upper Operational Limit`, `Baseline Target`, `Lower Bound Limit`), vertical dashed grid lines, smooth organic cubic Bezier spline with `oliveStreamGradient` area fill, pulsating live streaming head marker (`cx="1000"`), and interactive pin tooltip card tracked via `requestAnimationFrame`.
-  - Restored 5-column Telemetry Diagnostics & Live Rate Info Strip (`CURRENT`, `PREVIOUS (t-30s)`, `CHANGE / DRIFT`, `SAMPLING RATE 30s interval`, `LAST READING`).
-  - Restored Lower 2-column operational layout: Left column (`Sensor Status` table with the 5 approved channels, `ACTIVE` badges, and real-time scalar values) and Right column (`Device & Station Status` metadata list and Physical Enclosure photo callout).
-  - All 10 verification gates in `verify_phase4.ps1` and master regression suites pass cleanly with zero PM/AQI references and intact foundation files.
+- **Active Task:** Phase 4.4 (Live Monitoring Final Visual & Metadata Correction) completed and verified against the locked Stitch reference (`live-monitoring.html`).
+  - Restored the prominent Telemetry Ingestion Header hierarchy (`TELEMETRY INGESTION / Channel Alpha-01`, title `LIVE MONITORING` in 2.5rem semibold font, and descriptive telemetry text) as direct children of `.app-content` alongside the status strip, cards, graph, and lower grid, ensuring true uncollapsed flex/gap layout.
+  - Positioned the Stitch-style environmental status strip directly beneath the header with dynamic severity pill, countdown timer (`27s`), and continuous sync window indicator (`30s window`).
+  - Refined the Five Parameter Cards (Temperature, Relative Humidity, Atmospheric Pressure, MQ-135 Gas Response, Environmental Noise) to include parameter label, sensor source badge (`BME280`, `ADC1`, `INMP441`), primary scalar (`28px`), unit, secondary measurement context (`Precision ±0.5°C · Ambient`, `12-bit Analog · Air Sensor`, etc.), trend indicator (`↑ 0.1°C`), and latency (`3s ago`) while preserving compact Stitch telemetry density.
+  - Preserved complete graph architecture (360px viewport, organic Bezier spline, `oliveStreamGradient` fill, dynamic operational limits, live pulsating radar marker, `requestAnimationFrame` throttled pin tooltip, and 5-column diagnostics strip).
+  - Preserved lower two-column layout (`Sensor Status` 5-row table and `Device & Station Status` metadata list with hardware photo callout).
+  - Conducted full metadata integrity audit: replaced hardcoded `EDT` with timezone-neutral/runtime `UTC` across diagnostics strip and tooltips (`HH:mm:ss UTC · Station Node #01`); replaced ungrounded physical deployment claims (`Arboretum Canopy`, `Field Calibrated & Weatherproofed`, `Physical Enclosure #01`) with factual documented specifications (`Campus Living Lab`, `Hardware Node Enclosure #01`, `5 Channels Monitored · USB 5V Powered`).
+  - All 10 verification gates in `verify_phase4.ps1` and master regression suites pass cleanly with zero PM/AQI references.
 
 ---
 

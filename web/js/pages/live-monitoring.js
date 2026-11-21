@@ -279,8 +279,8 @@
     }
 
     var now = new Date();
-    var timeEDT = now.toTimeString().split(' ')[0] + ' EDT';
-    updateElem('diag-last', timeEDT);
+    var timeUTC = now.toTimeString().split(' ')[0] + ' UTC';
+    updateElem('diag-last', timeUTC);
 
     // Update pin tooltip defaults
     var inspectVal = document.getElementById('inspect-value');
@@ -441,7 +441,7 @@
           if (timeEl) {
             var offsetSec = Math.round((1 - normX) * 300);
             var hoverTime = new Date(Date.now() - offsetSec * 1000);
-            timeEl.textContent = formatTime(hoverTime) + ' EDT • SPECIMEN-01';
+            timeEl.textContent = formatTime(hoverTime) + ' UTC • Station Node #01';
           }
         });
       });
