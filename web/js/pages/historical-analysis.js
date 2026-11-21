@@ -1,7 +1,7 @@
 /**
  * ENVORA — Historical Analysis Page Controller
  * Source of Truth: Approved Phase 1 Implementation Plan & docs/16_VISUAL_REFERENCE_GUIDE.md
- * Phase 4.5 Visual Fidelity Correction
+ * Phase 4.6 Stitch-Fidelity Graph Correction
  *
  * Strict 5-parameter contract: Temperature, Relative Humidity, Atmospheric Pressure,
  * MQ-135 Gas Response, Environmental Noise.
@@ -18,15 +18,17 @@
 
   var activeParam = 'temperature';
   var activeWindow = '24H';
+  var activeStyle = 'spline'; // 'spline' (Smooth Line) or 'area' (Layered Atmosphere)
+  var activeSampling = '15m'; // '15m' or '1h'
 
   var PARAM_META = {
     'temperature': {
       name: 'Temperature',
       label: 'Temperature',
       unit: '°C',
-      subBadge: 'Temperature · Ambient Microclimate (°C)',
-      series: 'Observed Values (°C)',
-      thresholdDesc: 'Reference Limit: 32.0 °C',
+      badgeText: 'TEMPERATURE (°C)',
+      seriesLabel: 'Observed Temperature (°C)',
+      thresholdLabel: 'Reference Limit: < 32 °C',
       icon: 'thermostat',
       peakDesc: 'Solar Peak',
       desc: 'BME280 Ambient Temperature'
@@ -35,9 +37,9 @@
       name: 'Relative Humidity',
       label: 'Relative Humidity',
       unit: '%',
-      subBadge: 'Relative Humidity · Moisture Ratio (%)',
-      series: 'Observed Values (%)',
-      thresholdDesc: 'Normal Range: 30.0 - 70.0 %',
+      badgeText: 'RELATIVE HUMIDITY (%)',
+      seriesLabel: 'Observed Humidity (%)',
+      thresholdLabel: 'Normal Range: 30.0 - 70.0 %',
       icon: 'humidity_mid',
       peakDesc: 'Moisture Peak',
       desc: 'BME280 Relative Humidity'
@@ -46,9 +48,9 @@
       name: 'Atmospheric Pressure',
       label: 'Atmospheric Pressure',
       unit: 'hPa',
-      subBadge: 'Atmospheric Pressure · Barometric Surface (hPa)',
-      series: 'Observed Values (hPa)',
-      thresholdDesc: 'Normal Range: 990.0 - 1025.0 hPa',
+      badgeText: 'ATMOSPHERIC PRESSURE (hPa)',
+      seriesLabel: 'Observed Pressure (hPa)',
+      thresholdLabel: 'Normal Range: 990.0 - 1025.0 hPa',
       icon: 'compress',
       peakDesc: 'Barometric Crest',
       desc: 'BME280 Barometric Pressure'
@@ -57,9 +59,9 @@
       name: 'MQ-135 Gas',
       label: 'MQ-135 Gas Response',
       unit: 'raw',
-      subBadge: 'MQ-135 · Air Baseline Response (raw)',
-      series: 'Observed Values (raw)',
-      thresholdDesc: 'Reference Limit: < 900 raw',
+      badgeText: 'MQ-135 GAS (RAW)',
+      seriesLabel: 'Observed MQ-135 Gas Response (raw)',
+      thresholdLabel: 'Reference Limit: < 900 raw',
       icon: 'air',
       peakDesc: 'Activity Peak',
       desc: 'MQ-135 Baseline Air Sensor Response'
@@ -68,9 +70,9 @@
       name: 'Environmental Noise',
       label: 'Environmental Noise',
       unit: 'dB SPL',
-      subBadge: 'Environmental Noise · Acoustic Level (dB SPL)',
-      series: 'Observed Values (dB SPL)',
-      thresholdDesc: 'Reference Limit: < 65.0 dB SPL',
+      badgeText: 'ENVIRONMENTAL NOISE (dB SPL)',
+      seriesLabel: 'Observed Environmental Noise (dB SPL)',
+      thresholdLabel: 'Reference Limit: < 65.0 dB SPL',
       icon: 'graphic_eq',
       peakDesc: 'Acoustic Peak',
       desc: 'INMP441 Acoustic Sound Level'
@@ -83,7 +85,7 @@
 
     bindParamSwitcher(dataLayer);
     bindRangeSelector(dataLayer);
-    bindViewToggles();
+    bindViewToggles(dataLayer);
     renderAnalysis(dataLayer);
   }
 
@@ -129,17 +131,70 @@
     });
   }
 
-  function bindViewToggles() {
-    var toggleGroups = document.querySelectorAll('.toggle-pill-group');
-    toggleGroups.forEach(function (group) {
-      var btns = group.querySelectorAll('.toggle-pill-btn');
-      btns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          btns.forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-        });
+  function bindViewToggles(dataLayer) {
+    // Style toggle: Smooth Line vs Layered Atmosphere
+    var styleBtns = document.querySelectorAll('[data-style-toggle]');
+    styleBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        styleBtns.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeStyle = btn.getAttribute('data-style-toggle') || 'spline';
+        applyGraphStyle();
       });
     });
+
+    // Sampling toggle: 15m Sampling vs 1h Average
+    var sampleBtns = document.querySelectorAll('[data-sample-toggle]');
+    sampleBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        sampleBtns.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeSampling = btn.getAttribute('data-sample-toggle') || '15m';
+        renderAnalysis(dataLayer);
+      });
+    });
+  }
+
+  function applyGraphStyle() {
+    var areaPath = document.getElementById('chart-area-path');
+    var histArea = document.getElementById('hist-area-path');
+    var linePath = document.getElementById('chart-line-path');
+    var histLine = document.getElementById('hist-line-path');
+
+    if (activeStyle === 'area') {
+      if (areaPath) areaPath.setAttribute('fill', 'url(#param-gradient-layered)');
+      if (histArea) histArea.setAttribute('fill', 'url(#param-gradient-layered)');
+      if (linePath) linePath.setAttribute('stroke-width', '2.0');
+      if (histLine) histLine.setAttribute('stroke-width', '2.0');
+    } else {
+      if (areaPath) areaPath.setAttribute('fill', 'url(#param-gradient)');
+      if (histArea) histArea.setAttribute('fill', 'url(#param-gradient)');
+      if (linePath) linePath.setAttribute('stroke-width', '2.2');
+      if (histLine) histLine.setAttribute('stroke-width', '2.2');
+    }
+  }
+
+  function downsampleSeries(rawSeries) {
+    if (activeSampling !== '1h' || !rawSeries || rawSeries.length <= 4) {
+      return rawSeries;
+    }
+
+    // Downsample 15-minute intervals to 1-hour average intervals (every 4 points)
+    var averaged = [];
+    var step = 4;
+    for (var i = 0; i < rawSeries.length; i += step) {
+      var chunk = rawSeries.slice(i, i + step);
+      var sum = 0;
+      for (var j = 0; j < chunk.length; j++) {
+        sum += chunk[j].value;
+      }
+      var avg = sum / chunk.length;
+      averaged.push({
+        timestamp: chunk[0].timestamp,
+        value: parseFloat(avg.toFixed(2))
+      });
+    }
+    return averaged;
   }
 
   function renderAnalysis(dataLayer) {
@@ -160,7 +215,7 @@
       }
     });
 
-    // Update Header and Legend labels
+    // Update Header and Legend labels to match Stitch composition
     var activeTitle = document.getElementById('active-graph-title');
     var histTitle = document.getElementById('hist-chart-title');
     var activeBadge = document.getElementById('active-param-badge');
@@ -174,28 +229,23 @@
     if (activeTitle) activeTitle.textContent = titleStr;
     if (histTitle) histTitle.textContent = titleStr;
 
-    if (activeBadge) activeBadge.textContent = meta.subBadge;
-    if (histBadge) histBadge.textContent = meta.name + ' (' + meta.unit + ')';
+    if (activeBadge) activeBadge.textContent = meta.badgeText;
+    if (histBadge) histBadge.textContent = meta.badgeText;
 
-    if (seriesLabel) seriesLabel.textContent = meta.series;
-    if (histSeriesLabel) histSeriesLabel.textContent = 'Observed ' + meta.name + ' (' + meta.unit + ')';
+    if (seriesLabel) seriesLabel.textContent = meta.seriesLabel;
+    if (histSeriesLabel) histSeriesLabel.textContent = meta.seriesLabel;
 
-    var threshStr = '';
-    if (cfg && cfg.type === 'two-sided') {
-      threshStr = 'Normal Range: ' + cfg.normalMin + ' - ' + cfg.normalMax + ' ' + meta.unit;
-    } else if (cfg) {
-      threshStr = 'Reference Limit: < ' + cfg.normalMax + ' ' + meta.unit;
-    } else {
-      threshStr = meta.thresholdDesc;
-    }
+    var threshStr = meta.thresholdLabel;
     if (thresholdLabel) thresholdLabel.textContent = threshStr;
     if (histThresholdLabel) histThresholdLabel.textContent = threshStr;
 
-    dataLayer.getHistoricalFeeds(activeParam, activeWindow).then(function (series) {
-      if (!series || series.length === 0) {
+    dataLayer.getHistoricalFeeds(activeParam, activeWindow).then(function (rawSeries) {
+      if (!rawSeries || rawSeries.length === 0) {
         showEmptyState();
         return;
       }
+
+      var series = downsampleSeries(rawSeries);
 
       var stats = intel ?
         intel.computeParameterStats(series, activeParam) :
@@ -417,12 +467,11 @@
     var yMax = bounds.max;
     if (yMax <= yMin) yMax = yMin + 1.0;
 
-    var width = 1000;
     var xStart = 40;
     var xEnd = 980;
     var xSpan = xEnd - xStart;
-    var yTop = 40;
-    var yBottom = 280;
+    var yTop = 25;
+    var yBottom = 175;
     var ySpan = yBottom - yTop;
 
     var N = series.length;
@@ -450,7 +499,9 @@
     areaPath.setAttribute('d', areaD);
     if (histArea) histArea.setAttribute('d', areaD);
 
-    // Dynamic Threshold lines
+    applyGraphStyle();
+
+    // Dynamic Threshold lines (compact 200px coordinates)
     renderThresholds(cfg, meta, yMin, yMax, yTop, yBottom, ySpan);
 
     // Peak Callout Pill
@@ -485,7 +536,7 @@
       }
       if (tText) {
         tText.setAttribute('y', yU - 6);
-        tText.textContent = (cfg.type === 'two-sided' ? 'Upper Limit (' : 'Reference Limit (') + upperVal + ' ' + meta.unit + ')';
+        tText.textContent = (cfg.type === 'two-sided' ? 'Upper Threshold (' : 'Reference Limit (') + upperVal + ' ' + meta.unit + ')';
         tText.style.display = 'block';
       }
       if (upperLine) {
@@ -622,8 +673,8 @@
         if (tipStatus) tipStatus.textContent = statusStr;
 
         tooltip.style.display = 'block';
-        var tipLeft = Math.min(e.clientX - rect.left + 16, rect.width - 200);
-        var tipTop = Math.max(e.clientY - rect.top - 60, 16);
+        var tipLeft = Math.min(e.clientX - rect.left + 14, rect.width - 200);
+        var tipTop = Math.max(e.clientY - rect.top - 50, 10);
         tooltip.style.left = tipLeft + 'px';
         tooltip.style.top = tipTop + 'px';
       });

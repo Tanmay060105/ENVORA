@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-21  
-**Overall Status:** Phase 4.5 (Historical Analysis Visual Fidelity Correction) Complete & Verified  
+**Overall Status:** Phase 4.6 (Historical Analysis Stitch-Fidelity Graph Correction) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -21,20 +21,26 @@
 | **Phase 4.3** | Live Monitoring Visual Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.4** | Live Monitoring Final Visual & Metadata Correction | 🟢 Complete | None |
 | **Phase 4.5** | Historical Analysis Visual Fidelity Correction | 🟢 Complete | None |
+| **Phase 4.6** | Historical Analysis Stitch-Fidelity Graph Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.5 (Historical Analysis Visual Fidelity Correction) completed and verified against the locked Stitch reference (`historical-analysis.html`).
-  - Restored prominent Historical Workspace Header with breadcrumb (`TELEMETRIC MODULES / Historical Intelligence`), main title `HISTORICAL ANALYSIS`, descriptive microclimate subtitle, time-window controls (`24H`, `7D`, `30D`, `Custom Window`), and sync status indicator (`Historical telemetry · Synced 2m ago`).
-  - Implemented 5-parameter instrument selector card (`.param-switcher-card`) with Temperature as default active, supporting all 5 approved parameters (Temperature, Relative Humidity, Atmospheric Pressure, MQ-135 Gas, Environmental Noise) with icons, labels, unit tags, and smooth cross-parameter switching.
-  - Rebuilt Primary Historical Graph Centerpiece: 400px viewport, smooth cubic Bezier spline, layered area gradient wash, dynamic threshold reference line and text, dynamic peak callout pill (`13:10 UTC • Solar Peak (28.7 °C)`), and X-axis timestamps (`00:00 (Midnight)` to `24:00 (Latest Ingest)`).
-  - Implemented Interactive Graph Inspection Tooltip tracking mouse movement throttled with `requestAnimationFrame`, updating vertical crosshair, cursor dot, timestamp in UTC, exact parameter value + unit, and threshold status context; resets on `mouseleave`.
-  - Built Statistical Summary Matrix (4 Cards) computing Average, Minimum, Maximum, and Current values with respective units, timestamps, and interval sample counts via `intelligence.computeParameterStats`.
-  - Built Trend Interpretation Card featuring directional icon box, trend badge (`TREND: STABLE`), 24h change scalar with percentage delta, and grounded narrative from Phase 3 intelligence.
-  - Implemented Notable Observations Ledger rendering 4 grounded historical events derived dynamically from the dataset (diurnal maximum, nocturnal minimum, baseline stabilization, and active telemetry sync).
-  - All 10 verification gates in `verify_phase4.ps1` and master regression suites pass cleanly with zero PM/AQI references.
+- **Active Task:** Phase 4.6 (Historical Analysis Stitch-Fidelity Graph Correction) completed and verified against the locked Stitch reference (`historical-analysis.html`).
+  - Restored Stitch-style graph hierarchy: Title (`Environmental Trend: [Parameter]`), Compact parameter badge (`TEMPERATURE (°C)`), Analytical metadata & legend row (`Observed Temperature (°C)` and `Reference Limit: < 32 °C`), Graph controls, Plotting viewport, and X-axis.
+  - Adjusted graph viewport geometry to compact Stitch proportions: reduced container height to 260px (viewBox `0 0 1000 200`), eliminating vertical chart dominance while maintaining full analytical legibility.
+  - Implemented dynamic parameter-specific wording and threshold definitions:
+    - Temperature: `TEMPERATURE (°C)`, `Observed Temperature (°C)`, `Reference Limit: < 32 °C`
+    - Relative Humidity: `RELATIVE HUMIDITY (%)`, `Observed Humidity (%)`, `Normal Range: 30.0 - 70.0 %`
+    - Atmospheric Pressure: `ATMOSPHERIC PRESSURE (hPa)`, `Observed Pressure (hPa)`, `Normal Range: 990.0 - 1025.0 hPa`
+    - MQ-135 Gas: `MQ-135 GAS (RAW)`, `Observed MQ-135 Gas Response (raw)`, `Reference Limit: < 900 raw`
+    - Environmental Noise: `ENVIRONMENTAL NOISE (dB SPL)`, `Observed Environmental Noise (dB SPL)`, `Reference Limit: < 65.0 dB SPL`
+  - Recreated Stitch compact segmented graph controls in top-right:
+    - Line style toggle: `Smooth Line` (default active, subtle spline gradient) vs `Layered Atmosphere` (enhanced wash fill)
+    - Sampling resolution toggle: `15m Sampling` (default active, raw 15-minute points) vs `1h Average` (functional 4-point rolling average downsampling)
+  - Refined floating inspection tooltip with compact Stitch styling: timestamp in UTC, parameter name in uppercase telemetry font, prominent reading value with unit, and threshold status context (`Within normal range` / `Advisory warning threshold exceeded` / `Critical threshold breach detected`).
+  - Maintained zero PM/AQI references, 5-parameter contract, Phase 3 intelligence engine, and decoupled data layer. All 10 verification gates in `verify_phase4.ps1` and `test_historical_phase4_6.js` passed cleanly.
 
 ---
 

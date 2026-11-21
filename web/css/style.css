@@ -2347,27 +2347,31 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-xl);
+  padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.03);
+  gap: 0.875rem;
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.04);
 }
 
 .hist-graph-top {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  border-bottom: 1px solid rgba(233, 224, 204, 0.6);
-  padding-bottom: var(--space-sm);
+  gap: 0.625rem;
 }
 
 @media (min-width: 1024px) {
   .hist-graph-top {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
   }
+}
+
+.hist-graph-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
 .hist-graph-title-row {
@@ -2383,14 +2387,29 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 600;
   color: var(--color-primary);
   letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.hist-param-badge {
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background-color: var(--color-surface-dim);
+  color: var(--color-secondary);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(233, 224, 204, 0.7);
 }
 
 .hist-graph-meta {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  margin-top: 0.25rem;
+  gap: 0.875rem;
   flex-wrap: wrap;
+  margin-top: 2px;
 }
 
 .hist-legend-item {
@@ -2402,35 +2421,52 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   color: var(--color-text-muted);
 }
 
+.hist-dot-obs {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
 .hist-thresh-legend {
   border-left: 1px solid rgba(233, 224, 204, 0.8);
-  padding-left: var(--space-md);
+  padding-left: 0.875rem;
 }
 
 .hist-thresh-dash {
-  width: 16px;
+  width: 14px;
   height: 0;
   border-bottom: 2px dashed #ba1a1a;
+  flex-shrink: 0;
 }
 
 .hist-view-toggles {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 0.5rem;
   flex-wrap: wrap;
+  align-self: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .hist-view-toggles {
+    align-self: flex-end;
+  }
 }
 
 .toggle-pill-group {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   background-color: var(--color-surface-dim);
   padding: 2px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
+  gap: 2px;
 }
 
 .toggle-pill-btn {
-  padding: 0.25rem 0.625rem;
+  padding: 0.25rem 0.65rem;
   font-family: var(--font-telemetry);
   font-size: 11px;
   border-radius: var(--radius-sm);
@@ -2438,44 +2474,45 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   border: none;
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: all var(--timing-tooltip) var(--ease-natural);
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .toggle-pill-btn.active {
   background-color: var(--color-surface);
   color: var(--color-primary);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(41, 45, 34, 0.08);
+  box-shadow: 0 1px 2px rgba(41, 45, 34, 0.08);
 }
 
-/* Graph Viewport */
+/* Graph Viewport - Compact Stitch Geometry */
 .hist-viewport {
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 260px;
   background-color: var(--color-surface-dim);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem 0.5rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  box-shadow: inset 0 2px 6px rgba(41, 45, 34, 0.04);
+  box-shadow: inset 0 1px 3px rgba(41, 45, 34, 0.03);
 }
 
 .hist-callout-peak {
   position: absolute;
-  top: 1rem;
+  top: 0.65rem;
   left: 32%;
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.35rem;
   background-color: rgba(251, 249, 242, 0.95);
   border: 1px solid var(--color-border);
-  padding: 0.25rem 0.65rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 6px rgba(41, 45, 34, 0.06);
+  box-shadow: 0 1px 4px rgba(41, 45, 34, 0.05);
   font-family: var(--font-telemetry);
   font-size: 11px;
   color: var(--color-text-primary);
@@ -2488,13 +2525,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background-color: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
-  box-shadow: 0 4px 14px rgba(41, 45, 34, 0.08);
+  padding: 0.625rem 0.875rem;
+  box-shadow: 0 4px 14px rgba(41, 45, 34, 0.1);
   backdrop-filter: blur(4px);
   pointer-events: none;
   z-index: 25;
-  min-width: 180px;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  min-width: 170px;
+  max-width: 220px;
+  transition: opacity 0.1s ease;
 }
 
 .hist-tip-header {
@@ -2512,7 +2550,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .hist-tip-badge {
   font-size: 10px;
-  color: var(--color-state-normal);
+  color: var(--color-secondary);
   font-weight: 500;
 }
 
@@ -2527,27 +2565,35 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   font-size: 10px;
   color: var(--color-text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .hist-tip-val {
   font-family: var(--font-telemetry);
-  font-size: 15px;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--color-primary);
+  line-height: 1.2;
 }
 
 .hist-tip-status {
   padding-top: 0.25rem;
   border-top: 1px solid rgba(233, 224, 204, 0.4);
   font-family: var(--font-narrative);
-  font-size: 11px;
-  color: var(--color-state-normal);
+  font-size: 10px;
+  color: var(--color-secondary);
   font-weight: 500;
 }
 
 .hist-xaxis-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.5rem 0 0.5rem;
+  font-family: var(--font-telemetry);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  border-top: 1px solid rgba(233, 224, 204, 0.4);
   align-items: center;
   font-family: var(--font-telemetry);
   font-size: 11px;
