@@ -74,7 +74,7 @@
                 <span class="hero-pulse-core"><span class="hero-pulse-dot"></span></span>
               </div>
               <h1 class="hero-state-title" id="ambient-state-title">NORMAL</h1>
-              <span class="badge badge-normal" id="ambient-state-badge">Baseline Stable</span>
+              <span class="hero-state-badge" id="ambient-state-badge">Baseline Stable</span>
             </div>
             <p class="hero-state-desc" id="ambient-state-desc">
               Campus environmental conditions across North Quad are currently within nominal baseline parameters with balanced atmospheric pressure and quiet acoustic levels.
@@ -100,8 +100,8 @@
             </div>
             <div class="hero-meta-divider"></div>
             <div class="hero-meta-row">
-              <span class="hero-meta-key">Field Quality</span>
-              <span class="hero-meta-val" style="color: var(--color-state-normal);">Nominal Living Lab</span>
+              <span class="hero-meta-key">Station Profile</span>
+              <span class="hero-meta-val" style="color: var(--color-state-normal);">Campus Living Lab #01</span>
             </div>
             <div class="hero-meta-divider"></div>
             <div class="hero-meta-row">
@@ -236,14 +236,26 @@
               <path id="flow-secondary-line" fill="none" stroke="#76786d" stroke-dasharray="5 5" stroke-opacity="0.5" stroke-width="1.75" d=""></path>
               <!-- Primary Organic Flow Curve -->
               <path id="flow-line-path" fill="none" stroke="#3f4d27" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d=""></path>
-              <!-- Dynamic Crosshair / Inspection Marker -->
-              <line id="flow-crosshair" stroke="#3f4d27" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1.5" x1="0" x2="0" y1="20" y2="280" style="display: none;"></line>
-              <circle id="flow-crosshair-outer" cx="0" cy="0" fill="#3f4d27" fill-opacity="0.2" r="9" style="display: none;"></circle>
-              <circle id="flow-crosshair-inner" cx="0" cy="0" fill="#fbfbe4" r="5" stroke="#3f4d27" stroke-width="3" style="display: none;"></circle>
+              <!-- Highlighted Live Inspection Marker -->
+              <line id="flow-crosshair" stroke="#3f4d27" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1.5" x1="740" x2="740" y1="30" y2="270"></line>
+              <circle id="flow-crosshair-outer" cx="740" cy="90" fill="#3f4d27" fill-opacity="0.2" r="9"></circle>
+              <circle id="flow-crosshair-inner" cx="740" cy="90" fill="#fbfbe4" r="5" stroke="#3f4d27" stroke-width="3"></circle>
             </svg>
 
             <!-- Floating Interactive Tooltip -->
-            <div class="flow-tooltip" id="chart-hover-tooltip" style="display: none;"></div>
+            <div class="flow-tooltip" id="chart-hover-tooltip" style="left: 69%; top: 2rem;">
+              <div class="flow-tooltip-header">
+                <span class="flow-tooltip-time" id="tooltip-time">14:00 (Live)</span>
+                <span class="flow-tooltip-station">North Quad Eco-Station #01</span>
+              </div>
+              <div class="flow-tooltip-body">
+                <span class="flow-tooltip-temp" id="tooltip-temp">24.8°C</span>
+                <span class="text-muted">•</span>
+                <span class="flow-tooltip-reading" id="tooltip-gas">MQ-135: 469 raw</span>
+                <span class="text-muted">•</span>
+                <span class="flow-tooltip-status" id="tooltip-status">Normal</span>
+              </div>
+            </div>
 
             <!-- X-Axis Labels -->
             <div class="chart-xaxis-labels" id="flow-xaxis-labels">
@@ -261,7 +273,7 @@
         <!-- 4. BOTTOM DUAL SECTION: SYSTEM TELEMETRY & FIELD LOGS / SUMMARY -->
         <div class="dashboard-lower-grid">
           <!-- LEFT COLUMN: SYSTEM SIGNALS & DEVICE STATUS -->
-          <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+          <div style="display: flex; flex-direction: column; gap: 2rem;">
             <!-- System Signals -->
             <div class="dashboard-submodule-card">
               <div class="submodule-header">
@@ -284,8 +296,8 @@
                   </span>
                 </div>
                 <div class="signals-item">
-                  <span class="signals-label">Data Points Today</span>
-                  <span class="signals-val" id="signal-datapoints">24,192 records</span>
+                  <span class="signals-label">Data Points (24h Buffer)</span>
+                  <span class="signals-val" id="signal-datapoints">8,640 records (Est. Rolling Buffer)</span>
                 </div>
                 <div class="signals-item">
                   <span class="signals-label">Hardware Node</span>
@@ -310,7 +322,7 @@
                   <span class="material-symbols-outlined device-banner-icon">router</span>
                   <div>
                     <div class="device-banner-name">ESP32 DevKit V1 • ONLINE</div>
-                    <div class="device-banner-hub">North Quad Mesh Hub</div>
+                    <div class="device-banner-hub">Station Node #01 · Campus Living Lab</div>
                   </div>
                 </div>
                 <div class="device-banner-right">
@@ -320,19 +332,19 @@
               </div>
               <div class="device-specs-grid">
                 <div class="device-spec-box">
-                  <span class="device-spec-label">Power Reserve</span>
-                  <span class="device-spec-val">USB 5V / 98% LiPo</span>
+                  <span class="device-spec-label">Power Supply</span>
+                  <span class="device-spec-val">USB 5V (Bus Powered)</span>
                 </div>
                 <div class="device-spec-box">
-                  <span class="device-spec-label">Mesh Protocol</span>
-                  <span class="device-spec-val">WPA3-Enterprise</span>
+                  <span class="device-spec-label">Network Protocol</span>
+                  <span class="device-spec-val">802.11 b/g/n (Station Mode)</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- RIGHT COLUMN: RECENT ALERTS & DAILY SUMMARY -->
-          <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+          <div style="display: flex; flex-direction: column; gap: 2rem;">
             <!-- Recent Field Logs & Alerts -->
             <div class="dashboard-submodule-card">
               <div class="submodule-header">
@@ -416,8 +428,8 @@
                 </div>
                 <div class="daily-summary-item">
                   <span class="daily-summary-label">Overall State</span>
-                  <div class="daily-summary-val daily-summary-state" id="summary-avg-state">Exemplary</div>
-                  <span class="daily-summary-note">Bio-baseline Verified</span>
+                  <div class="daily-summary-val daily-summary-state" id="summary-avg-state">NORMAL</div>
+                  <span class="daily-summary-note" id="summary-avg-state-note">Baseline Equilibrium</span>
                 </div>
               </div>
             </div>

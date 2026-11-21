@@ -55,7 +55,7 @@
         statusEl.textContent = evalRes.overallState;
       }
       if (badgeEl) {
-        badgeEl.className = 'badge badge-' + evalRes.overallState.toLowerCase();
+        badgeEl.className = 'hero-state-badge badge-' + evalRes.overallState.toLowerCase();
         badgeEl.textContent = evalRes.overallState === 'NORMAL' ? 'Baseline Stable' : (evalRes.overallState === 'WARNING' ? 'Advisory Notice' : 'Critical Breach');
       }
       if (statusDescEl) {
@@ -87,6 +87,7 @@
 
       // 3. System Signals & Device Status
       updateCard('signal-active-sensors', evalRes.activeCount + ' / 5 Online');
+      updateCard('signal-datapoints', '8,640 records (Est. Rolling Buffer)');
       updateCard('device-active-count', evalRes.activeCount + '/5 Sensors Active');
       updateCard('device-last-tx', 'Last transmission: ' + formatTime(data.timestamp));
 
@@ -96,7 +97,12 @@
       updateCard('summary-avg-pressure', (data.pressure !== undefined && data.pressure !== null ? data.pressure.toFixed(1) : '1013.2') + ' hPa');
       updateCard('summary-avg-sound', (data.noise !== undefined && data.noise !== null ? data.noise.toFixed(1) : '48.0') + ' dBA');
       updateCard('summary-avg-gas', (data.gas_response !== undefined && data.gas_response !== null ? Math.round(data.gas_response) : '469') + ' raw');
-      updateCard('summary-avg-state', evalRes.overallState === 'NORMAL' ? 'Exemplary' : (evalRes.overallState === 'WARNING' ? 'Elevated' : 'Critical'));
+      updateCard('summary-avg-state', evalRes.overallState);
+
+      var stateNoteEl = document.getElementById('summary-avg-state-note');
+      if (stateNoteEl) {
+        stateNoteEl.textContent = evalRes.overallState === 'NORMAL' ? 'Baseline Equilibrium' : (evalRes.overallState === 'WARNING' ? 'Advisory Active' : 'Critical Threshold Exceeded');
+      }
     }).catch(function (err) {
       showErrorState(err);
     });
@@ -128,7 +134,7 @@
       var points = series.map(function (item, idx) {
         var x = idx * stepX;
         var normalizedY = (item.value - minVal) / (maxVal - minVal || 1);
-        var y = 250 - (normalizedY * 190);
+        var y = 240 - (normalizedY * 175);
         return { x: x, y: y, val: Math.round(item.value), time: formatTime(item.timestamp) };
       });
 
@@ -144,8 +150,8 @@
 
       // Secondary subtle reference curve (representing diurnal baseline drift)
       var secPoints = points.map(function (p, idx) {
-        var drift = Math.sin((idx / (points.length - 1)) * Math.PI) * 22;
-        var secY = Math.min(270, Math.max(50, p.y + 30 - drift));
+        var drift = Math.sin((idx / (points.length - 1)) * Math.PI) * 20;
+        var secY = Math.min(270, Math.max(50, p.y + 28 - drift));
         return { x: p.x, y: secY };
       });
       var secDPath = 'M ' + secPoints[0].x + ' ' + secPoints[0].y;
@@ -183,6 +189,47 @@
     if (!container || !tooltip) return;
 
     var rafId = null;
+    var liveIdx = Math.min(points.length - 1, Math.floor(points.length * 0.74));
+    var livePoint = points[liveIdx];
+
+    function applyPoint(p, isHover) {
+      if (crosshair) {
+        crosshair.setAttribute('x1', p.x);
+        crosshair.setAttribute('x2', p.x);
+        crosshair.style.display = 'block';
+      }
+      if (outerCircle) {
+        outerCircle.setAttribute('cx', p.x);
+        outerCircle.setAttribute('cy', p.y);
+        outerCircle.style.display = 'block';
+      }
+      if (innerCircle) {
+        innerCircle.setAttribute('cx', p.x);
+        innerCircle.setAttribute('cy', p.y);
+        innerCircle.style.display = 'block';
+      }
+
+      tooltip.style.display = 'flex';
+      var rect = container.getBoundingClientRect();
+      var containerWidth = rect.width || 1000;
+      var leftPos = Math.min(containerWidth - 260, Math.max(16, (p.x / 1000) * containerWidth - 110));
+      tooltip.style.left = leftPos + 'px';
+      tooltip.style.top = isHover ? '1.75rem' : '2rem';
+      tooltip.innerHTML = '<div class="flow-tooltip-header">' +
+        '<span class="flow-tooltip-time">' + p.time + '</span>' +
+        '<span class="flow-tooltip-station">North Quad Eco-Station #01</span>' +
+        '</div>' +
+        '<div class="flow-tooltip-body">' +
+        '<span class="flow-tooltip-reading">MQ-135 Gas: ' + p.val + ' raw</span>' +
+        '<span class="text-muted">•</span>' +
+        '<span class="flow-tooltip-status">Normal</span>' +
+        '</div>';
+    }
+
+    // Set initial Live marker
+    if (livePoint) {
+      applyPoint(livePoint, false);
+    }
 
     container.addEventListener('mousemove', function (e) {
       if (rafId) cancelAnimationFrame(rafId);
@@ -191,47 +238,16 @@
         var relX = (e.clientX - rect.left) / rect.width;
         var pointIdx = Math.round(relX * (points.length - 1));
         if (pointIdx >= 0 && pointIdx < points.length) {
-          var p = points[pointIdx];
-
-          if (crosshair) {
-            crosshair.setAttribute('x1', p.x);
-            crosshair.setAttribute('x2', p.x);
-            crosshair.style.display = 'block';
-          }
-          if (outerCircle) {
-            outerCircle.setAttribute('cx', p.x);
-            outerCircle.setAttribute('cy', p.y);
-            outerCircle.style.display = 'block';
-          }
-          if (innerCircle) {
-            innerCircle.setAttribute('cx', p.x);
-            innerCircle.setAttribute('cy', p.y);
-            innerCircle.style.display = 'block';
-          }
-
-          tooltip.style.display = 'flex';
-          var leftPos = Math.min(rect.width - 240, Math.max(16, (p.x / 1000) * rect.width - 110));
-          tooltip.style.left = leftPos + 'px';
-          tooltip.style.top = '1.75rem';
-          tooltip.innerHTML = '<div class="flow-tooltip-header">' +
-            '<span class="flow-tooltip-time">' + p.time + '</span>' +
-            '<span class="flow-tooltip-station">Quad Center Station</span>' +
-            '</div>' +
-            '<div class="flow-tooltip-body">' +
-            '<span class="flow-tooltip-reading">MQ-135 Gas: ' + p.val + ' raw</span>' +
-            '<span class="text-muted">•</span>' +
-            '<span class="flow-tooltip-status">NORMAL</span>' +
-            '</div>';
+          applyPoint(points[pointIdx], true);
         }
       });
     });
 
     container.addEventListener('mouseleave', function () {
       if (rafId) cancelAnimationFrame(rafId);
-      tooltip.style.display = 'none';
-      if (crosshair) crosshair.style.display = 'none';
-      if (outerCircle) outerCircle.style.display = 'none';
-      if (innerCircle) innerCircle.style.display = 'none';
+      if (livePoint) {
+        applyPoint(livePoint, false);
+      }
     });
   }
 
