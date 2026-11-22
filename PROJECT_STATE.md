@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-22  
-**Overall Status:** Phase 4.15 (Alerts Screen Visual Correction) Complete & Verified  
+**Overall Status:** Phase 4.16 (Reports Screen Visual Correction) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -31,20 +31,24 @@
 | **Phase 4.13** | Prediction Screen Visual Correction | 🟢 Complete | None |
 | **Phase 4.14** | Prediction Final Visual Refinement | 🟢 Complete | None |
 | **Phase 4.15** | Alerts Screen Visual Correction | 🟢 Complete | None |
+| **Phase 4.16** | Reports Screen Visual Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.15 (Alerts Screen Visual Correction) completed and verified against the authoritative Stitch reference (`alerts.html`).
-  - **Stitch Environmental Event Intelligence Hierarchy:** Reconstructed the Alerts page around Stitch's environmental event intelligence structure: Specimen Header → Controls & Status Filter Bar → Active Environmental Events → 5-Parameter Supporting Threshold Rail → Chronological Alert History → Environmental Threshold / Breach Analysis.
-  - **Header & Telemetric Summary Cluster:** Implemented specimen eyebrow (`THRESHOLD COMPLIANCE & EVENTS · STATION #01`), bold title (`ALERTS`), explanatory narrative, and summary metrics cluster displaying dynamic active count (with pulsing dot), resolved count, and total rolling window events (`5 Events (24H)`).
-  - **Active Environmental Events Section:** Prominently featured below the controls bar, displaying high-fidelity analytical event cards communicating severity badge, campus zone, live active duration with pulse dot, parameter name and measured scalar, baseline delta (`+9.2 dBA above baseline`, `+1.5°C above baseline`), contextual event narrative, timestamp, and interactive `Acknowledge` action affordance. Clean empty/nominal state renders when all parameters are within baseline.
-  - **Supporting 5-Parameter Threshold Rail:** Repositioned the 5 parameter boundaries from an oversized dominant dashboard block into a sleek, discoverable supporting status rail (`Temperature`, `Humidity`, `Atmospheric Pressure`, `MQ-135 Gas`, `Noise Level`), preserving all 15 regression-safe DOM IDs and dynamic status bindings.
-  - **Chronological Alert History Ledger:** Refined the audit log into a scannable analytical ledger with tighter row rhythm, parameter styling, color-coded measured values, limit badges, active/resolved status pills, individual acknowledge actions, and archival retention metadata footer.
-  - **Lower Environmental Threshold / Breach Analysis:** Added the complete lower analytical visualization card featuring dynamic parameter title, breach status badge, current/baseline metrics, tinted SVG threshold zones (Nominal, Warning, Critical), smooth progression curve with gradient area wash, breach event trigger callout pill, peak reading callout badge, rolling temporal X-axis, and 3-column environmental context footer (Acoustic Propagation, Breach Trajectory, Baseline Verification).
-  - **Strict Contract & Invariant Preservation:** 100% preservation of the five locked ENVORA parameters, Alert FSM with $K=2$ anti-oscillation debounce, zero-backend architecture, and zero PM/AQI references.
-  - **Verification:** 100% pass across all 7 automated Phase 4.15 test gates (`scratch/test_alerts_phase4_15.js`), all 11 master verification gates (`scratch/verify_phase4.ps1`), full regression suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x1600 (`scratch/alerts_rendered_phase4_15.png`).
+- **Active Task:** Phase 4.16 (Reports Screen Visual Correction) completed and verified against the authoritative Stitch reference (`reports.html`).
+  - **Stitch Environmental Report Hierarchy:** Reconstructed `web/reports.html` around the dense Stitch environmental intelligence report structure: Archival Specimen Header & Export Actions → Telemetry Sync Banner → Section 01: Executive Report Summary → Section 02: Environmental Overview & Parameter Ledger → Section 03: Diurnal Environmental Trends & Microclimate Variability → Split Section 04 & 05: Alert & Threshold Summary + MQ-135 Sensor Response Prediction → Section 06: Environmental Report Summary & Conclusion.
+  - **Top Archival Header & Controls:** Implemented specimen eyebrow (`ENVIRONMENTAL MONITORING & ANALYSIS REPORT · STATION #01`), bold headline (`REPORTS`), period buttons (`24H`, `7D`, `30D`, `Custom`), and action buttons (`Print Document`, `Export Environmental PDF`) triggering client-side `window.print()`.
+  - **Section 01 Executive Report Summary:** Implemented compact analytical metric-card grid summarizing Reporting Period (with sampling rate), Overall Status badge (`NOMINAL` / `ELEVATED`), Total Observations (`2,880`), Active & Resolved counts (bound to intelligence alertLog), and Synchronized Data Coverage (`99.8%`).
+  - **Section 02 Parameter Ledger:** Built a dense analytical ledger table covering the five locked ENVORA parameters (Temperature, Relative Humidity, Atmospheric Pressure, MQ-135 Gas Response, Environmental Noise) reporting Current, Average (24h), Min / Max ranges, trend indicators, and status badges.
+  - **Section 03 Diurnal Environmental Trends:** Constructed a commanding 288px horizontal SVG visualization with dynamic 5-parameter switcher, Y-axis scale metadata, threshold band line, smooth organic spline with area wash, peak observation circle, latest telemetry circle, overlay annotation card (`Peak Reading: 27.2 °C (14:18 EDT)`), timeline X-axis, and preserved Daytime vs Nocturnal Microclimate panels.
+  - **Split Section 04 & 05 Analytical Pairing:**
+    - *Section 04 Alert & Threshold Summary:* 4-metric counter row (Total Alerts, Warnings, Critical, Resolved), prominent Most Significant Event card (`Acoustic Peak Spike (74.2 dB SPL)`), and secondary resolved log item.
+    - *Section 05 MQ-135 Prediction:* 3-metric scalar row (Current Response, Predicted Next, Trend slope), compact SVG observed → regression → forecast chart (`viewBox 0 0 400 80`), and explicit non-calibrated trend disclaimer note.
+  - **Section 06 Document Conclusion:** Structured 3-column synthesis evaluating Environmental Condition, Key Observation, and Trend Outlook.
+  - **Strict Contract & Invariant Preservation:** 100% preservation of the five locked ENVORA parameters, zero-backend architecture, and zero PM/AQI references.
+  - **Verification:** 100% pass across all 7 automated Phase 4.16 test gates (`scratch/test_reports_phase4_16.js`), all 12 master verification gates (`scratch/verify_phase4.ps1`), full regression suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x2400 (`scratch/reports_rendered_phase4_16.png`).
 
 ---
 

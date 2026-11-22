@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -41,111 +42,462 @@
           <div class="station-pill">
             <span>North Quad Eco-Station #01</span>
           </div>
-          <div class="ticker-text">Academic Environmental Summary Sheet</div>
+          <div class="ticker-text" id="header-ticker-text">Archival Environmental Report · Synchronized</div>
         </div>
         <div class="header-right">
-          <button class="btn-primary" id="btn-print-report">Print / Export PDF</button>
+          <div class="hardware-pill">
+            <span class="pulse-dot"></span>
+            <span>ESP32 • ONLINE</span>
+          </div>
           <div class="avatar-pill" title="System Operator">OP</div>
         </div>
       </header>
 
-      <main class="app-content">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
-          <div>
-            <div class="hero-state-label">Academic Evaluation Document</div>
-            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">Environmental Report</h1>
-            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
-              Presentation-ready microclimatic observation sheet across the five monitored parameters.
+      <main class="app-content reports-workspace">
+        <!-- TOP ARCHIVAL DOCUMENT BANNER & CONTROLS -->
+        <div class="reports-header">
+          <div class="reports-header-left">
+            <div class="reports-eyebrow">
+              <span class="material-symbols-outlined">summarize</span>
+              <span>Environmental Monitoring &amp; Analysis Report</span>
+              <span class="reports-eyebrow-sep">·</span>
+              <span>Station #01</span>
+            </div>
+            <h1 class="reports-title">REPORTS</h1>
+            <p class="reports-subtitle">
+              Comprehensive summary of campus ambient conditions, environmental parameters, alert notifications, and trend projections across historical monitoring periods.
             </p>
           </div>
-          <div class="segmented-control">
-            <button class="segmented-btn active" data-report-period="24H">24H Daily</button>
-            <button class="segmented-btn" data-report-period="7D">7D Weekly</button>
-            <button class="segmented-btn" data-report-period="Custom">Custom Range</button>
+
+          <!-- Controls & Actions -->
+          <div class="reports-controls-bar">
+            <!-- Time Range Selectors -->
+            <div class="reports-period-pills">
+              <button class="reports-period-btn active" data-report-period="24H">24H</button>
+              <button class="reports-period-btn" data-report-period="7D">7D</button>
+              <button class="reports-period-btn" data-report-period="30D">30D</button>
+              <button class="reports-period-btn" data-report-period="Custom">Custom</button>
+            </div>
+            <!-- Action Buttons -->
+            <div class="reports-action-group">
+              <button class="reports-action-btn btn-print" id="btn-print-report" title="Print environmental report">
+                <span class="material-symbols-outlined">print</span>
+                <span>Print Document</span>
+              </button>
+              <button class="reports-action-btn btn-export" id="btn-export-pdf" title="Export report as PDF">
+                <span class="material-symbols-outlined">download</span>
+                <span>Export Environmental PDF</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- EXECUTIVE SUMMARY CARD -->
-        <section class="card-surface">
-          <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-xs);">Executive Environmental Summary</h2>
-          <p style="font-size: var(--text-sm); color: var(--color-text-primary); line-height: 1.6;">
-            During the monitored 24-hour window, the North Quad Eco-Station recorded steady baseline atmospheric conditions. 
-            Ambient temperature and relative humidity followed an expected diurnal curve without sudden microclimatic inversion. 
-            Atmospheric pressure remained stable around 1013 hPa, while MQ-135 sensor response exhibited nominal baseline air quality with zero sustained threshold excursions. 
-            Acoustic levels measured via INMP441 confirmed a quiet academic quad environment with occasional transient daytime activity.
-          </p>
-        </section>
+        <!-- TELEMETRY METADATA BANNER -->
+        <div class="reports-meta-banner">
+          <div class="reports-meta-left">
+            <span class="reports-meta-dot"></span>
+            <span id="reports-meta-window">Telemetry Window: 24h Synchronized • Refreshed 2m ago (14:32 EDT)</span>
+          </div>
+          <div class="reports-meta-right">
+            <span>Station: <strong class="reports-meta-strong">North Quad Eco-Station #01</strong></span>
+            <span>Status: <strong class="reports-meta-strong" id="reports-meta-status">Nominal</strong></span>
+          </div>
+        </div>
 
-        <!-- 5-PARAMETER STATISTICAL MATRIX TABLE -->
-        <section class="card-surface">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
-            <h2 style="font-size: var(--text-xl);">Five-Parameter Statistical Matrix</h2>
-            <span class="badge badge-normal">Calibrated Sensor Fixtures</span>
+        <!-- SECTION 01: Executive Report Summary -->
+        <section class="reports-section" id="section-exec-summary">
+          <div class="reports-section-header">
+            <div class="reports-section-title-wrap">
+              <span class="reports-section-num">01</span>
+              <h2 class="reports-section-title">Executive Report Summary</h2>
+            </div>
+            <span class="reports-section-tag" id="exec-section-tag">24-Hour Synced Window</span>
           </div>
 
-          <div class="table-container">
-            <table class="envora-table">
-              <thead>
-                <tr>
-                  <th>Monitored Parameter</th>
-                  <th>Mean Reading</th>
-                  <th>Peak Value</th>
-                  <th>Minimum Value</th>
-                  <th>Std Deviation (±)</th>
-                </tr>
-              </thead>
-              <tbody id="report-matrix-body">
-                <!-- Dynamically populated by reports.js -->
-              </tbody>
-            </table>
-          </div>
-        </section>
+          <div class="reports-card">
+            <div class="reports-exec-grid">
+              <!-- Period Card (col-span-2) -->
+              <div class="reports-exec-card col-span-2">
+                <div>
+                  <span class="reports-exec-label">Reporting Period</span>
+                  <div class="reports-exec-value" id="exec-period-title">Past 24 Hours</div>
+                  <div class="reports-exec-sub" id="exec-period-range">May 14, 14:30 – May 15, 14:30 EDT</div>
+                </div>
+                <div class="reports-exec-footer">
+                  <span>Sampling Rate</span>
+                  <strong class="reports-meta-strong" id="exec-sampling-rate">30s Intervals</strong>
+                </div>
+              </div>
 
-        <!-- DIURNAL VARIATION OBSERVATION (DAY VS NIGHT) -->
-        <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-md);">
-          <div class="card-surface">
-            <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-xs);">Daytime Microclimate (06:00 - 18:00)</h3>
-            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-sm);">
-              Moderate solar heating and elevated daytime foot traffic.
-            </p>
-            <div style="font-family: var(--font-telemetry); font-size: var(--text-xs); line-height: 1.8;">
-              <div>• Mean Temperature: 24.8°C (Peak: 25.0°C)</div>
-              <div>• Mean Humidity: 60.8%</div>
-              <div>• Mean Atmospheric Pressure: 1013.2 hPa</div>
-              <div>• Mean MQ-135 Response: 485 raw</div>
-              <div>• Mean Noise Level: 50.2 dB SPL</div>
+              <!-- Overall Status Card -->
+              <div class="reports-exec-card">
+                <span class="reports-exec-label">Overall Status</span>
+                <div id="exec-status-badge">
+                  <span class="reports-status-badge nominal">
+                    <span class="reports-status-dot"></span> NOMINAL
+                  </span>
+                </div>
+                <span class="reports-exec-sub" id="exec-status-desc">No systemic breach</span>
+              </div>
+
+              <!-- Total Observations Card -->
+              <div class="reports-exec-card">
+                <span class="reports-exec-label">Total Observations</span>
+                <span class="reports-exec-value-lg" id="exec-total-obs">2,880</span>
+                <span class="reports-exec-sub">Continuous polling</span>
+              </div>
+
+              <!-- Active & Resolved Alerts Card -->
+              <div class="reports-exec-card">
+                <span class="reports-exec-label">Active &amp; Resolved</span>
+                <div class="reports-exec-value" id="exec-alerts-counts">
+                  <span style="color:#ba1a1a;font-weight:700;" id="exec-active-count">1</span>
+                  <span style="font-size:12px;color:var(--color-text-muted);">active</span>
+                  <span style="font-size:11px;color:var(--color-text-muted);margin:0 2px;">•</span>
+                  <span style="color:var(--color-secondary);font-weight:700;" id="exec-resolved-count">4</span>
+                  <span style="font-size:12px;color:var(--color-text-muted);">res.</span>
+                </div>
+                <span class="reports-exec-sub" id="exec-alerts-desc">Noise &amp; Gas peaks</span>
+              </div>
+
+              <!-- Data Coverage Card -->
+              <div class="reports-exec-card">
+                <span class="reports-exec-label">Data Coverage</span>
+                <span class="reports-exec-value-lg" id="exec-data-coverage">99.8%</span>
+                <span class="reports-exec-sub">Synchronized capture</span>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div class="card-surface">
-            <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-xs);">Nocturnal Microclimate (18:00 - 06:00)</h3>
-            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-sm);">
-              Radiative surface cooling and minimal ambient acoustic disturbance.
-            </p>
-            <div style="font-family: var(--font-telemetry); font-size: var(--text-xs); line-height: 1.8;">
-              <div>• Mean Temperature: 23.6°C (Min: 23.5°C)</div>
-              <div>• Mean Humidity: 63.8%</div>
-              <div>• Mean Atmospheric Pressure: 1013.0 hPa</div>
-              <div>• Mean MQ-135 Response: 425 raw</div>
-              <div>• Mean Noise Level: 46.5 dB SPL</div>
+        <!-- SECTION 02: Environmental Overview & Parameter Ledger -->
+        <section class="reports-section" id="section-parameter-ledger">
+          <div class="reports-section-header">
+            <div class="reports-section-title-wrap">
+              <span class="reports-section-num">02</span>
+              <h2 class="reports-section-title">Environmental Overview &amp; Parameter Ledger</h2>
+            </div>
+            <span class="reports-section-tag">5 Monitored Parameters</span>
+          </div>
+
+          <div class="reports-card reports-ledger-card">
+            <div class="reports-table-wrap">
+              <table class="reports-ledger-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th style="text-align: right;">Current</th>
+                    <th style="text-align: right;">Average (24h)</th>
+                    <th style="text-align: right;">Min / Max</th>
+                    <th style="text-align: center;">Trend</th>
+                    <th style="text-align: center;">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="report-matrix-body">
+                  <!-- Dynamically populated by reports.js -->
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
 
-        <!-- ACADEMIC SIGN-OFF AND CALIBRATION NOTICE -->
-        <section class="card-surface-dim">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-md);">
-            <div>
-              <span class="badge badge-normal">Academic Evaluation Record</span>
-              <p style="margin-top: var(--space-xs); font-size: var(--text-xs); color: var(--color-text-muted); max-width: 600px;">
-                This summary document is generated from calibrated ESP32 station observations for student major project evaluation. 
-                Data contract strictly encompasses Temperature, Humidity, Atmospheric Pressure, MQ-135 Gas Response, and Environmental Noise.
-              </p>
+        <!-- SECTION 03: Diurnal Environmental Trends & Microclimate Variability -->
+        <section class="reports-section" id="section-diurnal-trends">
+          <div class="reports-section-header">
+            <div class="reports-section-title-wrap">
+              <span class="reports-section-num">03</span>
+              <h2 class="reports-section-title">Diurnal Environmental Trends &amp; Microclimate Variability</h2>
             </div>
-            <div style="font-family: var(--font-telemetry); font-size: var(--text-xs); color: var(--color-text-muted); text-align: right;">
-              <div>Node: ESP32-WROOM-32U</div>
-              <div>Status: Verified Ingest</div>
-              <div>Document ID: ENV-REP-2026-01</div>
+            <span class="reports-section-tag">Continuous 24-Hour Synced Projection</span>
+          </div>
+
+          <div class="reports-card">
+            <!-- Graph Top Bar with Title and Parameter Toggles -->
+            <div class="reports-diurnal-top">
+              <div class="reports-diurnal-heading">
+                <h3 class="reports-diurnal-title" id="diurnal-graph-title">24-Hour Baseline Progression</h3>
+                <p class="reports-diurnal-sub" id="diurnal-graph-sub">Tracking microclimatic diurnal progression against quad acoustic &amp; thermal cycles</p>
+              </div>
+
+              <!-- 5-Parameter Switcher -->
+              <div class="reports-param-pills">
+                <button class="reports-param-pill-btn active" data-diurnal-param="temperature">Temperature</button>
+                <button class="reports-param-pill-btn" data-diurnal-param="humidity">Relative Humidity</button>
+                <button class="reports-param-pill-btn" data-diurnal-param="pressure">Atmospheric Pressure</button>
+                <button class="reports-param-pill-btn" data-diurnal-param="gas_response">MQ-135 Response</button>
+                <button class="reports-param-pill-btn" data-diurnal-param="noise">Acoustic Levels</button>
+              </div>
+            </div>
+
+            <!-- Graph Meta & Legend -->
+            <div class="reports-graph-meta">
+              <span id="diurnal-yaxis-label">Y-AXIS: Ambient Temperature (°C)</span>
+              <div class="reports-legend-group">
+                <span class="reports-legend-item">
+                  <span class="reports-legend-obs-line"></span>
+                  <span id="diurnal-legend-obs-label">Observed Temperature</span>
+                </span>
+                <span class="reports-legend-item">
+                  <span class="reports-legend-thresh-line"></span>
+                  <span id="diurnal-legend-thresh-label">30.0 °C Quad Threshold</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Plot Container with SVG -->
+            <div class="reports-plot-container">
+              <!-- Grid Lines Overlay -->
+              <div class="reports-grid-lines" id="diurnal-grid-lines">
+                <div class="reports-grid-row"><span id="grid-y4">32.0 °C</span></div>
+                <div class="reports-grid-row threshold"><span id="grid-y3">30.0 °C (Upper Bound)</span></div>
+                <div class="reports-grid-row"><span id="grid-y2">25.0 °C</span></div>
+                <div class="reports-grid-row"><span id="grid-y1">20.0 °C</span></div>
+                <div class="reports-grid-row"><span id="grid-y0">15.0 °C</span></div>
+              </div>
+
+              <!-- Spline SVG Canvas -->
+              <svg class="reports-diurnal-svg" id="diurnal-svg" preserveAspectRatio="none" viewBox="0 0 1000 300">
+                <defs>
+                  <linearGradient id="reportsAreaGrad" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#3f4d27" stop-opacity="0.22"></stop>
+                    <stop offset="100%" stop-color="#3f4d27" stop-opacity="0.02"></stop>
+                  </linearGradient>
+                </defs>
+                <!-- Area Path under Curve -->
+                <path id="diurnal-area-path" d="M 50,220 C 150,215 220,230 320,210 C 420,190 480,175 580,185 C 650,190 700,200 760,160 C 800,130 850,75 890,70 C 920,68 950,90 970,100 L 970,280 L 50,280 Z" fill="url(#reportsAreaGrad)"></path>
+                <!-- Regulatory Threshold Line -->
+                <line id="diurnal-threshold-line" stroke="#ba1a1a" stroke-dasharray="4 4" stroke-opacity="0.8" stroke-width="1.5" x1="50" x2="970" y1="95" y2="95"></line>
+                <!-- Main Spline Trend Line -->
+                <path id="diurnal-curve-path" d="M 50,220 C 150,215 220,230 320,210 C 420,190 480,175 580,185 C 650,190 700,200 760,160 C 800,130 850,75 890,70 C 920,68 950,90 970,100" stroke="#293613" stroke-linecap="round" stroke-width="2.5" fill="none"></path>
+                <!-- Peak Marker Circle -->
+                <circle id="diurnal-peak-marker" cx="890" cy="70" fill="#ba1a1a" r="5" stroke="#ffffff" stroke-width="2"></circle>
+                <!-- Latest Reading Marker Circle -->
+                <circle id="diurnal-latest-marker" cx="970" cy="100" fill="#293613" r="5" stroke="#ffffff" stroke-width="2"></circle>
+              </svg>
+
+              <!-- Annotation Card Overlay -->
+              <div class="reports-annotation-card" id="diurnal-annotation-card">
+                <div class="reports-annotation-header">
+                  <span class="reports-annotation-dot"></span>
+                  <span id="diurnal-annot-title">Peak Reading: 27.2 °C (14:18 EDT)</span>
+                </div>
+                <div class="reports-annotation-body" id="diurnal-annot-body">
+                  Solar insolation crest and quad thermal peak with steady convective dissipation.
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline X-Axis Labels -->
+            <div class="reports-xaxis">
+              <span>14:30 (Yesterday)</span>
+              <span>18:00</span>
+              <span>22:00</span>
+              <span>02:00</span>
+              <span>06:00 (Dawn)</span>
+              <span>10:00</span>
+              <span>12:00 (Solar Peak)</span>
+              <span class="reports-meta-strong">14:32 (Latest EDT)</span>
+            </div>
+
+            <!-- Diurnal Variation Observation Panels (Day vs Night Microclimate) -->
+            <div class="reports-diurnal-panels">
+              <div class="reports-diurnal-panel">
+                <h4 class="reports-diurnal-panel-title">Daytime Microclimate (06:00 - 18:00)</h4>
+                <p class="reports-diurnal-panel-desc">Moderate solar heating and elevated daytime foot traffic.</p>
+                <div class="reports-diurnal-panel-list">
+                  <div>• Mean Temperature: 24.8°C (Peak: 25.0°C)</div>
+                  <div>• Mean Humidity: 60.8%</div>
+                  <div>• Mean Atmospheric Pressure: 1013.2 hPa</div>
+                  <div>• Mean MQ-135 Response: 485 raw</div>
+                  <div>• Mean Noise Level: 50.2 dB SPL</div>
+                </div>
+              </div>
+
+              <div class="reports-diurnal-panel">
+                <h4 class="reports-diurnal-panel-title">Nocturnal Microclimate (18:00 - 06:00)</h4>
+                <p class="reports-diurnal-panel-desc">Radiative surface cooling and minimal ambient acoustic disturbance.</p>
+                <div class="reports-diurnal-panel-list">
+                  <div>• Mean Temperature: 23.6°C (Min: 23.5°C)</div>
+                  <div>• Mean Humidity: 63.8%</div>
+                  <div>• Mean Atmospheric Pressure: 1013.0 hPa</div>
+                  <div>• Mean MQ-135 Response: 425 raw</div>
+                  <div>• Mean Noise Level: 46.5 dB SPL</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SPLIT SECTION 04 & 05: Alert Recap & Trend Prediction -->
+        <div class="reports-split-grid">
+          <!-- SECTION 04: Alert & Threshold Summary -->
+          <section class="reports-section" id="section-alert-summary">
+            <div class="reports-section-header">
+              <div class="reports-section-title-wrap">
+                <span class="reports-section-num">04</span>
+                <h2 class="reports-section-title">Alert &amp; Threshold Summary</h2>
+              </div>
+              <span class="reports-section-tag">Log Digest</span>
+            </div>
+
+            <div class="reports-card reports-split-card">
+              <!-- Compact Alert Stats Row -->
+              <div class="reports-alert-stats-row">
+                <div class="reports-alert-stat-card">
+                  <span class="reports-alert-stat-val" id="alert-stat-total">5</span>
+                  <span class="reports-alert-stat-label">Total Alerts</span>
+                </div>
+                <div class="reports-alert-stat-card">
+                  <span class="reports-alert-stat-val secondary" id="alert-stat-warnings">4</span>
+                  <span class="reports-alert-stat-label">Warnings</span>
+                </div>
+                <div class="reports-alert-stat-card">
+                  <span class="reports-alert-stat-val error" id="alert-stat-critical">1</span>
+                  <span class="reports-alert-stat-label">Critical</span>
+                </div>
+                <div class="reports-alert-stat-card">
+                  <span class="reports-alert-stat-val" id="alert-stat-resolved">4</span>
+                  <span class="reports-alert-stat-label">Resolved</span>
+                </div>
+              </div>
+
+              <!-- Most Significant Environmental Event Card -->
+              <div class="reports-event-highlight">
+                <div class="reports-event-header">
+                  <span class="reports-event-title-eyebrow">Most Significant Environmental Event</span>
+                  <span class="reports-event-badge" id="event-hl-badge">Active Warning</span>
+                </div>
+                <h4 class="reports-event-main-title" id="event-hl-title">
+                  Acoustic Peak Spike (74.2 dB SPL vs 70.0 dB SPL threshold)
+                </h4>
+                <div class="reports-event-metrics-grid">
+                  <div>
+                    <span class="reports-event-meta-label">Active Duration</span>
+                    <div class="reports-event-meta-val" id="event-hl-duration">14 minutes active</div>
+                  </div>
+                  <div>
+                    <span class="reports-event-meta-label">Dispersion Status</span>
+                    <div class="reports-event-meta-val" id="event-hl-dispersion">Normal acoustic dissipation</div>
+                  </div>
+                </div>
+                <div class="reports-event-root-note" id="event-hl-root">
+                  <strong class="reports-meta-strong">Root Context:</strong> North quad turf maintenance and student pedestrian assembly generating transient acoustic elevation.
+                </div>
+              </div>
+
+              <!-- Secondary Log Item -->
+              <div class="reports-event-secondary">
+                <div class="reports-event-sec-left">
+                  <span class="material-symbols-outlined">check_circle</span>
+                  <span id="event-sec-title">MQ-135 Gas Response Peak (682 raw)</span>
+                </div>
+                <span class="reports-event-sec-right" id="event-sec-time">Resolved at 11:45 EDT</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTION 05: MQ-135 Sensor-Response Prediction Summary -->
+          <section class="reports-section" id="section-prediction-summary">
+            <div class="reports-section-header">
+              <div class="reports-section-title-wrap">
+                <span class="reports-section-num">05</span>
+                <h2 class="reports-section-title">MQ-135 Sensor-Response Prediction</h2>
+              </div>
+              <span class="reports-section-tag">Linear Trend</span>
+            </div>
+
+            <div class="reports-card reports-split-card">
+              <!-- Metric Scalars Row -->
+              <div class="reports-pred-metrics-row">
+                <div class="reports-pred-metric-card">
+                  <span class="reports-pred-metric-label">Current Response</span>
+                  <span class="reports-pred-metric-val" id="pred-metric-current">469 <span class="reports-pred-metric-sub">raw</span></span>
+                  <span class="reports-pred-metric-sub">Latest sample</span>
+                </div>
+                <div class="reports-pred-metric-card">
+                  <span class="reports-pred-metric-label">Predicted Next</span>
+                  <span class="reports-pred-metric-val" id="pred-metric-predicted">480 <span class="reports-pred-metric-sub">raw</span></span>
+                  <span class="reports-pred-metric-sub">Next interval (t+1)</span>
+                </div>
+                <div class="reports-pred-metric-card">
+                  <span class="reports-pred-metric-label">Trend</span>
+                  <div class="reports-pred-trend-pill" id="pred-metric-trend">RISING ↗</div>
+                  <span class="reports-pred-metric-sub" id="pred-metric-rate">+2.1 raw/cycle</span>
+                </div>
+              </div>
+
+              <!-- Observed -> Regression -> Forecast Panel -->
+              <div class="reports-pred-chart-panel">
+                <div class="reports-pred-chart-header">
+                  <span class="reports-pred-chart-title">Observed → Regression → Forecast</span>
+                  <div class="reports-pred-chart-legend">
+                    <span class="reports-legend-item"><span class="reports-pred-legend-dot obs"></span> Observed</span>
+                    <span class="reports-legend-item"><span class="reports-pred-legend-dot reg"></span> Regression</span>
+                    <span class="reports-legend-item"><span class="reports-pred-legend-dot fc"></span> Forecast</span>
+                  </div>
+                </div>
+
+                <div class="reports-pred-svg-wrap">
+                  <svg class="reports-pred-svg" id="pred-svg" fill="none" viewBox="0 0 400 80">
+                    <line stroke="#dbdbc6" stroke-width="0.75" x1="10" x2="390" y1="20" y2="20"></line>
+                    <line stroke="#dbdbc6" stroke-width="0.75" x1="10" x2="390" y1="50" y2="50"></line>
+                    <!-- Observed Line -->
+                    <path id="pred-svg-obs" d="M 20,62 L 50,58 L 80,60 L 110,54 L 140,56 L 170,48 L 200,50 L 230,42 L 260,39 L 290,36" stroke="#293613" stroke-linecap="round" stroke-width="2.5"></path>
+                    <!-- Regression Trendline -->
+                    <line id="pred-svg-reg" stroke="#b8cf8a" stroke-linecap="round" stroke-width="2" x1="20" x2="290" y1="65" y2="35"></line>
+                    <!-- Forecast Projected Dash -->
+                    <line id="pred-svg-fc" stroke="#293613" stroke-dasharray="4 4" stroke-width="2" x1="290" x2="380" y1="36" y2="24"></line>
+                    <!-- Current Observation Marker (t) -->
+                    <circle id="pred-svg-curr-dot" cx="290" cy="36" fill="#293613" r="4"></circle>
+                    <!-- Forecast Marker (t+1) -->
+                    <circle id="pred-svg-fc-dot" cx="380" cy="24" fill="#3f4d27" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+                    <!-- Labels -->
+                    <text class="reports-meta-strong" fill="#777866" font-family="JetBrains Mono" font-size="9px" id="pred-svg-label-t" x="268" y="55">469 (t)</text>
+                    <text class="reports-meta-strong" fill="#293613" font-family="JetBrains Mono" font-size="10px" font-weight="600" id="pred-svg-label-t1" x="338" y="16">480 (t+1)</text>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Prediction Note -->
+              <div class="reports-pred-narrative">
+                <strong class="reports-meta-strong">Note:</strong> The prediction uses recent historical MQ-135 sensor-response readings and simple linear regression to estimate the next interval. Trend prediction only; not a calibrated gas concentration or certified absolute gas index.
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- SECTION 06: Document Conclusion & Living Lab Audit Note -->
+        <section class="reports-section" id="section-conclusion">
+          <div class="reports-section-header">
+            <div class="reports-section-title-wrap">
+              <span class="reports-section-num">06</span>
+              <h2 class="reports-section-title">Environmental Report Summary &amp; Conclusion</h2>
+            </div>
+            <span class="reports-section-tag">24-Hour Cycle Assessment</span>
+          </div>
+
+          <div class="reports-card reports-conclusion-card">
+            <div class="reports-conclusion-grid">
+              <div class="reports-conclusion-col">
+                <span class="reports-conclusion-label">Environmental Condition</span>
+                <p class="reports-conclusion-text" id="conclusion-condition">
+                  Overall campus ambient parameters remained within nominal baseline ranges for 96.4% of the diurnal monitoring cycle.
+                </p>
+              </div>
+
+              <div class="reports-conclusion-col">
+                <span class="reports-conclusion-label">Key Observation</span>
+                <p class="reports-conclusion-text" id="conclusion-observation">
+                  Transient acoustic and gas response elevations detected during daytime quad activities; all parameters resolved to nominal baselines.
+                </p>
+              </div>
+
+              <div class="reports-conclusion-col">
+                <span class="reports-conclusion-label">Trend Outlook</span>
+                <p class="reports-conclusion-text" id="conclusion-outlook">
+                  MQ-135 sensor-response linear regression indicates steady, predictable response drift with no abnormal rate of change.
+                </p>
+              </div>
             </div>
           </div>
         </section>
