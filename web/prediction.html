@@ -185,14 +185,14 @@
                   <stop offset="100%" stop-color="#3f4d27" stop-opacity="0.02"></stop>
                 </linearGradient>
                 <linearGradient id="predForecastZoneGrad" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0%" stop-color="#eae9d4" stop-opacity="0.85"></stop>
-                  <stop offset="100%" stop-color="#eae9d4" stop-opacity="0.45"></stop>
+                  <stop offset="0%" stop-color="#eae9d4" stop-opacity="0.35"></stop>
+                  <stop offset="100%" stop-color="#eae9d4" stop-opacity="0.12"></stop>
                 </linearGradient>
               </defs>
 
               <!-- Shaded Forecast Future Zone -->
               <rect x="740" y="30" width="160" height="240" rx="4" fill="url(#predForecastZoneGrad)"></rect>
-              <text id="forecast-zone-text" x="755" y="52" class="font-telemetry" font-size="11" fill="#52652b" font-weight="600" letter-spacing="0.08em">FORECAST (+900S)</text>
+              <text id="forecast-zone-text" x="755" y="50" class="font-telemetry" font-size="10" fill="#6c7a4b" font-weight="600" letter-spacing="0.08em">FORECAST (+900S)</text>
 
               <!-- Subtle Horizontal Reference Gridlines & Numerical Scale Labels -->
               <g stroke="#e4e4ce" stroke-dasharray="3,3" stroke-width="1">
@@ -214,7 +214,7 @@
 
               <!-- Present Division Marker (t) -->
               <line x1="740" x2="740" y1="30" y2="270" stroke="#3f4d27" stroke-dasharray="4,4" stroke-width="1.5"></line>
-              <text x="740" y="22" class="font-telemetry" font-size="11" fill="#293613" font-weight="600" text-anchor="middle">PRESENT (t)</text>
+              <text x="740" y="22" class="font-telemetry" font-size="10" fill="#3f4d27" font-weight="600" text-anchor="middle">PRESENT (t)</text>
 
               <!-- Observed Area Wash -->
               <path id="pred-area-path" fill="url(#predHistoricalGrad)" d=""></path>
@@ -222,23 +222,23 @@
               <!-- Regression Fit Trendline -->
               <line id="pred-regression-line" stroke="#9AA77A" stroke-width="2.5" stroke-linecap="round" x1="0" y1="0" x2="0" y2="0"></line>
               <g id="pred-reg-badge" transform="translate(380, 168)" style="display:none;">
-                <rect fill="#eae9d4" height="20" rx="3" width="96" x="0" y="0"></rect>
-                <text class="font-telemetry" font-size="10" fill="#404b26" font-weight="600" x="8" y="14">REGRESSION</text>
+                <rect fill="#eae9d4" fill-opacity="0.85" height="18" rx="2.5" width="86" x="0" y="0"></rect>
+                <text class="font-telemetry" font-size="9.5" fill="#404b26" font-weight="600" x="7" y="13">REGRESSION</text>
               </g>
 
               <!-- Observed Telemetry Spline / Line -->
               <path id="pred-observed-line" fill="none" stroke="#293613" stroke-width="2.5" stroke-linejoin="round" d=""></path>
 
               <!-- Forecast Projected Line -->
-              <line id="pred-forecast-line" stroke="#52652b" stroke-dasharray="6,6" stroke-linecap="round" stroke-width="2.5" x1="0" y1="0" x2="0" y2="0"></line>
+              <line id="pred-forecast-line" stroke="#52652b" stroke-dasharray="6,6" stroke-linecap="round" stroke-width="2.2" x1="0" y1="0" x2="0" y2="0"></line>
 
               <!-- Observed Observation Nodes -->
               <g id="pred-observed-nodes"></g>
 
-              <!-- Latest Observed Callout Pill (at xPresent = 740) -->
+              <!-- Latest Observed Callout Pill (at xPresent = 740, positioned on observed side) -->
               <g id="pred-obs-callout" style="display:none;">
-                <rect fill="#293613" height="22" rx="3" width="76" x="702" y="70"></rect>
-                <text id="pred-obs-callout-val" class="font-telemetry" font-size="11" fill="#ffffff" font-weight="600" text-anchor="middle" x="740" y="85">Obs: 524</text>
+                <rect fill="#293613" height="18" rx="3" width="62" x="672" y="70"></rect>
+                <text id="pred-obs-callout-val" class="font-telemetry" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" x="703" y="83">Obs: 524</text>
               </g>
 
               <!-- Forecast Target Node & Callout Badge (at xForecast = 860) -->
@@ -248,10 +248,10 @@
                 <circle id="pred-forecast-node" cx="860" cy="88" r="3" fill="#ffffff" stroke="#3f4d27" stroke-width="1.5" style="cursor: pointer;"></circle>
               </g>
 
-              <g id="pred-target-badge" transform="translate(752, 118)" style="display:none;">
-                <rect fill="#ffffff" height="42" rx="4" stroke="#c6c8ba" stroke-width="1" width="172" x="0" y="0" filter="drop-shadow(0 1px 3px rgba(0,0,0,0.06))"></rect>
-                <text id="pred-target-badge-val" class="font-telemetry" font-size="11" fill="#293613" font-weight="700" x="10" y="18">PREDICTED: 534</text>
-                <text id="pred-target-badge-horizon" class="font-telemetry" font-size="10" fill="#76786d" x="10" y="32">Target: +900s</text>
+              <g id="pred-target-badge" transform="translate(748, 118)" style="display:none;">
+                <rect fill="#ffffff" height="32" rx="3" stroke="#d5d6c8" stroke-width="1" width="132" x="0" y="0" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.05))"></rect>
+                <text id="pred-target-badge-val" class="font-telemetry" font-size="10" fill="#293613" font-weight="700" x="8" y="14">PREDICTED: 534</text>
+                <text id="pred-target-badge-horizon" class="font-telemetry" font-size="8.5" fill="#76786d" x="8" y="24">Target: +900s</text>
               </g>
 
               <!-- X-Axis Timestamps -->

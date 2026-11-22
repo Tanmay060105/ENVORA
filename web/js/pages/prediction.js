@@ -175,8 +175,8 @@
 
     var regBadge = document.getElementById('pred-reg-badge');
     if (regBadge) {
-      var midX = (xStart + xPresent) / 2 - 48;
-      var midY = (regStartY + regEndY) / 2 - 25;
+      var midX = (xStart + xPresent) / 2 - 43;
+      var midY = (regStartY + regEndY) / 2 - 22;
       regBadge.setAttribute('transform', 'translate(' + midX.toFixed(1) + ', ' + midY.toFixed(1) + ')');
       regBadge.style.display = 'block';
     }
@@ -214,15 +214,23 @@
     var obsCallout = document.getElementById('pred-obs-callout');
     if (obsCallout && obsPts.length > 0) {
       var lastObsY = obsPts[obsPts.length - 1].y;
-      obsCallout.querySelector('rect').setAttribute('y', (lastObsY - 32).toFixed(1));
-      document.getElementById('pred-obs-callout-val').setAttribute('y', (lastObsY - 17).toFixed(1));
+      var calloutRect = obsCallout.querySelector('rect');
+      if (calloutRect) {
+        calloutRect.setAttribute('x', '672');
+        calloutRect.setAttribute('y', (lastObsY - 26).toFixed(1));
+      }
+      var obsValEl = document.getElementById('pred-obs-callout-val');
+      if (obsValEl) {
+        obsValEl.setAttribute('x', '703');
+        obsValEl.setAttribute('y', (lastObsY - 13).toFixed(1));
+      }
       obsCallout.style.display = 'block';
     }
 
     var targetBadge = document.getElementById('pred-target-badge');
     if (targetBadge) {
-      var badgeTop = Math.max(35, Math.min(220, forecastY - 20));
-      targetBadge.setAttribute('transform', 'translate(752, ' + badgeTop.toFixed(1) + ')');
+      var badgeTop = Math.max(35, Math.min(225, forecastY - 16));
+      targetBadge.setAttribute('transform', 'translate(748, ' + badgeTop.toFixed(1) + ')');
       targetBadge.style.display = 'block';
     }
 

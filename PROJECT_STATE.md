@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-22  
-**Overall Status:** Phase 4.13 (Prediction Screen Visual Correction) Complete & Verified  
+**Overall Status:** Phase 4.14 (Prediction Final Visual Refinement) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -29,19 +29,19 @@
 | **Phase 4.11** | Historical Analysis Strict Graph Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.12** | Historical Analysis Final Visual Refinement | 🟢 Complete | None |
 | **Phase 4.13** | Prediction Screen Visual Correction | 🟢 Complete | None |
+| **Phase 4.14** | Prediction Final Visual Refinement | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.13 (Prediction Screen Visual Correction) completed and verified against the authoritative Stitch reference (`prediction.html`).
-  - **Full-Width Desktop Workspace:** Transformed the layout from a narrow constrained column into a broad, authoritative analytical interface spanning the full desktop width (`.pred-workspace`), matching Stitch visual hierarchy and eliminating unused whitespace on 1440px displays.
-  - **Structured Header Hierarchy:** Implemented specimen-style eyebrow (`PREDICTIVE INTELLIGENCE MODEL · PROTOCOL OLS-04`), prominent bold title (`MQ-135 Sensor-Response Prediction`), explanatory subtitle, metadata chips (Sensor Response chip, Target chip), and segmented observation window controls (6 Readings / 12 Readings).
-  - **Prominent Metric Cards:** Expanded 3 primary metric cards (`Current Response`, `Predicted Next`, `Trend Classification`) with bold 2.75rem (44px) values (`font-weight: 700`, `line-height: 1`), supporting metadata, and Card 2 highlighted with primary/secondary theme styling.
-  - **Contextual Alert Strip:** Integrated an ambient threshold proximity banner indicating gradient status and quantitative delta to the 900 raw response threshold.
-  - **Centerpiece Visualizer & Shading:** Elevated the SVG graph to a 400px tall commanding viewport (`viewBox="0 0 940 320"`), featuring subtle reference gridlines, dynamic 6-tier Y-axis scale markers, shaded forecast zone (`#pred-forecast-zone`), present division marker (`PRESENT (t)`), area wash path under observed values (`#pred-area-path`), regression line badge (`#pred-reg-badge`), observation callout pill (`Obs: [val]`), forecast target badge (`PREDICTED: [val]` with `Target: [horizon]`), and bottom status strip with sampling cadence and extrapolation method.
-  - **Lower Analytical Foundation:** Structured a balanced 2-column grid (`1.4fr / 1fr`) housing "How the Prediction Works" with 3 numbered step cards and "Model Specification" with an auditable specification list.
-  - **Verified Strict Compliance:** 100% pass across all 7 automated Phase 4.13 test gates (`scratch/test_prediction_phase4_13.js`), all 10 master verification gates (`scratch/verify_phase4.ps1`), full regression suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x1600 (`scratch/prediction_rendered_full2.png`). Fully preserved zero-backend architecture, five-parameter contract, and pure client-side OLS math.
+- **Active Task:** Phase 4.14 (Prediction Final Visual Refinement) completed and verified against the authoritative Stitch reference (`prediction.html`).
+  - **Graph Height Moderation:** Reduced desktop graph viewport height from 400px to 360px (within target 350–370px range), achieving a balanced relationship between header, metric cards, centerpiece graph, and lower analytical panels while preserving 320px mobile viewport.
+  - **Reduced Metric Card Weight:** Refined primary metric typography from 2.75rem (44px) to 2.25rem (36px, `letter-spacing: -0.03em`), reduced card padding to `1.15rem 1.35rem`, min-height to 155px, and scalar margins to `0.45rem 0 0.35rem`, preserving three-column structure and Card 2's highlighted status.
+  - **Tightened Header:** Compacted workspace vertical gaps to `1.25rem`, header row gap to `0.75rem`, left column gap to `0.25rem`, title font size to `1.875rem`, and subtitle to `0.875rem`, producing a quieter, cohesive presentation without removing any functional controls or metadata.
+  - **Softened Forecast Zone & Restrained Callouts:** Reduced forecast gradient stop-opacity to 0.35/0.12 and forecast text to 10px `#6c7a4b`, creating a subtle analytical background. Refined observation pill (`62x18px`, `x=672`, `text x=703`) positioned strictly on the observed side of `PRESENT (t)`, and forecast target badge (`132x32px`, `x=748`) positioned strictly on the forecast side, preventing horizontal collision and leaving the `PRESENT (t)` divider line completely unobstructed.
+  - **Preserved Analytical & Data Architecture:** 100% preservation of client-side OLS linear regression ($y = mx + b$), real MQ-135 telemetry, five-parameter model, and lower analytical foundation panels ("How the Prediction Works" and "Model Specification").
+  - **Verified Strict Compliance:** 100% pass across all 7 automated Phase 4.14 test gates (`scratch/test_prediction_phase4_14.js`), all 10 master verification gates (`scratch/verify_phase4.ps1`), full regression suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x1400 (`scratch/prediction_rendered_phase4_14.png`).
 
 ---
 
