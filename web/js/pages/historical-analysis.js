@@ -436,39 +436,44 @@
     var xEnd = 980;
     var xSpan = xEnd - xStart;
 
-    // Calibrated vertical plotting window: maintains ample headroom and base margin
-    // Leaves room for threshold indicator (y: 60-75) and bottom grid line (y: 280)
-    var plotYTop = 95;
-    var plotYBottom = 240;
+    // Calibrated vertical plotting window matching Stitch reference (viewBox: 0 0 1000 320)
+    // Headroom (y: 40 -> 100) preserves clean threshold line display (y: 70 - 75)
+    // Foot margin (y: 252 -> 280) guarantees curve never clips into baseline grid
+    var plotYTop = 100;
+    var plotYBottom = 252;
     var plotYSpan = plotYBottom - plotYTop;
 
-    // Environmental scaling: prevents minor sensor fluctuations from exploding into artificial spikes
+    // Environmental scaling: preserves true signal dynamics with balanced, expressive vertical amplitude
     var dataVals = series.map(function (item) { return item.value; });
     var dataMin = Math.min.apply(null, dataVals);
     var dataMax = Math.max.apply(null, dataVals);
     var rawSpan = dataMax - dataMin;
 
-    // Nominal reference spans by parameter to contextualize sensor observations naturally
+    // Calibrated reference spans by parameter to maintain organic environmental proportion
     var minSpans = {
-      temperature: 5.0,
-      humidity: 15.0,
-      pressure: 8.0,
-      gas_response: 200.0,
-      noise: 18.0
+      temperature: 1.5,
+      humidity: 3.5,
+      pressure: 0.6,
+      gas_response: 60.0,
+      noise: 5.0
     };
-    var minSpan = minSpans[activeParam] || 5.0;
+    var minSpan = minSpans[activeParam] || 1.5;
 
-    // Dynamic display bounds: preserves true signal dynamics with restrained, natural amplitude
-    var span = Math.max(rawSpan * 1.4, minSpan);
+    // Dynamic display bounds: centers legitimate diurnal variation across ~110-135px vertical span
+    var span = Math.max(rawSpan, minSpan);
     var mid = (dataMin + dataMax) / 2;
-    var yMin = mid - (span / 2);
-    var yMax = mid + (span / 2);
+    var baseMin = mid - (span / 2);
+    var baseMax = mid + (span / 2);
+    var pad = span * 0.08;
+    var yMin = baseMin - pad;
+    var yMax = baseMax + pad;
+    var effSpan = yMax - yMin;
 
     var N = series.length;
     var pts = series.map(function (item, idx) {
       var x = xStart + (idx / (N - 1)) * xSpan;
-      var norm = (item.value - yMin) / (yMax - yMin);
-      norm = Math.max(0.04, Math.min(0.96, norm));
+      var norm = effSpan > 0 ? (item.value - yMin) / effSpan : 0.5;
+      norm = Math.max(0.02, Math.min(0.98, norm));
       var y = plotYBottom - (norm * plotYSpan);
       return {
         x: Number(x.toFixed(1)),
@@ -530,7 +535,7 @@
         var dNext = deltas[i];
         var sign = dPrev > 0 ? 1 : -1;
         var avg = (pts[i + 1].y - pts[i - 1].y) / (pts[i + 1].x - pts[i - 1].x);
-        m[i] = sign * Math.min(Math.abs(dPrev), Math.abs(dNext), 0.5 * Math.abs(avg));
+        m[i] = sign * Math.min(2 * Math.abs(dPrev), 2 * Math.abs(dNext), Math.abs(avg));
       }
     }
     m[n - 1] = deltas[n - 2];
@@ -619,24 +624,10 @@
         tText.style.display = 'block';
       }
       if (upperLine) {
-        upperLine.setAttribute('x1', '40');
-        upperLine.setAttribute('x2', '980');
-        upperLine.setAttribute('y1', yU);
-        upperLine.setAttribute('y2', yU);
-        upperLine.setAttribute('stroke', '#ba1a1a');
-        upperLine.setAttribute('stroke-dasharray', '4,4');
-        upperLine.setAttribute('stroke-width', '1.2');
-        upperLine.setAttribute('opacity', '0.65');
-        upperLine.style.display = 'block';
+        upperLine.style.display = 'none';
       }
       if (upperText) {
-        upperText.setAttribute('x', '50');
-        upperText.setAttribute('y', yU - 4);
-        upperText.setAttribute('fill', '#ba1a1a');
-        upperText.setAttribute('opacity', '0.75');
-        upperText.setAttribute('font-size', '10');
-        upperText.textContent = 'Upper Limit: ' + upperVal + ' ' + meta.unit;
-        upperText.style.display = 'block';
+        upperText.style.display = 'none';
       }
     } else {
       if (tLine) tLine.style.display = 'none';
