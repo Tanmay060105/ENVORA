@@ -29,7 +29,7 @@
       seriesLabel: 'Observed Temperature (°C)',
       thresholdLabel: 'Reference Limit: < 32 °C',
       icon: 'thermostat',
-      peakDesc: 'Diurnal Temperature Peak',
+      peakDesc: 'Diurnal Environmental Crest',
       desc: 'BME280 Ambient Temperature'
     },
     'humidity': {
@@ -437,10 +437,10 @@
     var xSpan = xEnd - xStart;
 
     // Calibrated vertical plotting window matching compact horizontal ribbon
-    // Headroom (y: 25 -> 55) preserves clean threshold line display (y: 40 - 45)
-    // Foot margin (y: 160 -> 180) guarantees curve never clips into baseline grid
-    var plotYTop = 55;
-    var plotYBottom = 160;
+    // Headroom (y: 25 -> 48) preserves clean threshold line display (y: 40 - 45)
+    // Foot margin (y: 166 -> 180) guarantees curve never clips into baseline grid
+    var plotYTop = 48;
+    var plotYBottom = 166;
     var plotYSpan = plotYBottom - plotYTop;
 
     // Environmental scaling: preserves true signal dynamics with balanced, expressive vertical amplitude
@@ -459,12 +459,12 @@
     };
     var minSpan = minSpans[activeParam] || 1.5;
 
-    // Dynamic display bounds: centers legitimate diurnal variation across ~85-95px vertical span
+    // Dynamic display bounds: centers legitimate diurnal variation across ~105px vertical amplitude
     var span = Math.max(rawSpan, minSpan);
     var mid = (dataMin + dataMax) / 2;
     var baseMin = mid - (span / 2);
     var baseMax = mid + (span / 2);
-    var pad = span * 0.08;
+    var pad = span * 0.05;
     var yMin = baseMin - pad;
     var yMax = baseMax + pad;
     var effSpan = yMax - yMin;
