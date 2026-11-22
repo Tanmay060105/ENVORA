@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -41,7 +42,7 @@
           <div class="station-pill">
             <span>North Quad Eco-Station #01</span>
           </div>
-          <div class="ticker-text">Threshold Monitor · 0 Critical Alarms</div>
+          <div class="ticker-text" id="header-ticker-text">Threshold Monitor · 1 Active Breach</div>
         </div>
         <div class="header-right">
           <div class="hardware-pill">
@@ -52,105 +53,362 @@
         </div>
       </header>
 
-      <main class="app-content">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
-          <div>
-            <div class="hero-state-label">Threshold Compliance & Events</div>
-            <h1 style="font-size: var(--text-4xl); margin-top: 4px;">Environmental Alerts</h1>
-            <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 2px;">
-              Threshold boundaries, active alarms, and historical breach audit logs for the five parameters.
+      <main class="app-content alerts-workspace">
+        <!-- 1. ALERTS HEADER & TELEMETRIC SUMMARY CLUSTER -->
+        <div class="alerts-header">
+          <div class="alerts-header-left">
+            <div class="alerts-eyebrow">
+              <span>THRESHOLD COMPLIANCE &amp; EVENTS</span>
+              <span class="alerts-eyebrow-sep">·</span>
+              <span class="alerts-eyebrow-sub">STATION #01</span>
+            </div>
+            <h1 class="alerts-title">ALERTS</h1>
+            <p class="alerts-subtitle">
+              Environmental threshold events, warnings, and critical condition detection across campus monitoring.
             </p>
           </div>
-          <div class="segmented-control">
-            <button class="segmented-btn active" data-alert-filter="ALL">All Events</button>
-            <button class="segmented-btn" data-alert-filter="WARNING">Warnings</button>
-            <button class="segmented-btn" data-alert-filter="CRITICAL">Critical</button>
+
+          <!-- Summary Counts Cluster -->
+          <div class="alerts-summary-cluster">
+            <div class="alerts-summary-pill">
+              <span class="alerts-summary-dot dot-active"></span>
+              <div class="alerts-summary-info">
+                <span class="alerts-summary-label">Active</span>
+                <span class="alerts-summary-val" id="alerts-count-active">1 Active</span>
+              </div>
+            </div>
+            <div class="alerts-summary-pill">
+              <span class="alerts-summary-dot dot-resolved"></span>
+              <div class="alerts-summary-info">
+                <span class="alerts-summary-label">Resolved</span>
+                <span class="alerts-summary-val" id="alerts-count-resolved">4 Resolved</span>
+              </div>
+            </div>
+            <div class="alerts-summary-pill">
+              <span class="material-symbols-outlined alerts-summary-icon">history</span>
+              <div class="alerts-summary-info">
+                <span class="alerts-summary-label">Total Window</span>
+                <span class="alerts-summary-val" id="alerts-count-total">5 Events (24H)</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- 5-PARAMETER THRESHOLD BOUNDARY GRID -->
-        <section>
-          <div class="metric-grid-5">
-            <div class="metric-card">
-              <div class="metric-card-header">Temperature Limit</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="thresh-temp-val">24.8°C</span>
-              </div>
-              <div class="metric-trend-pill" id="thresh-temp-limit">Threshold: &lt; 28.0°C</div>
-              <div class="metric-footer">
-                Status: <span id="thresh-temp-status" class="badge badge-normal">NORMAL</span>
-              </div>
+        <!-- 2. FILTER CONTROLS BAR -->
+        <div class="alerts-controls-bar">
+          <div class="alerts-controls-left">
+            <!-- Status Filter -->
+            <div class="segmented-control alerts-status-filter" role="group" aria-label="Status filter">
+              <button class="segmented-btn active" data-alert-filter="ALL">All Events</button>
+              <button class="segmented-btn" data-alert-filter="ACTIVE">
+                Active <span class="alerts-filter-count" id="filter-active-count">1</span>
+              </button>
+              <button class="segmented-btn" data-alert-filter="RESOLVED">Resolved (4)</button>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-card-header">Humidity Limit</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="thresh-humidity-val">61.0%</span>
-              </div>
-              <div class="metric-trend-pill" id="thresh-humidity-limit">Threshold: &lt; 75.0%</div>
-              <div class="metric-footer">
-                Status: <span id="thresh-humidity-status" class="badge badge-normal">NORMAL</span>
-              </div>
+            <div class="alerts-filter-divider"></div>
+
+            <!-- Severity Filter -->
+            <div class="alerts-severity-filter">
+              <span class="alerts-filter-label">Severity:</span>
+              <button class="alerts-pill-btn active" data-severity-filter="ALL">All</button>
+              <button class="alerts-pill-btn" data-severity-filter="WARNING">Warning</button>
+              <button class="alerts-pill-btn" data-severity-filter="CRITICAL">Critical</button>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-card-header">Pressure Limit</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="thresh-pressure-val">1013.2 hPa</span>
+            <div class="alerts-filter-divider"></div>
+
+            <!-- Parameter Selector Filter -->
+            <div class="alerts-param-filter">
+              <span class="alerts-filter-label">Param:</span>
+              <button class="alerts-pill-btn active" data-param-filter="ALL">All</button>
+              <button class="alerts-pill-btn" data-param-filter="temperature">Temp</button>
+              <button class="alerts-pill-btn" data-param-filter="humidity">Humidity</button>
+              <button class="alerts-pill-btn" data-param-filter="pressure">Pressure</button>
+              <button class="alerts-pill-btn" data-param-filter="gas_response">MQ-135</button>
+              <button class="alerts-pill-btn" data-param-filter="noise">Noise</button>
+            </div>
+          </div>
+
+          <!-- Interval Badge -->
+          <div class="alerts-interval-badge">
+            <span class="material-symbols-outlined alerts-interval-icon">schedule</span>
+            <span>Interval: 24H Window</span>
+          </div>
+        </div>
+
+        <!-- 3. PRIMARY SECTION 1: ACTIVE ENVIRONMENTAL EVENTS -->
+        <section class="alerts-active-section">
+          <div class="alerts-section-header">
+            <div class="alerts-section-title-wrap">
+              <span class="alerts-active-pulse"></span>
+              <h2 class="alerts-section-title" id="active-events-title">Active Environmental Events (1)</h2>
+            </div>
+            <span class="alerts-section-sub">Real-time Station Feed</span>
+          </div>
+
+          <!-- Active Event Cards Grid (Populated dynamically) -->
+          <div class="alerts-active-grid" id="alerts-active-grid"></div>
+        </section>
+
+        <!-- 4. SUPPORTING SECTION: 5-PARAMETER THRESHOLD MONITORING RAIL -->
+        <section class="alerts-threshold-rail">
+          <div class="alerts-rail-header">
+            <div class="alerts-rail-title">
+              <span class="material-symbols-outlined alerts-rail-icon">tune</span>
+              <span>5-Parameter Threshold Limits</span>
+            </div>
+            <span class="alerts-rail-caption">Nominal Operating Boundaries</span>
+          </div>
+
+          <div class="alerts-rail-grid">
+            <!-- Card 1: Temp -->
+            <div class="alerts-rail-card">
+              <div class="alerts-rail-card-top">
+                <span class="alerts-rail-name">Temperature Limit</span>
+                <span id="thresh-temp-status" class="badge badge-normal">NORMAL</span>
               </div>
-              <div class="metric-trend-pill" id="thresh-pressure-limit">Range: 980 - 1030 hPa</div>
-              <div class="metric-footer">
-                Status: <span id="thresh-pressure-status" class="badge badge-normal">NORMAL</span>
+              <div class="alerts-rail-card-reading">
+                <span class="alerts-rail-scalar" id="thresh-temp-val">24.8°C</span>
               </div>
+              <div class="alerts-rail-limit" id="thresh-temp-limit">Threshold: &lt; 32.0°C</div>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-card-header">MQ-135 Gas Limit</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="thresh-gas-val">469 raw</span>
+            <!-- Card 2: Humidity -->
+            <div class="alerts-rail-card">
+              <div class="alerts-rail-card-top">
+                <span class="alerts-rail-name">Humidity Limit</span>
+                <span id="thresh-humidity-status" class="badge badge-normal">NORMAL</span>
               </div>
-              <div class="metric-trend-pill" id="thresh-gas-limit">Threshold: &lt; 650 raw</div>
-              <div class="metric-footer">
-                Status: <span id="thresh-gas-status" class="badge badge-normal">NORMAL</span>
+              <div class="alerts-rail-card-reading">
+                <span class="alerts-rail-scalar" id="thresh-humidity-val">61.0%</span>
               </div>
+              <div class="alerts-rail-limit" id="thresh-humidity-limit">Threshold: 30.0 - 70.0%</div>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-card-header">Noise Level Limit</div>
-              <div class="metric-reading-row">
-                <span class="metric-scalar" id="thresh-noise-val">48.0 dB</span>
+            <!-- Card 3: Pressure -->
+            <div class="alerts-rail-card">
+              <div class="alerts-rail-card-top">
+                <span class="alerts-rail-name">Pressure Limit</span>
+                <span id="thresh-pressure-status" class="badge badge-normal">NORMAL</span>
               </div>
-              <div class="metric-trend-pill" id="thresh-noise-limit">Threshold: &lt; 70.0 dB</div>
-              <div class="metric-footer">
-                Status: <span id="thresh-noise-status" class="badge badge-normal">NORMAL</span>
+              <div class="alerts-rail-card-reading">
+                <span class="alerts-rail-scalar" id="thresh-pressure-val">1013.2 hPa</span>
               </div>
+              <div class="alerts-rail-limit" id="thresh-pressure-limit">Threshold: 990 - 1025 hPa</div>
+            </div>
+
+            <!-- Card 4: Gas -->
+            <div class="alerts-rail-card">
+              <div class="alerts-rail-card-top">
+                <span class="alerts-rail-name">MQ-135 Gas Limit</span>
+                <span id="thresh-gas-status" class="badge badge-normal">NORMAL</span>
+              </div>
+              <div class="alerts-rail-card-reading">
+                <span class="alerts-rail-scalar" id="thresh-gas-val">469 raw</span>
+              </div>
+              <div class="alerts-rail-limit" id="thresh-gas-limit">Threshold: &lt; 900 raw</div>
+            </div>
+
+            <!-- Card 5: Noise -->
+            <div class="alerts-rail-card">
+              <div class="alerts-rail-card-top">
+                <span class="alerts-rail-name">Noise Level Limit</span>
+                <span id="thresh-noise-status" class="badge badge-normal">NORMAL</span>
+              </div>
+              <div class="alerts-rail-card-reading">
+                <span class="alerts-rail-scalar" id="thresh-noise-val">48.0 dB</span>
+              </div>
+              <div class="alerts-rail-limit" id="thresh-noise-limit">Threshold: &lt; 65.0 dB</div>
             </div>
           </div>
         </section>
 
-        <!-- HISTORICAL AUDIT LOG TABLE -->
-        <section class="card-surface">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
-            <h2 style="font-size: var(--text-xl);">Station Event Audit Log</h2>
-            <span class="badge badge-normal">Policy: Automated Log</span>
+        <!-- 5. PRIMARY SECTION 2: CHRONOLOGICAL ALERT HISTORY -->
+        <section class="alerts-history-card">
+          <div class="alerts-history-header">
+            <div>
+              <h3 class="alerts-history-title">Chronological Alert History</h3>
+              <p class="alerts-history-desc">Scannable ledger of sensory breaches and baseline returns logged within the telemetry window.</p>
+            </div>
+            <div class="alerts-history-meta">
+              <span id="alerts-history-count">Displaying 5 Events</span>
+              <span class="alerts-meta-sep">·</span>
+              <span class="alerts-policy-badge">Policy: Automated Audit Log</span>
+            </div>
           </div>
 
-          <div class="table-container">
-            <table class="envora-table">
+          <div class="table-container alerts-table-container">
+            <table class="envora-table alerts-table">
               <thead>
                 <tr>
-                  <th>Timestamp</th>
+                  <th>Time</th>
                   <th>Parameter</th>
-                  <th>Observed Reading</th>
-                  <th>Calibrated Limit</th>
+                  <th>Event Description</th>
+                  <th>Measured Value</th>
+                  <th>Threshold Limit</th>
                   <th>Severity</th>
-                  <th>Action</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
                 </tr>
               </thead>
               <tbody id="alerts-table-body">
                 <!-- Dynamically populated by alerts.js -->
               </tbody>
             </table>
+          </div>
+
+          <!-- Table Pagination / Archival Info -->
+          <div class="alerts-table-footer">
+            <div class="alerts-footer-info">
+              <span>Continuous archival retention: 90 days</span>
+              <span class="alerts-meta-sep">·</span>
+              <span>Mesh Synchronized UTC-4</span>
+            </div>
+            <div class="alerts-footer-pagination">
+              <span class="alerts-page-indicator">Page 1 of 1</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. SUPPORTING SECTION 3: ENVIRONMENTAL THRESHOLD / BREACH ANALYSIS (LOWER VISUALIZATION) -->
+        <section class="alerts-analysis-card">
+          <div class="alerts-analysis-header">
+            <div class="alerts-analysis-title-wrap">
+              <div class="alerts-analysis-eyebrow">
+                <span class="alerts-analysis-label">Alert Context &amp; Threshold Inspection</span>
+                <span class="badge badge-warning" id="analysis-breach-badge">ACTIVE BREACH</span>
+              </div>
+              <h3 class="alerts-analysis-title" id="analysis-title">
+                Environmental Noise Threshold Exceeded // Breach Progression
+              </h3>
+            </div>
+            <div class="alerts-analysis-metrics">
+              <div class="alerts-metric-pill">
+                <span class="alerts-metric-sub">Current:</span>
+                <span class="alerts-metric-val" id="analysis-cur-val">74.2 dBA</span>
+              </div>
+              <div class="alerts-metric-pill">
+                <span class="alerts-metric-sub">Baseline Limit:</span>
+                <span class="alerts-metric-val" id="analysis-base-val">65.0 dBA</span>
+              </div>
+              <div class="alerts-metric-pill">
+                <span class="alerts-metric-sub">Breach Duration:</span>
+                <span class="alerts-metric-val" id="analysis-duration-val">18m</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compact Threshold Graph SVG -->
+          <div class="alerts-graph-viewport">
+            <div class="alerts-graph-legend">
+              <div class="alerts-legend-zones">
+                <span class="alerts-legend-tag"><span class="alerts-zone-swatch swatch-nominal"></span> Nominal (0–65)</span>
+                <span class="alerts-legend-tag"><span class="alerts-zone-swatch swatch-warning"></span> Warning (65–75)</span>
+                <span class="alerts-legend-tag"><span class="alerts-zone-swatch swatch-critical"></span> Critical (&gt;75)</span>
+              </div>
+              <div class="alerts-legend-window">
+                <span class="material-symbols-outlined" style="font-size: 14px;">schedule</span>
+                <span>Rolling 40m Temporal Window</span>
+              </div>
+            </div>
+
+            <div class="alerts-svg-wrapper">
+              <svg class="alerts-chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 240">
+                <defs>
+                  <linearGradient id="breachCurveGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#C88A2E" stop-opacity="0.30"></stop>
+                    <stop offset="70%" stop-color="#9AA77A" stop-opacity="0.10"></stop>
+                    <stop offset="100%" stop-color="#9AA77A" stop-opacity="0.0"></stop>
+                  </linearGradient>
+                </defs>
+                <!-- Tinted Threshold Bands -->
+                <rect fill="#B84A39" fill-opacity="0.07" height="45" width="1000" x="0" y="0"></rect>
+                <rect fill="#C88A2E" fill-opacity="0.09" height="65" width="1000" x="0" y="45"></rect>
+                <rect fill="#52652b" fill-opacity="0.05" height="130" width="1000" x="0" y="110"></rect>
+
+                <!-- Subtle Reference Lines -->
+                <line stroke="#E9E0CC" stroke-dasharray="3,3" stroke-width="1" x1="0" x2="1000" y1="45" y2="45"></line>
+                <line stroke="#C88A2E" stroke-dasharray="6,4" stroke-width="1.5" x1="0" x2="1000" y1="110" y2="110"></line>
+                <line stroke="#E9E0CC" stroke-dasharray="3,3" stroke-width="1" x1="0" x2="1000" y1="175" y2="175"></line>
+
+                <!-- Threshold Baseline Reference -->
+                <text fill="#C88A2E" font-family="JetBrains Mono" font-size="10" font-weight="600" x="12" y="105">THRESHOLD: 65.0 dBA (BASELINE LIMIT)</text>
+
+                <!-- Gradient Area under curve -->
+                <path d="M 50 200 C 150 190, 200 175, 300 172 C 400 170, 480 150, 580 132 C 650 120, 680 115, 720 110 C 760 102, 820 85, 880 84 C 920 83, 960 72, 970 71 L 970 240 L 50 240 Z" fill="url(#breachCurveGrad)"></path>
+
+                <!-- Smooth Progression Curve -->
+                <path d="M 50 200 C 150 190, 200 175, 300 172 C 400 170, 480 150, 580 132 C 650 120, 680 115, 720 110 C 760 102, 820 85, 880 84 C 920 83, 960 72, 970 71" fill="none" stroke="#3F4D27" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+
+                <!-- Key progression points -->
+                <circle cx="50" cy="200" fill="#3F4D27" r="3.5"></circle>
+                <text fill="#777866" font-family="JetBrains Mono" font-size="10" text-anchor="middle" x="50" y="220">48.0</text>
+                <circle cx="300" cy="172" fill="#3F4D27" r="3.5"></circle>
+                <text fill="#777866" font-family="JetBrains Mono" font-size="10" text-anchor="middle" x="300" y="162">53.4</text>
+                <circle cx="580" cy="132" fill="#3F4D27" r="3.5"></circle>
+                <text fill="#777866" font-family="JetBrains Mono" font-size="10" text-anchor="middle" x="580" y="122">61.1</text>
+
+                <!-- Breach Event Point -->
+                <circle cx="720" cy="110" fill="#ffffff" r="6" stroke="#C88A2E" stroke-width="2.5"></circle>
+                <circle cx="720" cy="110" fill="#C88A2E" r="3"></circle>
+                <line stroke="#C88A2E" stroke-dasharray="2,2" stroke-width="1.5" x1="720" x2="720" y1="110" y2="235"></line>
+
+                <!-- Reading at 14:24 -->
+                <circle cx="880" cy="84" fill="#C88A2E" r="4"></circle>
+                <text fill="#777866" font-family="JetBrains Mono" font-size="10" text-anchor="middle" x="880" y="74">71.5</text>
+
+                <!-- Current Peak Level -->
+                <circle cx="970" cy="71" fill="#C88A2E" r="6" stroke="#ffffff" stroke-width="2"></circle>
+                <circle cx="970" cy="71" fill="#B84A39" r="2.5"></circle>
+              </svg>
+
+              <!-- Event Trigger Annotation Pill -->
+              <div class="alerts-callout-trigger">
+                <span class="alerts-trigger-label">EVENT TRIGGER</span>
+                <span class="alerts-trigger-val">14:18 (65.0 dBA)</span>
+              </div>
+
+              <div class="alerts-callout-peak">
+                <span class="alerts-peak-sub">Peak Reading</span>
+                <span class="alerts-peak-val">74.2 dBA</span>
+                <span class="alerts-peak-time">14:32 Current</span>
+              </div>
+            </div>
+
+            <!-- X-Axis Timestamps -->
+            <div class="alerts-graph-xaxis">
+              <span>14:00</span>
+              <span>14:08</span>
+              <span>14:16 (Breach Window)</span>
+              <span>14:24</span>
+              <span>14:32 (Current)</span>
+            </div>
+          </div>
+
+          <!-- Calm Environmental Context Footer -->
+          <div class="alerts-analysis-footer">
+            <div class="alerts-footer-col">
+              <span class="material-symbols-outlined alerts-footer-icon">surround_sound</span>
+              <div>
+                <span class="alerts-footer-title">Acoustic Propagation</span>
+                <p class="alerts-footer-text">Intermittent mechanical acoustic energy radiating toward North Quad perimeter.</p>
+              </div>
+            </div>
+            <div class="alerts-footer-col">
+              <span class="material-symbols-outlined alerts-footer-icon">trending_up</span>
+              <div>
+                <span class="alerts-footer-title">Breach Trajectory</span>
+                <p class="alerts-footer-text">Elevation initiated at 14:04, climbing through warning tier before stabilizing.</p>
+              </div>
+            </div>
+            <div class="alerts-footer-col">
+              <span class="material-symbols-outlined alerts-footer-icon">check_circle</span>
+              <div>
+                <span class="alerts-footer-title">Baseline Verification</span>
+                <p class="alerts-footer-text">Debounced over 2 consecutive cycles (K=2) to eliminate transient acoustic spikes.</p>
+              </div>
+            </div>
           </div>
         </section>
       </main>

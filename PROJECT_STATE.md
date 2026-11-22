@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-22  
-**Overall Status:** Phase 4.14 (Prediction Final Visual Refinement) Complete & Verified  
+**Overall Status:** Phase 4.15 (Alerts Screen Visual Correction) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -30,18 +30,21 @@
 | **Phase 4.12** | Historical Analysis Final Visual Refinement | 🟢 Complete | None |
 | **Phase 4.13** | Prediction Screen Visual Correction | 🟢 Complete | None |
 | **Phase 4.14** | Prediction Final Visual Refinement | 🟢 Complete | None |
+| **Phase 4.15** | Alerts Screen Visual Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.14 (Prediction Final Visual Refinement) completed and verified against the authoritative Stitch reference (`prediction.html`).
-  - **Graph Height Moderation:** Reduced desktop graph viewport height from 400px to 360px (within target 350–370px range), achieving a balanced relationship between header, metric cards, centerpiece graph, and lower analytical panels while preserving 320px mobile viewport.
-  - **Reduced Metric Card Weight:** Refined primary metric typography from 2.75rem (44px) to 2.25rem (36px, `letter-spacing: -0.03em`), reduced card padding to `1.15rem 1.35rem`, min-height to 155px, and scalar margins to `0.45rem 0 0.35rem`, preserving three-column structure and Card 2's highlighted status.
-  - **Tightened Header:** Compacted workspace vertical gaps to `1.25rem`, header row gap to `0.75rem`, left column gap to `0.25rem`, title font size to `1.875rem`, and subtitle to `0.875rem`, producing a quieter, cohesive presentation without removing any functional controls or metadata.
-  - **Softened Forecast Zone & Restrained Callouts:** Reduced forecast gradient stop-opacity to 0.35/0.12 and forecast text to 10px `#6c7a4b`, creating a subtle analytical background. Refined observation pill (`62x18px`, `x=672`, `text x=703`) positioned strictly on the observed side of `PRESENT (t)`, and forecast target badge (`132x32px`, `x=748`) positioned strictly on the forecast side, preventing horizontal collision and leaving the `PRESENT (t)` divider line completely unobstructed.
-  - **Preserved Analytical & Data Architecture:** 100% preservation of client-side OLS linear regression ($y = mx + b$), real MQ-135 telemetry, five-parameter model, and lower analytical foundation panels ("How the Prediction Works" and "Model Specification").
-  - **Verified Strict Compliance:** 100% pass across all 7 automated Phase 4.14 test gates (`scratch/test_prediction_phase4_14.js`), all 10 master verification gates (`scratch/verify_phase4.ps1`), full regression suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x1400 (`scratch/prediction_rendered_phase4_14.png`).
+- **Active Task:** Phase 4.15 (Alerts Screen Visual Correction) completed and verified against the authoritative Stitch reference (`alerts.html`).
+  - **Stitch Environmental Event Intelligence Hierarchy:** Reconstructed the Alerts page around Stitch's environmental event intelligence structure: Specimen Header → Controls & Status Filter Bar → Active Environmental Events → 5-Parameter Supporting Threshold Rail → Chronological Alert History → Environmental Threshold / Breach Analysis.
+  - **Header & Telemetric Summary Cluster:** Implemented specimen eyebrow (`THRESHOLD COMPLIANCE & EVENTS · STATION #01`), bold title (`ALERTS`), explanatory narrative, and summary metrics cluster displaying dynamic active count (with pulsing dot), resolved count, and total rolling window events (`5 Events (24H)`).
+  - **Active Environmental Events Section:** Prominently featured below the controls bar, displaying high-fidelity analytical event cards communicating severity badge, campus zone, live active duration with pulse dot, parameter name and measured scalar, baseline delta (`+9.2 dBA above baseline`, `+1.5°C above baseline`), contextual event narrative, timestamp, and interactive `Acknowledge` action affordance. Clean empty/nominal state renders when all parameters are within baseline.
+  - **Supporting 5-Parameter Threshold Rail:** Repositioned the 5 parameter boundaries from an oversized dominant dashboard block into a sleek, discoverable supporting status rail (`Temperature`, `Humidity`, `Atmospheric Pressure`, `MQ-135 Gas`, `Noise Level`), preserving all 15 regression-safe DOM IDs and dynamic status bindings.
+  - **Chronological Alert History Ledger:** Refined the audit log into a scannable analytical ledger with tighter row rhythm, parameter styling, color-coded measured values, limit badges, active/resolved status pills, individual acknowledge actions, and archival retention metadata footer.
+  - **Lower Environmental Threshold / Breach Analysis:** Added the complete lower analytical visualization card featuring dynamic parameter title, breach status badge, current/baseline metrics, tinted SVG threshold zones (Nominal, Warning, Critical), smooth progression curve with gradient area wash, breach event trigger callout pill, peak reading callout badge, rolling temporal X-axis, and 3-column environmental context footer (Acoustic Propagation, Breach Trajectory, Baseline Verification).
+  - **Strict Contract & Invariant Preservation:** 100% preservation of the five locked ENVORA parameters, Alert FSM with $K=2$ anti-oscillation debounce, zero-backend architecture, and zero PM/AQI references.
+  - **Verification:** 100% pass across all 7 automated Phase 4.15 test gates (`scratch/test_alerts_phase4_15.js`), all 11 master verification gates (`scratch/verify_phase4.ps1`), full regression suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x1600 (`scratch/alerts_rendered_phase4_15.png`).
 
 ---
 
