@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-22  
-**Overall Status:** Phase 4.12 (Historical Analysis Final Visual Refinement) Complete & Verified  
+**Overall Status:** Phase 4.13 (Prediction Screen Visual Correction) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -28,17 +28,20 @@
 | **Phase 4.10** | Historical Analysis Strict Stitch Graph Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.11** | Historical Analysis Strict Graph Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.12** | Historical Analysis Final Visual Refinement | 🟢 Complete | None |
+| **Phase 4.13** | Prediction Screen Visual Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.12 (Historical Analysis Final Visual Refinement) completed and verified against the authoritative Stitch reference (`historical-analysis.html`).
-  - Strengthened curve vertical amplitude across all 5 parameters: recalibrated plotting window to `plotYTop = 48` and `plotYBottom = 166` (`plotYSpan = 118`, with `pad = span * 0.05`), achieving ~107px vertical amplitude (~53.5% of total SVG height) for temperature, humidity, gas response, and noise, and ~89px for pressure, while preserving safe headroom (peak at $y \approx 53.4$, 11.4px below threshold at $y=42$) and footroom (base at $y \approx 160.6$, 19.4px above baseline gridline at $y=180$).
-  - Preserved non-overshooting Steffen / Fritsch-Carlson monotone cubic spline algorithm with zero-slope extremum clamping, reproducing Stitch's natural low → gradual rise → rounded crest → gradual decline organic rhythm without artificial oscillations or flat table-tops.
-  - Refined spacing between graph title, parameter metadata, sampling controls, and graph viewport in `web/css/style.css` (`gap: 0.75rem` card, `gap: 0.5rem` top header, `gap: 0.25rem` metadata column).
-  - Enforced strict terminology compliance: replaced any peak references with approved environmental terminology `Diurnal Environmental Crest`, with zero occurrences of unsupported `solar` wording in Historical Analysis.
-  - Verified 100% pass across all 9 automated Phase 4.12 test gates (`scratch/test_historical_phase4_12.js`), all 10 master verification gates (`verify_phase4.ps1`), full regression test suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x1200 (`scratch/historical_rendered_4.png`).
+- **Active Task:** Phase 4.13 (Prediction Screen Visual Correction) completed and verified against the authoritative Stitch reference (`prediction.html`).
+  - **Full-Width Desktop Workspace:** Transformed the layout from a narrow constrained column into a broad, authoritative analytical interface spanning the full desktop width (`.pred-workspace`), matching Stitch visual hierarchy and eliminating unused whitespace on 1440px displays.
+  - **Structured Header Hierarchy:** Implemented specimen-style eyebrow (`PREDICTIVE INTELLIGENCE MODEL · PROTOCOL OLS-04`), prominent bold title (`MQ-135 Sensor-Response Prediction`), explanatory subtitle, metadata chips (Sensor Response chip, Target chip), and segmented observation window controls (6 Readings / 12 Readings).
+  - **Prominent Metric Cards:** Expanded 3 primary metric cards (`Current Response`, `Predicted Next`, `Trend Classification`) with bold 2.75rem (44px) values (`font-weight: 700`, `line-height: 1`), supporting metadata, and Card 2 highlighted with primary/secondary theme styling.
+  - **Contextual Alert Strip:** Integrated an ambient threshold proximity banner indicating gradient status and quantitative delta to the 900 raw response threshold.
+  - **Centerpiece Visualizer & Shading:** Elevated the SVG graph to a 400px tall commanding viewport (`viewBox="0 0 940 320"`), featuring subtle reference gridlines, dynamic 6-tier Y-axis scale markers, shaded forecast zone (`#pred-forecast-zone`), present division marker (`PRESENT (t)`), area wash path under observed values (`#pred-area-path`), regression line badge (`#pred-reg-badge`), observation callout pill (`Obs: [val]`), forecast target badge (`PREDICTED: [val]` with `Target: [horizon]`), and bottom status strip with sampling cadence and extrapolation method.
+  - **Lower Analytical Foundation:** Structured a balanced 2-column grid (`1.4fr / 1fr`) housing "How the Prediction Works" with 3 numbered step cards and "Model Specification" with an auditable specification list.
+  - **Verified Strict Compliance:** 100% pass across all 7 automated Phase 4.13 test gates (`scratch/test_prediction_phase4_13.js`), all 10 master verification gates (`scratch/verify_phase4.ps1`), full regression suites (Phase 1, 2, 2.1, 3), and visual headless browser verification at 1440x1600 (`scratch/prediction_rendered_full2.png`). Fully preserved zero-backend architecture, five-parameter contract, and pure client-side OLS math.
 
 ---
 
