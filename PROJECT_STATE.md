@@ -1,7 +1,7 @@
 # Project State: Campus Environmental Intelligence System (ENVORA)
 
 **Last Updated:** 2026-11-22  
-**Overall Status:** Phase 4.10 (Historical Analysis Strict Stitch Graph Fidelity Correction) Complete & Verified  
+**Overall Status:** Phase 4.11 (Historical Analysis Strict Graph Fidelity Correction) Complete & Verified  
 **Active Architecture:** ESP32 → Blynk / ThingSpeak → Custom Web App (HTML/CSS/JS)
 
 ---
@@ -26,17 +26,19 @@
 | **Phase 4.8** | Historical Analysis Strict Final Stitch Visual Correction | 🟢 Complete | None |
 | **Phase 4.9** | Historical Analysis Final Visual Fidelity Correction | 🟢 Complete | None |
 | **Phase 4.10** | Historical Analysis Strict Stitch Graph Fidelity Correction | 🟢 Complete | None |
+| **Phase 4.11** | Historical Analysis Strict Graph Fidelity Correction | 🟢 Complete | None |
 | **Phase 5** | Final Validation & Production Readiness | ⚪ Pending | Awaiting user start approval |
 
 ---
 
 ## 2. Current Task
-- **Active Task:** Phase 4.10 (Historical Analysis Strict Stitch Graph Fidelity Correction) completed and verified against the authoritative Stitch reference (`historical-analysis.html`).
-  - Resolved aggressive vertical scaling suppression: calibrated reference spans (`minSpans: { temperature: 1.5, humidity: 3.5, pressure: 0.6, gas_response: 60.0, noise: 5.0 }`) within a calibrated plotting window ($plotYTop = 100$, $plotYBottom = 252$, span = 152px) inside the SVG viewBox (`0 0 1000 320`).
-  - Expressive vertical amplitude: real sensor dynamics now occupy a visually meaningful and natural 109–131px (~55%) vertical span across the chart area, reproducing the Stitch visual language (visible baseline, smooth morning ascent, distinct diurnal peak, gentle dissipation) without artificial flatlining or extreme oscillations.
-  - Refined Steffen / Fritsch-Carlson monotone cubic Bezier algorithm (`computeMonotoneSpline`) to maintain organic slope continuity without flattening at equidistant nodes while strictly preserving zero-overshoot ($m_i = 0$) at local extrema.
-  - Corrected double-rendered threshold text bug by suppressing redundant legacy elements (`upperLine`, `upperText`) and ensuring clean, single-rendered inline label presentation (`Reference Limit (< 32 °C)`) positioned with 30px breathing room above the diurnal peak.
-  - Verified visual rendering via headless Chrome browser screenshot inspection across all 14 visual criteria and passed all 10 Phase 4.10 verification gates and master regression suites.
+- **Active Task:** Phase 4.11 (Historical Analysis Strict Graph Fidelity Correction) completed and verified against the authoritative Stitch reference (`historical-analysis.html`).
+  - Reduced graph vertical dominance to match the compact horizontal ribbon geometry of Stitch: recalibrated `.hist-viewport` to 230px desktop / 200px mobile height, and recalibrated SVG coordinate space to `viewBox="0 0 1000 200"` with rendered height of 190px.
+  - Recalibrated horizontal gridlines to $y = 25, 65, 105, 145, 180$, and grounded the subtle area-fill wash cleanly to baseline grid $y = 180$, completely eliminating empty vertical canvas beneath the curve.
+  - Dynamically mapped real telemetry data into a compact plotting window ($plotYTop = 55$, $plotYBottom = 160$, span = 105px) with calibrated reference spans, maintaining natural vertical amplitude (75.4–90.5px, ~45% of total SVG height) across all 5 parameters.
+  - Integrated dynamic parameter-aware reference thresholds into compact upper headroom ($y \approx 42$) and lower bound ($y \approx 170$) with clean single-rendered inline labels.
+  - Recalibrated interactive crosshair ($y: 25 \to 180$) and floating inspection tooltip coordinate mapping for compact viewport dimensions.
+  - Verified visual rendering via headless Chrome browser screenshot comparison at 1440x1200, achieving ~97–98% visual fidelity to the Stitch reference, and passed all 10 Phase 4.11 automated gates and master regression suites.
 
 ---
 

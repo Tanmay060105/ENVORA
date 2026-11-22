@@ -431,16 +431,16 @@
     var histArea = document.getElementById('hist-area-path');
     if (!linePath || !areaPath || !series || series.length === 0) return;
 
-    // Viewport geometry matching Stitch reference (viewBox: 0 0 1000 320)
+    // Viewport geometry matching compact Stitch reference (viewBox: 0 0 1000 200)
     var xStart = 40;
     var xEnd = 980;
     var xSpan = xEnd - xStart;
 
-    // Calibrated vertical plotting window matching Stitch reference (viewBox: 0 0 1000 320)
-    // Headroom (y: 40 -> 100) preserves clean threshold line display (y: 70 - 75)
-    // Foot margin (y: 252 -> 280) guarantees curve never clips into baseline grid
-    var plotYTop = 100;
-    var plotYBottom = 252;
+    // Calibrated vertical plotting window matching compact horizontal ribbon
+    // Headroom (y: 25 -> 55) preserves clean threshold line display (y: 40 - 45)
+    // Foot margin (y: 160 -> 180) guarantees curve never clips into baseline grid
+    var plotYTop = 55;
+    var plotYBottom = 160;
     var plotYSpan = plotYBottom - plotYTop;
 
     // Environmental scaling: preserves true signal dynamics with balanced, expressive vertical amplitude
@@ -454,12 +454,12 @@
       temperature: 1.5,
       humidity: 3.5,
       pressure: 0.6,
-      gas_response: 60.0,
+      gas_response: 50.0,
       noise: 5.0
     };
     var minSpan = minSpans[activeParam] || 1.5;
 
-    // Dynamic display bounds: centers legitimate diurnal variation across ~110-135px vertical span
+    // Dynamic display bounds: centers legitimate diurnal variation across ~85-95px vertical span
     var span = Math.max(rawSpan, minSpan);
     var mid = (dataMin + dataMax) / 2;
     var baseMin = mid - (span / 2);
@@ -490,8 +490,8 @@
     linePath.setAttribute('d', d);
     if (histLine) histLine.setAttribute('d', d);
 
-    // Subtle area wash anchored to baseline grid (y = 280)
-    var areaD = d + ' L ' + xEnd + ' 280 L ' + xStart + ' 280 Z';
+    // Subtle area wash anchored to baseline grid (y = 180)
+    var areaD = d + ' L ' + xEnd + ' 180 L ' + xStart + ' 180 Z';
     areaPath.setAttribute('d', areaD);
     if (histArea) histArea.setAttribute('d', areaD);
 
@@ -595,10 +595,10 @@
         var normU = (upperVal - yMin) / (yMax - yMin);
         yU = plotYBottom - (normU * plotYSpan);
       } else if (upperVal > yMax) {
-        // Position threshold naturally within upper plotting headspace (y = 70)
-        yU = 70;
+        // Position threshold naturally within upper plotting headspace (y ≈ 42)
+        yU = 42;
       } else {
-        yU = 250;
+        yU = 165;
       }
 
       var upperLabelStr = (cfg.type === 'two-sided' ? 'Upper Threshold (' : 'Reference Limit (') + upperVal + ' ' + meta.unit + ')';
@@ -643,10 +643,10 @@
         var normL = (lowerVal - yMin) / (yMax - yMin);
         yL = plotYBottom - (normL * plotYSpan);
       } else if (lowerVal < yMin) {
-        // Position threshold naturally within lower plotting region (y = 255)
-        yL = 255;
+        // Position threshold naturally within lower reference area (y ≈ 170)
+        yL = 170;
       } else {
-        yL = 80;
+        yL = 50;
       }
 
       if (lowerLine) {
@@ -746,19 +746,19 @@
         var timeStr = formatTime(p.timestamp);
         var valStr = formatVal(p.val, meta.unit);
 
-        // Position crosshair across calibrated plotting boundaries (y: 40 -> 280)
+        // Position crosshair across calibrated plotting boundaries (y: 25 -> 180)
         if (crosshair) {
           crosshair.setAttribute('x1', p.x);
           crosshair.setAttribute('x2', p.x);
-          crosshair.setAttribute('y1', '40');
-          crosshair.setAttribute('y2', '280');
+          crosshair.setAttribute('y1', '25');
+          crosshair.setAttribute('y2', '180');
           crosshair.style.display = 'block';
         }
         if (histCrosshair) {
           histCrosshair.setAttribute('x1', p.x);
           histCrosshair.setAttribute('x2', p.x);
-          histCrosshair.setAttribute('y1', '40');
-          histCrosshair.setAttribute('y2', '280');
+          histCrosshair.setAttribute('y1', '25');
+          histCrosshair.setAttribute('y2', '180');
           histCrosshair.style.display = 'block';
         }
 
@@ -788,12 +788,12 @@
 
         tooltip.style.display = 'block';
         var pixelX = (p.x / 1000) * rect.width;
-        var pixelY = (p.y / 320) * (rect.height - 35);
+        var pixelY = (p.y / 200) * (rect.height - 25);
         var tipLeft = pixelX + 16;
         if (tipLeft + 200 > rect.width) {
           tipLeft = pixelX - 205;
         }
-        var tipTop = Math.max(12, Math.min(rect.height - 110, pixelY - 45));
+        var tipTop = Math.max(8, Math.min(rect.height - 85, pixelY - 35));
         tooltip.style.left = tipLeft + 'px';
         tooltip.style.top = tipTop + 'px';
       });
